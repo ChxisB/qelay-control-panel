@@ -22,7 +22,9 @@ the GitHub Release body.
   new `quality:*` scripts, which `bun run quality` chains locally), the browser
   E2E runs as six independent suites, and the native binaries start as soon as
   the bundle is built instead of after every quality check. Browser jobs cache
-  Playwright browsers and skip the duplicate typecheck.
+  Playwright browsers and skip the duplicate typecheck. Firefox and WebKit run
+  inside the official Playwright image (no slow apt step), and
+  `version:check` keeps its tag equal to `@playwright/test`.
 - Docker and Pages no longer repeat the whole validation on a push to `main`:
   they wait for CI's `Stability gate` on the same commit (`ci-gate.yml`). Version
   tags and manual runs still validate in full.

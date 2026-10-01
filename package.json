@@ -61,7 +61,7 @@
     "typecheck:agent": "tsc -p tsconfig.agent.json",
     "typecheck:examples": "tsc -p tsconfig.examples.json",
     "size": "bun run scripts/check-bundle.ts",
-    "version:check": "bun run scripts/check-bun-version.ts",
+    "version:check": "bun run scripts/check-bun-version.ts && bun run scripts/check-playwright-image.ts",
     "architecture": "bun run scripts/check-file-size.ts",
     "docs:dev": "vitepress dev docs",
     "docs:build": "bun run scripts/build-docs.ts",
