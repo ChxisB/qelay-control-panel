@@ -32,9 +32,15 @@ the GitHub Release body.
 - Docker and Pages no longer repeat the whole validation on a push to `main`:
   they wait for CI's `Stability gate` on the same commit (`ci-gate.yml`). Version
   tags and manual runs still validate in full.
+- The README now opens with the narrated 4K video tour on YouTube (7:45, English
+  with subtitles), recorded against a real bunqueue server under live traffic. It
+  replaces the old animated GIF, which still showed the Copilot removed in 1.0.1.
 
 ### Fixed
 
+- Dependabot can update dependencies again: it was configured for the `npm`
+  ecosystem, which cannot update `bun.lock`, so every weekly run failed. It now
+  uses the `bun` ecosystem with the same groups.
 - The soak test's memory budget no longer fails at random on Linux. It measured
   memory without collecting garbage first, so the reading swung between 53 and
   153 MiB of growth for the same run; it now forces a full collection before
@@ -51,12 +57,6 @@ the GitHub Release body.
   valid confirmation was rejected. The confirmation is now verified first.
 - A rejected restore now names every field that changed (for example
   `walSize 4152 → 0`), so the cause is visible instead of a generic message.
-
-### Changed
-
-- The README now opens with the narrated 4K video tour on YouTube (7:45, English
-  with subtitles), recorded against a real bunqueue server under live traffic. It
-  replaces the old animated GIF, which still showed the Copilot removed in 1.0.1.
 
 ## [1.0.1] - 2026-10-01
 
