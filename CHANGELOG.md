@@ -15,6 +15,73 @@ the GitHub Release body.
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-10-01
+
+First stable release. The dashboard now follows Semantic Versioning: breaking
+changes to configuration, routes or the agent API only ship in a new major
+version. This release closes every defect found by a full audit of the agent,
+the all-in-one server, the client libraries and every page.
+
+### Changed
+
+- Mark the dashboard stable: README and sidebar no longer show the beta label,
+  and the security policy now supports the latest `1.x` release.
+- `bun audit` runs without exceptions: React Router 7.18.4 fixes the previously
+  ignored advisory, Mermaid moves to 11.17.2, and patched transitive versions of
+  brace-expansion, js-yaml, DOMPurify, fast-uri, ip-address and markdown-it are
+  pinned through `overrides`.
+- The managed launch command (`BUNQUEUE_START_CMD` / Server ▸ command) accepts
+  quoted paths with spaces, e.g. `"C:\Program Files\bun\bun.exe" run main.ts`.
+
+### Fixed
+
+- **Agent:** the managed status probe uses HTTPS (and the configured private CA)
+  when server TLS is enabled, so a TLS server no longer stays "waiting for
+  health" forever. Restoring a backup closes the Workflow Engine first, so it
+  never keeps writing to the replaced SQLite file after a crash. The `[::1]`
+  loopback target is accepted. Process-state conflicts return 409 and a child
+  that survives SIGKILL returns 500 instead of 400.
+- **All-in-one server:** the `/api` proxy no longer forwards the browser's
+  `Host`, cookies or hop-by-hop headers to `BUNQUEUE_URL`, so host-routed
+  ingresses in front of Bunqueue work.
+- **Docker image:** a missing `/assets/*` file is served with `no-store` instead
+  of being cached as immutable for a year during rolling deploys.
+- **`bun start`:** waits for the agent's full 30 s drain before force-killing it
+  (no orphaned Bunqueue server) and exits non-zero when a service is killed by a
+  signal.
+- **Release workflow:** tags the validated commit instead of the current `main`
+  head, publishes only from `main` or a version tag, and anchors artifact names
+  on the exact tag so hyphenated pre-release tags upload cleanly.
+- **App shell:** "Skip to content" focuses the page instead of reloading the app
+  at the base URL (which dropped in-memory tokens). A failed page or Copilot
+  chunk is fetched again after navigating away or closing the panel instead of
+  requiring a full reload. Page titles resolve case-insensitively, the toast
+  live region announces the first toast, and the clipboard fallback keeps focus.
+- **Settings migration:** a legacy `/api` connection is migrated to the runtime
+  mount path during real hydration, so sub-path deployments stop calling `/api`.
+- **Jobs and queues:** classic Queue detail shows the job's real name and no
+  longer crashes on object-valued `data.name`; classic Jobs search matches the
+  displayed name; Jobs, DLQ and DLQ Control selectors recover when the selected
+  queue or reason disappears; queue depth trends use the real sample period.
+- **Mutations with blank inputs:** a cleared journal retention no longer trims
+  the whole journal, a cleared Workflow minimum age no longer deletes every
+  execution, a rate limit in "Expires after" mode requires its TTL, and Bulk
+  Add rejects an invalid job `name` instead of routing jobs to `default`.
+- **Clone and payloads:** cloning a flow child drops broker-owned flow metadata,
+  and Add Job / Bulk Add reject those reserved keys in job data.
+- **Benchmark:** count-mode runs with several workers no longer end with a false
+  "could not be drained" error, and a genuinely lost job still ends the run.
+- **Live activity and alerts:** progress events no longer inflate the Active
+  counter, reconnect backoff resets after a healthy stream, and the "waiting
+  jobs" alert includes prioritized jobs, matching Overview.
+- **Other pages:** a webhook toggle interrupted by navigation no longer locks the
+  row; Usage tolerates a malformed overview; backup operations follow an
+  agent-only connection switch; the row drawer explains values unavailable
+  without a rowid; the queue group console clears the previous group's readback
+  and disables actions with invalid numbers; S3 retention shows its range error;
+  the Flow DAG layering stays acyclic on corrupt data; Bulk Add reports
+  whole-text JSON errors; cron previews are labelled as browser-local time.
+
 ## [0.0.47] - 2026-09-08
 
 ### Fixed
@@ -1380,7 +1447,8 @@ documentation site.
 - **Custom brand:** a queue-badge logo and favicon, and hand-drawn monoline
   feature icons on the docs home.
 
-[Unreleased]: https://github.com/egeominotti/bunqueue-dashboard/compare/v0.0.47...HEAD
+[Unreleased]: https://github.com/egeominotti/bunqueue-dashboard/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/egeominotti/bunqueue-dashboard/compare/v0.0.47...v1.0.0
 [0.0.47]: https://github.com/egeominotti/bunqueue-dashboard/compare/v0.0.46...v0.0.47
 [0.0.46]: https://github.com/egeominotti/bunqueue-dashboard/compare/v0.0.45...v0.0.46
 [0.0.45]: https://github.com/egeominotti/bunqueue-dashboard/compare/v0.0.44...v0.0.45

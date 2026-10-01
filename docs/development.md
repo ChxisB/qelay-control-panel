@@ -80,12 +80,8 @@ Workflow, Flow, MCP, local S3 and scripted Copilot transport/tool checks. See [T
 service prerequisites. `bun run test:e2e:docs` separately checks clean documentation URLs
 on desktop/mobile and search/navigation after the VitePress build.
 
-The audit has one ID-specific exception: `GHSA-qwww-vcr4-c8h2` affects React
-Router's RSC mode. This project is a client-only `BrowserRouter` SPA and has no
-RSC request handler or server actions, so that advisory is not applicable. The
-exception does not suppress any other advisory; a new HIGH or CRITICAL finding
-fails the gate. Remove it if the app adopts RSC, or when a compatible patched
-React Router release becomes available.
+The audit has no ID-specific exceptions: any HIGH or CRITICAL advisory fails the
+gate. Transitive fixes are pinned through `overrides` in `package.json`.
 
 Notes:
 - `.oxlintrc.json` and `.oxfmtrc.json` are the committed root configurations for

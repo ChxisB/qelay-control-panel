@@ -1,4 +1,5 @@
 import type { AddJobBody } from '@/lib/bq';
+import { FLOW_METADATA_KEYS } from '@/lib/bq/jobPayload';
 import type { JobFull } from '@/lib/bqTypes';
 
 /**
@@ -38,6 +39,17 @@ export interface CloneJobState {
   };
 }
 
+/**
+ * A clone is a fresh standalone job: broker-owned flow links (`__parentId`, …)
+ * would make clients and the server treat it as a child of the source's parent.
+ */
+function cloneableData(data: unknown): unknown {
+  if (data === null || typeof data !== 'object' || Array.isArray(data)) return data;
+  const copy = { ...(data as Record<string, unknown>) };
+  for (const key of FLOW_METADATA_KEYS) delete copy[key];
+  return copy;
+}
+
 /** Build the router-state clone payload from a loaded job (options carried when present). */
 export function buildCloneState(job: JobFull): CloneJobState {
   const options: CloneJobState['clone']['options'] = {};
@@ -59,7 +71,7 @@ export function buildCloneState(job: JobFull): CloneJobState {
     clone: {
       queue: job.queue ?? '',
       name: job.name,
-      dataText: JSON.stringify(job.data ?? {}, null, 2),
+      dataText: JSON.stringify(cloneableData(job.data ?? {}), null, 2),
       options,
     },
   };

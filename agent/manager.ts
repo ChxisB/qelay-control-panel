@@ -1,5 +1,6 @@
 /** Public compatibility entrypoint for managed bunqueue process supervision. */
 export { validateConfigPatch } from './manager/config';
+export { ManagedProcessStuckError } from './manager/errors';
 export { ProcessManager } from './manager/process';
 export {
   managedPostgresNamespace,

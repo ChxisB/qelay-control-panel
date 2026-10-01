@@ -35,6 +35,16 @@ export function DlqControl() {
   } = usePolledData(loadAllQueuePages, [], { intervalMs: 30000 });
 
   useEffect(() => {
+    // A queue that vanished from discovery has no <option>: the picker would
+    // show another queue while this page kept fetching the gone one. Drop it
+    // (with its view state) so the auto-pick below chooses a live queue.
+    if (queue && qs && !qs.queues.some((x) => x.name === queue)) {
+      setQueue('');
+      setPage(0);
+      setReason('all');
+      setSearch('');
+      return;
+    }
     if (queue || !qs?.queues?.length) return;
     setQueue((qs.queues.find((x) => x.dlq > 0) ?? qs.queues[0]).name);
   }, [qs, queue]);
@@ -94,6 +104,10 @@ export function DlqControl() {
     () => [...reasons].sort((a, b) => (byReason[b] ?? 0) - (byReason[a] ?? 0))[0],
     [reasons, byReason]
   );
+  // A reason no longer in byReason has no <option>: reset the stale filter.
+  useEffect(() => {
+    if (reason !== 'all' && data && !reasons.includes(reason)) setReason('all');
+  }, [data, reason, reasons]);
 
   const allEntries = data?.entries ?? EMPTY_ENTRIES;
   const entries = useMemo(() => {

@@ -123,6 +123,16 @@ export function assertManagedControl(controlTarget: ServerControlTarget): void {
   }
 }
 
+/**
+ * Release the Workflow Engine's read-write SQLite connection before the data
+ * file is replaced. A broker that crashed (or was killed externally) leaves the
+ * engine open; after a restore it would keep writing to the unlinked file.
+ */
+export async function closeWorkflowRuntime(runtime: WorkflowRuntimePort): Promise<void> {
+  const closeResult = await settle(() => runtime.close());
+  if (!closeResult.ok) throw workflowCloseError(closeResult.error);
+}
+
 async function stopWithRuntimeCleanup(
   manager: ProcessManager,
   runtime: WorkflowRuntimePort

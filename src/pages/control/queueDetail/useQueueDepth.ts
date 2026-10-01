@@ -48,5 +48,6 @@ export function useQueueDepth(name: string, counts?: QueueDepthCounts | null) {
   }, [counts, scope]);
 
   const depth = series.scope === scope ? series.values : [];
-  return { depth, trend: depthTrend(depth) };
+  // Samples are DEPTH_SAMPLE_MS apart, not depthTrend's 1 Hz default.
+  return { depth, trend: depthTrend(depth, DEPTH_SAMPLE_MS) };
 }

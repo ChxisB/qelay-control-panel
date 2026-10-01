@@ -18,7 +18,11 @@ on:
     tags: ['v*']
   workflow_dispatch:
 
-# One release at a time, in push order — never cancel a publish mid-flight.
+# One release at a time — never cancel a publish mid-flight. GitHub keeps at
+# most one *queued* run per group: if several main pushes land within one
+# validation window, the intermediate queued version is superseded and skipped
+# (its tag is never created). Release it afterwards by pushing its `v<version>`
+# tag on the matching commit.
 concurrency:
   group: release
   cancel-in-progress: false
@@ -75,6 +79,12 @@ jobs:
           if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
             TAG="${GITHUB_REF_NAME}"
             echo "publish=true" >> "$GITHUB_OUTPUT"
+          elif [ "${GITHUB_REF}" != "refs/heads/main" ]; then
+            # A manual dispatch from another branch must never publish its
+            # binaries under a version tag.
+            TAG="v0.0.0-unreleased"
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+            echo "Not on main (${GITHUB_REF}) — skipping publish."
           else
             # package.json owns the version (bumped on every push to main), and
             # the release/tag simply follows it — one source of truth. Read it
@@ -137,15 +147,19 @@ jobs:
           done
 
       # SHA256SUMS lets anyone verify a downloaded artifact's integrity
-      # (`sha256sum -c SHA256SUMS`). The two globs MUST stay disjoint — the zip
-      # is bunqueue-dashboard-v<ver>.zip (no dash after the version) and the
-      # binaries are bunqueue-dashboard-v<ver>-<platform>. A pattern matching
-      # both (e.g. `bunqueue-dashboard-v*`) duplicates the zip: a doubled line
-      # here, and in the release step below a concurrent double upload of the
-      # same asset that races and fails the publish (broke v0.0.22).
+      # (`sha256sum -c SHA256SUMS`). The two patterns MUST stay disjoint — the zip
+      # is bunqueue-dashboard-<tag>.zip and the binaries are
+      # bunqueue-dashboard-<tag>-<platform>. They are anchored on the exact tag:
+      # a generic `bunqueue-dashboard-v*-*` also matches the zip of a hyphenated
+      # tag (v1.0.0-rc.1), and a doubled match means a duplicated line here and a
+      # racing double upload in the release step below (broke v0.0.22).
       - name: Generate checksums
         if: steps.ver.outputs.publish == 'true'
-        run: sha256sum bunqueue-dashboard-*.zip bunqueue-dashboard-v*-* > SHA256SUMS
+        env:
+          RELEASE_TAG: ${{ steps.ver.outputs.tag }}
+        run: |
+          sha256sum "bunqueue-dashboard-${RELEASE_TAG}.zip" "bunqueue-dashboard-${RELEASE_TAG}"-* > SHA256SUMS
+          test "$(wc -l < SHA256SUMS)" -eq 6
 
       # Signed, verifiable build provenance (SLSA) for every published artifact,
       # so downloads can be checked with `gh attestation verify <file> --repo …`.
@@ -154,21 +168,24 @@ jobs:
         uses: actions/attest-build-provenance@v2
         with:
           subject-path: |
-            bunqueue-dashboard-*.zip
-            bunqueue-dashboard-v*-*
+            bunqueue-dashboard-${{ steps.ver.outputs.tag }}.zip
+            bunqueue-dashboard-${{ steps.ver.outputs.tag }}-*
 
       - name: Publish GitHub Release
         if: steps.ver.outputs.publish == 'true'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.ver.outputs.tag }}
+          # Tag the commit that was validated — not whatever main points to when
+          # this (possibly queued) job finally publishes.
+          target_commitish: ${{ github.sha }}
           # Curated CHANGELOG.md section as the body; generated notes (the auto
           # commit/PR list) are appended after it. An empty notes.md → notes only.
           body_path: notes.md
           generate_release_notes: true
           files: |
-            bunqueue-dashboard-*.zip
-            bunqueue-dashboard-v*-*
+            bunqueue-dashboard-${{ steps.ver.outputs.tag }}.zip
+            bunqueue-dashboard-${{ steps.ver.outputs.tag }}-*
             SHA256SUMS
           fail_on_unmatched_files: true
 
@@ -182,6 +199,8 @@ jobs:
     name: Publish to npm
     runs-on: ubuntu-latest
     needs: release
+    # Same rule as the GitHub Release: only main or a version tag may publish.
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
     timeout-minutes: 15
     steps:
       - name: Checkout

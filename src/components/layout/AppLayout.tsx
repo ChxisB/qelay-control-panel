@@ -147,8 +147,15 @@ export function AppLayout() {
       <div id="app-shell" className="flex h-screen overflow-hidden bg-bg text-fg">
         {/* First tab stop: lets keyboard/screen-reader users jump past the ~20
             nav links straight to the page content (WCAG 2.4.1 Bypass Blocks). */}
+        {/* index.html ships a <base> element, so a bare "#main" resolves against the
+            base URL and would reload the app at the root (dropping memory-only
+            secrets). Focus the landmark in place instead. */}
         <a
           href="#main"
+          onClick={(event) => {
+            event.preventDefault();
+            mainRef.current?.focus();
+          }}
           inert={activeModal !== null ? true : undefined}
           tabIndex={activeModal !== null ? -1 : undefined}
           className="sr-only rounded-md bg-accent px-3 py-2 text-sm font-medium text-accent-fg shadow-lg focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50"

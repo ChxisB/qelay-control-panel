@@ -162,7 +162,11 @@ ports, a non-string data path, or a non-string environment map return HTTP 400
 without partially changing the previous configuration. The agent
 launches `command` (default `bunx bunqueue@2.9.4 start`, e.g. `bun run ../src/main.ts` when
 developing) with `HTTP_PORT`, `TCP_PORT`, the selected storage environment and
-`extraEnv` injected. PostgreSQL mode is selected by `BUNQUEUE_STORAGE_DRIVER=postgres`
+`extraEnv` injected. The command runs without a shell: arguments are split on
+whitespace, and a balanced pair of double or single quotes keeps a path with spaces
+together (`"C:\Program Files\bun\bun.exe" run C:\srv\main.ts`); backslashes are
+literal. The status health probe uses HTTPS (trusting `BUNQUEUE_AGENT_TCP_CA_FILE`
+when set) whenever server TLS is configured. PostgreSQL mode is selected by `BUNQUEUE_STORAGE_DRIVER=postgres`
 or `BUNQUEUE_POSTGRES_URL`; the agent removes inherited SQLite path aliases so Bunqueue 2.9
 cannot receive an ambiguous PostgreSQL-plus-SQLite configuration. Config is **editable at any time**; a running
 process keeps its launch config (`runningConfig`) and picks up port/data-path

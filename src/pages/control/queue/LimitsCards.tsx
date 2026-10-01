@@ -23,7 +23,12 @@ export function LimitsCards({
   const [concurrencyClearQueue, setConcurrencyClearQueue] = useState('');
   const [rateReceipt, setRateReceipt] = useState<string | null>(null);
   const [concurrencyReceipt, setConcurrencyReceipt] = useState<string | null>(null);
-  const rate = rateLimitArgs(rateLimit, rateDuration, rateTtlMode === 'expires' ? rateTtl : '');
+  const rate = rateLimitArgs(
+    rateLimit,
+    rateDuration,
+    rateTtlMode === 'expires' ? rateTtl : '',
+    rateTtlMode === 'expires'
+  );
   const concurrencyInput = concurrencyArgs(concurrency);
   return (
     <div className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -135,7 +140,9 @@ export function LimitsCards({
           </Button>
           {!rate.valid && (rateLimit.trim() || rateDuration.trim() || rateTtl.trim()) && (
             <span role="alert" className="w-full text-xs text-danger">
-              Limit and window are required; all values must be positive whole numbers.
+              {rateTtlMode === 'expires'
+                ? 'Limit, window and TTL are required; all values must be positive whole numbers.'
+                : 'Limit and window are required; all values must be positive whole numbers.'}
             </span>
           )}
           {rateReceipt && (

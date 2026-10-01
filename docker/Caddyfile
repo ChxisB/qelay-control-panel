@@ -22,8 +22,13 @@
 
 	# Fingerprinted build assets: cache immutably, and 404 on a miss (no SPA
 	# fallback here) so a stale chunk import never silently receives the shell.
+	# Only an existing file is immutable: a miss (rolling deploy, a replica on
+	# the previous build) must never be cached by the browser or a CDN.
 	handle /assets/* {
-		header Cache-Control "public, max-age=31536000, immutable"
+		@asset file
+		@missing not file
+		header @asset Cache-Control "public, max-age=31536000, immutable"
+		header @missing Cache-Control "no-store"
 		file_server
 	}
 

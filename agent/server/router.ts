@@ -10,7 +10,7 @@ import { routeQueueOperationsRequest } from '../queue/routes';
 import type { QueueOperationsPort } from '../queue/types';
 import type { WorkflowRuntimePort } from '../workflow/runtime';
 import { routeWorkflowRuntimeRequest } from '../workflow/runtimeRoutes';
-import { assertManagedControl, routeControlRequest } from './controlRoutes';
+import { assertManagedControl, closeWorkflowRuntime, routeControlRequest } from './controlRoutes';
 import type { ServerControlTarget } from './controlTarget';
 import { routeDatabaseRequest } from './databaseRoutes';
 import type { AgentLifecyclePort } from './lifecycle';
@@ -123,6 +123,7 @@ export async function routeAgentRequest(
           return sqliteOnly('S3 backup', currentStorageMode);
         }
         return manager.withStoppedMaintenance('restoring a backup', async () => {
+          await closeWorkflowRuntime(runtime);
           return executePreparedBackupRequest(
             prepared,
             restoreConfig,

@@ -113,6 +113,13 @@ export function DlqPro() {
     setParams(name ? { queue: name } : {}, { replace: true });
   };
 
+  // A reason with no remaining entries has no <option>: the picker would show
+  // "All Reasons" while the stale filter kept hiding every row.
+  useEffect(() => {
+    if (reason === 'all' || !data) return;
+    if (!((data.stats?.byReason?.[reason] ?? 0) > 0)) setReason('all');
+  }, [data, reason]);
+
   const byReason = data?.stats?.byReason ?? {};
   const reasons = Object.keys(byReason).filter((r) => byReason[r] > 0);
   const topReason = [...reasons].sort((a, b) => (byReason[b] ?? 0) - (byReason[a] ?? 0))[0];

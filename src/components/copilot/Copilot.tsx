@@ -1,9 +1,10 @@
-import { Component, lazy, type ReactNode, Suspense, useEffect, useRef } from 'react';
+import { Component, type ReactNode, Suspense, useEffect, useRef } from 'react';
 import { useCopilotStore } from '@/components/dashboard/stores/copilotStore';
 import {
   mayRestoreModalFocus,
   useGlobalModalStore,
 } from '@/components/dashboard/stores/globalModalStore';
+import { resetFailedLazyImports, retryableLazy } from '@/lib/retryableLazy';
 
 /**
  * Copilot entry point. This module is intentionally light — it only pulls in the
@@ -11,7 +12,7 @@ import {
  * (which imports the Vercel AI SDK, ~160 KB gz) is lazy-loaded on first open, so
  * the SDK never touches the initial bundle.
  */
-const CopilotPanel = lazy(() =>
+const CopilotPanel = retryableLazy(() =>
   import('./CopilotPanel').then((m) => ({ default: m.CopilotPanel }))
 );
 
@@ -107,6 +108,9 @@ export class CopilotBoundary extends Component<
         <button
           type="button"
           onClick={() => {
+            // The next open fetches the panel chunk again instead of
+            // re-throwing the cached failure.
+            resetFailedLazyImports();
             this.setState({ failed: false });
             this.props.onClose();
           }}

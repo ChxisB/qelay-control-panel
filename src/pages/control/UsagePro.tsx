@@ -13,6 +13,7 @@ import {
   formatUptime,
 } from '@/lib/format';
 import { usePolledData } from '@/lib/usePolledData';
+import { assertRenderableOverview } from './overview/model';
 
 // Defensive fallback for the render after a successful, validated poll. Initial
 // failures return an ErrorState above rather than presenting these zeroes as facts.
@@ -48,6 +49,13 @@ export function UsagePro() {
     ]);
     if (!storage?.data || typeof storage.data.diskFull !== 'boolean') {
       throw new Error('Storage status response is missing disk health data');
+    }
+    // Reject an incomplete /dashboard body here so usePolledData reports it
+    // (or keeps the last good snapshot) instead of render-time destructuring
+    // crashing. Usage also renders heap size, which the shared check omits.
+    assertRenderableOverview(overview);
+    if (!Number.isFinite(overview.memory.heapUsed)) {
+      throw new Error('Malformed /dashboard response: memory.heapUsed is missing or non-numeric.');
     }
     // Failed jobs summed across queues — stats.totalFailed is a session counter
     // that zeroes on server restart, useless for a "cumulative usage" page.

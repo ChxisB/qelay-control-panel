@@ -53,13 +53,15 @@ function safeAddressingStyle(value: unknown): S3AddressingStyle {
   return value === 'virtual-hosted' || value === 'path-style' ? value : 'auto';
 }
 
+/** Retention Bunqueue accepts; the page validates raw drafts against the same rule. */
+export function isValidS3Retention(value: unknown): value is number {
+  return (
+    typeof value === 'number' && Number.isSafeInteger(value) && value >= 1 && value <= 1_000_000
+  );
+}
+
 function safeRetention(value: unknown): number {
-  return typeof value === 'number' &&
-    Number.isSafeInteger(value) &&
-    value >= 1 &&
-    value <= 1_000_000
-    ? value
-    : S3_DEFAULTS.retention;
+  return isValidS3Retention(value) ? value : S3_DEFAULTS.retention;
 }
 
 export type PersistedS3State = typeof S3_DEFAULTS;

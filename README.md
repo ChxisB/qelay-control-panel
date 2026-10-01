@@ -26,7 +26,7 @@ The live demo uses sample data. The docs explain how to connect and operate a re
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Documentation](https://img.shields.io/badge/docs-online-db2777)](https://egeominotti.github.io/bunqueue-dashboard/docs/)
 [![Live demo](https://img.shields.io/badge/live%20demo-online-22c55e)](https://egeominotti.github.io/bunqueue-dashboard/)
-![Status: Beta](https://img.shields.io/badge/status-beta-f59e0b)
+![Status: Stable](https://img.shields.io/badge/status-stable-22c55e)
 
 ![React 19](https://img.shields.io/badge/React-19-149ECA?logo=react&logoColor=white)
 ![Vite 8](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)
@@ -58,9 +58,9 @@ The live demo uses sample data. The docs explain how to connect and operate a re
 
 ---
 
-> ⚠️ **Beta.** bunqueue dashboard is under active development, interfaces and
-> behavior may change between releases. Review it before relying on it for
-> unattended production use.
+> ✅ **Stable (1.x).** The dashboard follows [Semantic Versioning](https://semver.org/):
+> breaking changes to its configuration, routes or agent API only ship in a new
+> major version. The in-app Copilot remains an opt-in beta feature.
 
 ## 📚 Documentation
 

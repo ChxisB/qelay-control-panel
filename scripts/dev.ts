@@ -12,6 +12,7 @@
  */
 import type { Subprocess } from 'bun';
 import { logger } from '../agent/logger';
+import { AGENT_SHUTDOWN_GRACE_MS } from '../agent/shutdown';
 import { assertRequiredBunVersion } from './bunVersion';
 
 assertRequiredBunVersion();
@@ -25,11 +26,16 @@ const services = [
   { name: 'dashboard', cmd: ['bun', 'node_modules/.bin/vite'] },
 ] as const;
 
-// Must exceed the agent's own SIGTERM→SIGKILL escalation window (8s in
-// agent/manager.ts): on Ctrl-C the agent first stops the bunqueue server it
-// spawned, and force-killing the agent mid-stop would orphan that child.
-// No cost in the normal case — the race resolves as soon as children exit.
-const FORCE_KILL_AFTER_MS = 10_000;
+// Must exceed the agent's whole graceful drain (agent/shutdown.ts): it first
+// waits for in-flight operations (backups, Flow/Workflow calls), then stops the
+// bunqueue server it spawned. Force-killing the agent earlier would orphan that
+// child. No cost in the normal case — the race resolves as soon as children exit.
+export const FORCE_KILL_AFTER_MS = AGENT_SHUTDOWN_GRACE_MS + 5_000;
+
+/** A signal death (OOM kill, segfault) reports code null: that is a failure. */
+export function serviceExitCode(code: number | null): number {
+  return code ?? 1;
+}
 
 let closing = false;
 let exitCode = 0;
@@ -66,7 +72,7 @@ export async function spawnServices(): Promise<void> {
           onExit(_child, code) {
             // If one service dies, bring the whole stack down with its exit code.
             if (!closing) {
-              exitCode = code ?? 0;
+              exitCode = serviceExitCode(code);
               void shutdown(`${name} exited (code ${exitCode})`);
             }
           },

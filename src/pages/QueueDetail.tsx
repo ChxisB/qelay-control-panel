@@ -19,6 +19,7 @@ import {
 import type { Job } from '@/lib/types';
 import { usePolledData } from '@/lib/usePolledData';
 import { assertSuccessfulMutationResponse, useServerActionGuard } from '@/lib/useServerActionGuard';
+import { jobDataName } from './jobs/classicJobsData';
 import { QueueConfig } from './queue/QueueConfig';
 import { EMPTY_QUEUE_DETAIL, RECENT_STATES } from './queue/queueDetailData';
 
@@ -250,7 +251,7 @@ export function QueueDetail() {
                       </Link>
                     </td>
                     <td className="px-5 py-3 text-fg">
-                      {(j.data as { name?: string })?.name || 'unknown'}
+                      {j.name ?? jobDataName(j.data) ?? 'default'}
                     </td>
                     <td className="px-5 py-3">
                       <StatusBadge status={String(j.state ?? j.status ?? 'waiting')} />

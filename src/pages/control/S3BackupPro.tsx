@@ -17,6 +17,7 @@ import {
   parseStorageHealthResponse,
   storageTargetIdentity,
 } from './s3Backup/model';
+import { useRetentionDraft } from './s3Backup/retentionDraft';
 import { S3EnvironmentCard } from './s3Backup/S3EnvironmentCard';
 
 export type { S3Draft } from './s3Backup/model';
@@ -24,11 +25,12 @@ export { buildS3Environment, parseStorageHealthResponse } from './s3Backup/model
 
 export function S3BackupPro() {
   const s3 = useS3Store();
+  const retention = useRetentionDraft(s3.retention, (value) => s3.set({ retention: value }));
   const targetIdentity = useConnectionStore(storageTargetIdentity);
   const [test, setTest] = useState<{ target: string; ok: boolean; msg: string } | null>(null);
   const [checkingTarget, setCheckingTarget] = useState<string | null>(null);
   const requestGeneration = useRef(0);
-  const environment = buildS3Environment(s3);
+  const environment = buildS3Environment({ ...s3, retention: retention.value });
   const visibleTest = test?.target === targetIdentity ? test : null;
   const checking = checkingTarget === targetIdentity;
 
@@ -245,8 +247,8 @@ export function S3BackupPro() {
               min={1}
               max={1_000_000}
               step={1}
-              value={s3.retention}
-              onChange={(e) => s3.set({ retention: Number(e.target.value) })}
+              value={retention.text}
+              onChange={(e) => retention.change(e.target.value)}
               inputMode="numeric"
             />
           </Field>

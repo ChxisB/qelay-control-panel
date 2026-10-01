@@ -26,6 +26,28 @@ function assetContentType(pathname: string): string | undefined {
   return dot === -1 ? undefined : ASSET_CONTENT_TYPES[pathname.slice(dot).toLowerCase()];
 }
 
+// Hop-by-hop and browser-scoped headers that must not reach BUNQUEUE_URL. The
+// upstream Host must come from the target URL (fetch derives it) so host-routed
+// proxies/ingresses in front of bunqueue still match; dashboard cookies stay
+// on the dashboard origin. Authorization is forwarded on purpose.
+const NON_FORWARDED_API_HEADERS = [
+  'host',
+  'cookie',
+  'connection',
+  'keep-alive',
+  'proxy-connection',
+  'te',
+  'trailer',
+  'transfer-encoding',
+  'upgrade',
+];
+
+export function upstreamHeaders(incoming: Headers): Headers {
+  const headers = new Headers(incoming);
+  for (const name of NON_FORWARDED_API_HEADERS) headers.delete(name);
+  return headers;
+}
+
 /** Static assets, the admin proxy, and the same-origin agent bridge. */
 export function createServeHandler(opts: ServeHandlerOptions) {
   const {
@@ -137,7 +159,7 @@ export function createServeHandler(opts: ServeHandlerOptions) {
       try {
         res = await fetch(target, {
           method: req.method,
-          headers: req.headers,
+          headers: upstreamHeaders(req.headers),
           body: req.body,
           redirect: 'manual',
           signal,

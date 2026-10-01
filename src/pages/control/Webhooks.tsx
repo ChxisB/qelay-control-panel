@@ -107,36 +107,41 @@ export function Webhooks() {
     setOptimistic((current) => ({ ...current, [id]: { value: next, intent } }));
 
     void (async () => {
-      while (lease.isCurrent() && toggleRuns.current.get(id) === run) {
-        const sentValue = run.desired;
-        let error: Error | null = null;
-        try {
-          const response = await bq.setWebhookEnabled(id, sentValue);
-          assertSuccessfulMutationResponse(response, 'Toggle webhook');
-        } catch (caught) {
-          error = caught instanceof Error ? caught : new Error(String(caught));
+      // Release the lock on every exit (navigation, scope change, coalesced
+      // loop end) — a leaked module-global lock keeps this row disabled.
+      try {
+        while (lease.isCurrent() && toggleRuns.current.get(id) === run) {
+          const sentValue = run.desired;
+          let error: Error | null = null;
+          try {
+            const response = await bq.setWebhookEnabled(id, sentValue);
+            assertSuccessfulMutationResponse(response, 'Toggle webhook');
+          } catch (caught) {
+            error = caught instanceof Error ? caught : new Error(String(caught));
+          }
+          if (!lease.isCurrent() || toggleRuns.current.get(id) !== run) return;
+          // If the desired state changed while this request was in flight, send
+          // only the newest value. Intermediate clicks never reach the server.
+          if (run.desired !== sentValue) continue;
+          // Reconcile even after an error: the server may have committed the
+          // write before the response was lost. The optimistic value stays in
+          // place while this read completes, so it cannot visibly snap back.
+          await refetch();
+          if (!lease.isCurrent() || toggleRuns.current.get(id) !== run) return;
+          // A click can arrive while the final refetch is in flight.
+          if (run.desired !== sentValue) continue;
+          toggleRuns.current.delete(id);
+          const finalIntent = run.intent;
+          setOptimistic((current) => {
+            if (current[id]?.intent !== finalIntent) return current;
+            const { [id]: _dropped, ...rest } = current;
+            return rest;
+          });
+          if (error) toast.error('Webhook toggle failed', error.message);
+          return;
         }
-        if (!lease.isCurrent() || toggleRuns.current.get(id) !== run) return;
-        // If the desired state changed while this request was in flight, send
-        // only the newest value. Intermediate clicks never reach the server.
-        if (run.desired !== sentValue) continue;
-        // Reconcile even after an error: the server may have committed the
-        // write before the response was lost. The optimistic value stays in
-        // place while this read completes, so it cannot visibly snap back.
-        await refetch();
-        if (!lease.isCurrent() || toggleRuns.current.get(id) !== run) return;
-        // A click can arrive while the final refetch is in flight.
-        if (run.desired !== sentValue) continue;
-        toggleRuns.current.delete(id);
-        const finalIntent = run.intent;
-        setOptimistic((current) => {
-          if (current[id]?.intent !== finalIntent) return current;
-          const { [id]: _dropped, ...rest } = current;
-          return rest;
-        });
-        if (error) toast.error('Webhook toggle failed', error.message);
+      } finally {
         lease.finish();
-        return;
       }
     })();
   };

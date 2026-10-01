@@ -32,7 +32,8 @@ export function WorkflowMaintenancePanel({
     ...(completed ? (['completed'] as const) : []),
     ...(failed ? (['failed'] as const) : []),
   ];
-  const parsedHours = Number(hours);
+  // Number('') is 0: a cleared age must not read as "every terminal run".
+  const parsedHours = hours.trim() === '' ? Number.NaN : Number(hours);
   const valid = Number.isFinite(parsedHours) && parsedHours >= 0 && states.length > 0;
   const run = (operation: 'archive' | 'cleanup') => {
     if (!valid) return;

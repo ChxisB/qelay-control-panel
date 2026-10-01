@@ -121,6 +121,7 @@ export function Jobs() {
       ? list.filter(
           (j) =>
             (typeof j.id === 'string' && j.id.toLowerCase().includes(term)) ||
+            (typeof j.name === 'string' && j.name.toLowerCase().includes(term)) ||
             (jobDataName(j.data)?.toLowerCase().includes(term) ?? false)
         )
       : list;

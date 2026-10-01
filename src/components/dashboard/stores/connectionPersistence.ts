@@ -54,7 +54,16 @@ export function persistedConnectionState(value: unknown): PersistedConnectionSta
   );
 }
 
-export function sanitizedPersistedConnectionState(value: unknown): PersistedConnectionState {
+export function sanitizedPersistedConnectionState(
+  value: unknown,
+  storedVersion?: number
+): PersistedConnectionState {
+  // Storage scrubs legacy envelopes BEFORE zustand's migrate sees them and then
+  // re-stamps the current version, so version-gated rewrites (the v2 implicit
+  // `/api` → runtime mount) must run here or they are lost for good.
+  if (storedVersion !== undefined && storedVersion < CONNECTION_STORAGE_VERSION) {
+    return migratePersistedConnectionState(value, storedVersion);
+  }
   const raw = value as { profiles?: unknown } | null;
   return Array.isArray(raw?.profiles)
     ? sanitizePersistedState(value, CONNECTION_DEFAULTS, safeRefreshMs)

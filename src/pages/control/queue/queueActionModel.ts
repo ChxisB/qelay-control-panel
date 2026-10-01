@@ -33,10 +33,12 @@ export function promoteConfirmation(queue: string, count?: number): string {
     : `Promote up to ${count} delayed jobs in "${queue}" and make them eligible to run now?`;
 }
 
+/** `ttlRequired`: the "Expires after" mode — a blank TTL must not be sent as permanent. */
 export function rateLimitArgs(
   limitRaw: string,
   durationRaw: string,
-  ttlRaw: string
+  ttlRaw: string,
+  ttlRequired = false
 ): { limit: number; duration: number; ttl?: number; valid: boolean } {
   const parseOptional = (raw: string): number | undefined | null => {
     if (!raw.trim()) return undefined;
@@ -50,7 +52,11 @@ export function rateLimitArgs(
     limit: typeof limit === 'number' ? limit : 0,
     duration: typeof duration === 'number' ? duration : 0,
     ...(typeof ttl === 'number' ? { ttl } : {}),
-    valid: typeof limit === 'number' && typeof duration === 'number' && ttl !== null,
+    valid:
+      typeof limit === 'number' &&
+      typeof duration === 'number' &&
+      ttl !== null &&
+      (!ttlRequired || ttl !== undefined),
   };
 }
 
