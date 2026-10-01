@@ -1,14 +1,21 @@
 ---
-title: Copilot (experimental)
-description: An in-dashboard AI copilot for bunqueue. Bring your own model (Claude, ChatGPT, Gemini, GLM, or any OpenAI-compatible endpoint) and inspect or operate your queues by chat.
+title: Copilot (disabled)
+description: The in-dashboard AI copilot is switched off in every official bunqueue dashboard build. How to enable it in a custom build.
 ---
 
-# Copilot (experimental)
+# Copilot (disabled)
+
+::: warning Switched off in official builds
+Since 1.0.1 the Copilot is not part of any official build (npm, standalone
+binaries, Docker image, live demo): there is no Copilot button and its AI SDK
+chunk is not shipped. To try it, build the dashboard from source with
+`VITE_ENABLE_COPILOT=1 bun run build`. The rest of this page applies only to
+such a custom build.
+:::
 
 The Copilot is a chat assistant built into the dashboard. It reads your live
 queue state and can propose only three mutation types, Promote, Pause and
-Resume, which you confirm before they run. It is experimental, and stays off
-until you add a model.
+Resume, which you confirm before they run. It stays idle until you add a model.
 
 ## Bring your own model
 

@@ -121,7 +121,7 @@ behavioral evidence; it does not claim every possible button and configuration i
 | Usage | Runtime counters and healthy storage response render | Monitoring browser tests |
 | S3 Backup | UI config, real upload/list to local MinIO, stopped-server restore and readback proving a later job disappeared | Managed browser suite; cloud-specific authentication and networking not exercised |
 | Settings | Theme/poll interval survive reload; three profiles saved and each connection tested | Managed and Fleet browser suites; credentials remain session-only |
-| Copilot (launcher) | Streaming, declined/confirmed mutation, Stop without mutation or unhandled errors, Clear chat | Scripted local provider with real queue writes; no model inference or paid provider requests |
+| Copilot (launcher) | Streaming, declined/confirmed mutation, Stop without mutation or unhandled errors, Clear chat | Runs only against a `VITE_ENABLE_COPILOT=1` build (skipped otherwise, including CI, since the Copilot is off in official builds); scripted local provider, no model inference |
 | Classic pages | All eleven classic routes render, including queue detail | Navigation coverage, not a duplicate mutation suite |
 
 ## Current regression additions (0.0.45)

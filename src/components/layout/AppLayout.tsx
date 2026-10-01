@@ -207,13 +207,17 @@ export function AppLayout() {
         </div>
         <CommandPalette />
         <AuthGate />
-        <div
-          id="copilot-layer"
-          inert={activeModal !== null && activeModal !== 'copilot' ? true : undefined}
-          aria-hidden={(activeModal !== null && activeModal !== 'copilot') || undefined}
-        >
-          <Copilot />
-        </div>
+        {/* Off in every official build; `VITE_ENABLE_COPILOT=1 bun run build` opts in.
+            Inline so the bundler drops the Copilot and its AI SDK chunk entirely. */}
+        {import.meta.env.VITE_ENABLE_COPILOT === '1' && (
+          <div
+            id="copilot-layer"
+            inert={activeModal !== null && activeModal !== 'copilot' ? true : undefined}
+            aria-hidden={(activeModal !== null && activeModal !== 'copilot') || undefined}
+          >
+            <Copilot />
+          </div>
+        )}
         <Toaster />
         <AlertEngine />
       </div>

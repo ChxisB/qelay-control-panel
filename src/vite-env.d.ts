@@ -9,6 +9,8 @@ interface ImportMetaEnv {
   readonly VITE_BUNQUEUE_URL?: string;
   /** Origin of the control agent (start/stop/restart). Defaults to http://localhost:6800. */
   readonly VITE_BUNQUEUE_AGENT_URL?: string;
+  /** `1` builds the in-app Copilot; it is off in every official build. */
+  readonly VITE_ENABLE_COPILOT?: string;
 }
 
 interface ImportMeta {

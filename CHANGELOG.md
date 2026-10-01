@@ -19,8 +19,11 @@ the GitHub Release body.
 
 ### Removed
 
-- Drop the remaining "beta" label from the Copilot button and the README: every
-  part of the dashboard, Copilot included, is covered by the stable 1.x release.
+- Switch the experimental in-app Copilot off in every official build (npm,
+  standalone binaries, Docker image, live demo). There is no Copilot button and
+  its ~45 KB (gzip) AI SDK chunk is no longer shipped. A custom build can opt
+  back in with `VITE_ENABLE_COPILOT=1 bun run build`; the documentation says so.
+- Drop the remaining "beta" labels from the Copilot button and the README.
 
 ## [1.0.0] - 2026-10-01
 
