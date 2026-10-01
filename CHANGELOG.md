@@ -15,6 +15,12 @@ the GitHub Release body.
 
 ## [Unreleased]
 
+### Changed
+
+- The README now opens with the narrated 4K video tour on YouTube (7:45, English
+  with subtitles), recorded against a real bunqueue server under live traffic. It
+  replaces the old animated GIF, which still showed the Copilot removed in 1.0.1.
+
 ## [1.0.1] - 2026-10-01
 
 ### Removed
