@@ -1,5 +1,10 @@
 name: Complete validation
 
+# Every check of `bun run quality` plus the browser and native suites, fanned
+# out into independent jobs so the slowest one, not their sum, sets the pace.
+# The `quality:*` scripts in package.json are the single source of truth: CI
+# runs exactly the groups that `bun run quality` chains locally.
+
 on:
   workflow_call:
     inputs:
@@ -12,27 +17,19 @@ permissions:
   contents: read
 
 jobs:
-  gate:
-    name: Quality gate
+  build:
+    name: Build
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: .bun-version
-
-      - name: Install dependencies
-        run: bun install --frozen-lockfile
-
-      # Single source of truth: lint/format, both TypeScript projects, app and
-      # docs builds, bundle budget, coverage floor, and the blocking HIGH audit.
-      - name: Run quality gate
-        run: bun run quality
-
+      - run: bun install --frozen-lockfile
+      # Type checking runs once, in the static job; the bundle needs only Vite.
+      - name: Build the production bundle
+        run: bunx vite build
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
@@ -41,46 +38,107 @@ jobs:
           retention-days: 7
           if-no-files-found: error
 
+  quality:
+    name: Quality (${{ matrix.group }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        # static: version, file size, lint/format, typecheck + build, bundle budget, docs, audit
+        # unit: unit tests with the aggregate and critical coverage floors
+        # runtime-*: real Bunqueue Flow, Workflow, Queue, PostgreSQL, package and soak runs
+        group: [static, unit, runtime-a, runtime-b, runtime-c, runtime-d]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+      - run: bun install --frozen-lockfile
+      - name: Run quality:${{ matrix.group }}
+        run: bun run quality:${{ matrix.group }}
+
   browser-e2e:
-    name: Browser E2E (${{ matrix.browser }})
+    name: Browser E2E (${{ matrix.suite }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
-        browser: [chromium, firefox, webkit]
+        include:
+          - { suite: chromium, app: true, run: 'bunx playwright test --project=chromium' }
+          # Managed server, Workflow, Copilot, MCP and S3 (real MinIO) suite.
+          - { suite: managed, app: true, run: 'bunx playwright test -c playwright.managed.config.ts' }
+          # Three-broker PostgreSQL Dashboard suite.
+          - { suite: postgres-fleet, app: true, run: 'bun run test:e2e:browser:postgres-fleet' }
+          # Documentation URLs, hydration and navigation (builds the docs itself).
+          - { suite: docs, app: false, run: 'bun run test:e2e:docs' }
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: .bun-version
+      - run: bun install --frozen-lockfile
 
-      - name: Install dependencies
-        run: bun install --frozen-lockfile
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-chromium-${{ hashFiles('bun.lock') }}
 
-      - name: Install browser and OS dependencies
-        run: bunx playwright install --with-deps ${{ matrix.browser }}
+      # The runner image already ships what headless Chromium needs (Google Chrome
+      # is preinstalled), so its slow apt step runs only if the browser cannot start.
+      - name: Install Chromium (OS packages only if it cannot start)
+        run: |
+          bunx playwright install chromium
+          if ! bun -e 'const { chromium } = await import("@playwright/test"); await (await chromium.launch()).close()'; then
+            bunx playwright install-deps chromium
+          fi
 
       - name: Build production browser fixture
-        run: bun run build && bun scripts/gen-embed.ts
+        if: matrix.app
+        run: bunx vite build && bun scripts/gen-embed.ts
 
-      - name: Run real-browser E2E
+      - name: Run ${{ matrix.suite }} E2E
+        run: ${{ matrix.run }}
+
+      - name: Upload browser diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-${{ matrix.suite }}-${{ github.sha }}
+          path: test-results
+          retention-days: 7
+          if-no-files-found: ignore
+
+  browser-engines:
+    name: Browser E2E (${{ matrix.browser }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Firefox and WebKit need many OS packages from a mirror that is sometimes very
+    # slow. The official Playwright image ships them with the matching browsers.
+    # Its tag must equal @playwright/test (enforced by scripts/check-playwright-image.ts).
+    container:
+      image: mcr.microsoft.com/playwright:v1.62.1-noble
+      options: --user 1001 --ipc=host
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [firefox, webkit]
+    steps:
+      - uses: actions/checkout@v4
+      # The image has no unzip, which setup-bun needs, so install the pinned Bun from npm.
+      - name: Install Bun pinned by .bun-version
+        run: |
+          npm install --global --prefix "$HOME/.bun-npm" "bun@$(cat .bun-version)"
+          echo "$HOME/.bun-npm/bin" >> "$GITHUB_PATH"
+      - run: bun install --frozen-lockfile
+
+      - name: Build production browser fixture
+        run: bunx vite build && bun scripts/gen-embed.ts
+
+      - name: Run ${{ matrix.browser }} E2E
         run: bunx playwright test --project=${{ matrix.browser }}
-
-      - name: Run three-broker PostgreSQL Dashboard E2E
-        if: matrix.browser == 'chromium'
-        run: bun run test:e2e:browser:postgres-fleet
-
-      - name: Run managed server, Workflow, Copilot, MCP and S3 browser E2E
-        if: matrix.browser == 'chromium'
-        run: bunx playwright test -c playwright.managed.config.ts
-
-      - name: Verify documentation URLs, hydration and navigation
-        if: matrix.browser == 'chromium'
-        run: bun run test:e2e:docs
 
       - name: Upload browser diagnostics
         if: failure()
@@ -93,7 +151,8 @@ jobs:
 
   native:
     name: Native binary (${{ matrix.platform }})
-    needs: gate
+    # Only the bundle is needed, so compilation starts as soon as it is built.
+    needs: build
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 20
     strategy:

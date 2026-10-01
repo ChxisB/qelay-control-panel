@@ -27,9 +27,12 @@ bun run test:e2e:docs
 `quality` includes version and architecture checks, lint/format, typechecks, production and docs
 builds, bundle budgets, coverage, real runtime E2E, package installation and restart smoke tests,
 a short database resilience run, and the HIGH/CRITICAL dependency audit. Playwright runs as
-separate jobs in `.github/workflows/validation.yml`: Chromium, Firefox and WebKit, with
-PostgreSQL Fleet, managed-server and documentation scenarios in Chromium. Every publishing
-workflow calls that complete validation workflow and waits for all jobs. CI exposes one
+separate jobs in `.github/workflows/validation.yml`: Chromium, Firefox and WebKit, plus separate
+Chromium jobs for the PostgreSQL Fleet, managed-server and documentation scenarios. The `quality`
+checks run in parallel too, as the `quality:static`, `quality:unit` and `quality:runtime-a` to `-d`
+jobs; `bun run quality` chains exactly those groups locally. On a push to `main`, Docker and Pages
+wait for CI's `Stability gate` on that commit instead of validating it again (`ci-gate.yml`); version
+tags and manual runs validate in full, and Release always does. CI exposes one
 `Stability gate` status for branch protection; failed, cancelled or skipped validation cannot pass it.
 The active main-only ruleset requires a pull request, resolved review threads and this check from
 GitHub Actions against an up-to-date branch. Its declarative configuration is `.github/main-ruleset.json`.

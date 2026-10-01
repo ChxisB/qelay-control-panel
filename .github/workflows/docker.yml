@@ -17,6 +17,7 @@ concurrency:
 
 permissions:
   contents: read
+  checks: read # read the CI Stability gate of this commit
   packages: write
   id-token: write # mint the OIDC token for provenance attestation
   attestations: write # write the attestation to the repo
@@ -28,7 +29,7 @@ env:
 jobs:
   gate:
     name: Validation
-    uses: ./.github/workflows/validation.yml
+    uses: ./.github/workflows/ci-gate.yml
 
   build-push:
     name: Build & push image

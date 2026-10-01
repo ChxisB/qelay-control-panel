@@ -26,6 +26,7 @@ on:
 
 permissions:
   contents: read
+  checks: read # read the CI Stability gate of this commit
   pages: write
   id-token: write
 
@@ -37,7 +38,7 @@ concurrency:
 jobs:
   validation:
     name: Validation
-    uses: ./.github/workflows/validation.yml
+    uses: ./.github/workflows/ci-gate.yml
 
   build:
     name: Build
