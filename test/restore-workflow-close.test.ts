@@ -116,3 +116,46 @@ describe('backup restore authorization vs. Workflow Engine release', () => {
     await handle.close();
   });
 });
+
+describe('backup restore authorization vs. SQLite shared-memory index', () => {
+  test('ignores a -shm index that disappears when another connection closes', async () => {
+    const { path, connection } = walDatabase();
+    // Fold the WAL into the main file so only the -shm index remains volatile.
+    connection.run('PRAGMA wal_checkpoint(TRUNCATE)');
+    const manager = new ProcessManager();
+    manager.setConfig({ dataPath: path });
+    const confirmed = await manager.dbStats();
+    expect(confirmed.shmSize).toBeGreaterThan(0);
+
+    // The last connection closing removes -shm (and the empty -wal); the data is untouched.
+    // Bun's bundled SQLite (Linux CI) deletes the index on close, while macOS's system
+    // SQLite may keep it, so model the Linux behavior explicitly.
+    connection.close();
+    rmSync(`${path}-shm`, { force: true });
+    const current = await manager.dbStats();
+    expect(current.shmSize).toBe(0);
+    expect(current.size).toBe(confirmed.size);
+    expect(current.mtimeMs).toBe(confirmed.mtimeMs);
+
+    let runnerCalls = 0;
+    const runner: BackupRunnerPort = {
+      execute: async () => {
+        runnerCalls += 1;
+        return { success: true, message: 'restored' };
+      },
+      close: async () => undefined,
+    };
+    const handle = createFetchHandler(
+      manager,
+      { allowedOrigins: [] },
+      runtimeHolding(new Database(':memory:')),
+      runner
+    );
+    const target = `http://127.0.0.1:${manager.getConfig().httpPort}`;
+
+    const response = await handle(restoreRequest(confirmed, target));
+    expect(await response.json()).toMatchObject({ ok: true });
+    expect(runnerCalls).toBe(1);
+    await handle.close();
+  });
+});

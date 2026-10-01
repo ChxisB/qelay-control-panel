@@ -193,8 +193,13 @@ function assertDatabaseSnapshot(value: unknown, current: DbStats): void {
   const allowed = ['path', 'exists', 'size', 'walSize', 'shmSize', 'totalSize', 'mtimeMs'] as const;
   const unknown = Object.keys(expected).find((key) => !(allowed as readonly string[]).includes(key));
   if (unknown) throw new Error(`Unknown database snapshot option: ${unknown}`);
+  // Compare what reflects the data. The -shm file is SQLite's shared-memory WAL
+  // index: it appears and disappears as connections open and close (the last one
+  // deletes it) without any write, so it, and the total that includes it, would
+  // reject valid confirmations. Writes still move the main file or the WAL.
+  const compared = ['path', 'exists', 'size', 'walSize', 'mtimeMs'] as const;
   // Name every field that moved so a rejected restore is diagnosable.
-  const changed = allowed
+  const changed = compared
     .filter((field) => expected[field] !== current[field])
     .map((field) => `${field} ${shown(expected[field])} → ${shown(current[field])}`);
   if (changed.length > 0) {

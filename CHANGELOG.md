@@ -34,6 +34,15 @@ the GitHub Release body.
 - Dependabot can update dependencies again: it was configured for the `npm`
   ecosystem, which cannot update `bun.lock`, so every weekly run failed. It now
   uses the `bun` ecosystem with the same groups.
+- The soak test's memory budget no longer fails at random on Linux. It measured
+  memory without collecting garbage first, so the reading swung between 53 and
+  153 MiB of growth for the same run; it now forces a full collection before
+  each sample (12 to 26 MiB measured), so only retained memory counts.
+- Restore confirmations no longer go stale because of SQLite's `-shm` file. That
+  shared-memory index appears and disappears as connections open and close
+  (the last one deletes it) without any write, so comparing it rejected valid
+  restores, for example right after the server stopped. The check now compares
+  path, existence, size, WAL size and modification time.
 - Restoring an S3 backup no longer fails with "Database changed after restore
   confirmation" when the in-agent Workflow Engine still held the database open.
   The agent released that connection before checking the operator's
