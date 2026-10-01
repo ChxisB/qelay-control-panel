@@ -15,6 +15,16 @@ the GitHub Release body.
 
 ## [Unreleased]
 
+### Fixed
+
+- Restoring an S3 backup no longer fails with "Database changed after restore
+  confirmation" when the in-agent Workflow Engine still held the database open.
+  The agent released that connection before checking the operator's
+  confirmation, and SQLite's WAL checkpoint on close changed the files, so a
+  valid confirmation was rejected. The confirmation is now verified first.
+- A rejected restore now names every field that changed (for example
+  `walSize 4152 → 0`), so the cause is visible instead of a generic message.
+
 ### Changed
 
 - The README now opens with the narrated 4K video tour on YouTube (7:45, English

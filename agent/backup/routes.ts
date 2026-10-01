@@ -190,18 +190,21 @@ function assertDatabaseSnapshot(value: unknown, current: DbStats): void {
     throw new Error('A database snapshot is required to authorize restore');
   }
   const expected = value as Record<string, unknown>;
-  const allowed = ['path', 'exists', 'size', 'walSize', 'shmSize', 'totalSize', 'mtimeMs'];
-  const unknown = Object.keys(expected).find((key) => !allowed.includes(key));
+  const allowed = ['path', 'exists', 'size', 'walSize', 'shmSize', 'totalSize', 'mtimeMs'] as const;
+  const unknown = Object.keys(expected).find((key) => !(allowed as readonly string[]).includes(key));
   if (unknown) throw new Error(`Unknown database snapshot option: ${unknown}`);
-  if (
-    expected.path !== current.path ||
-    expected.exists !== current.exists ||
-    expected.size !== current.size ||
-    expected.walSize !== current.walSize ||
-    expected.shmSize !== current.shmSize ||
-    expected.totalSize !== current.totalSize ||
-    expected.mtimeMs !== current.mtimeMs
-  ) {
-    throw new Error('Database changed after restore confirmation; reload status and confirm again');
+  // Name every field that moved so a rejected restore is diagnosable.
+  const changed = allowed
+    .filter((field) => expected[field] !== current[field])
+    .map((field) => `${field} ${shown(expected[field])} → ${shown(current[field])}`);
+  if (changed.length > 0) {
+    throw new Error(
+      `Database changed after restore confirmation (${changed.join(', ')}); reload status and confirm again`
+    );
   }
+}
+
+function shown(value: unknown): string {
+  const text = String(value);
+  return text.length > 120 ? `${text.slice(0, 117)}...` : text;
 }
