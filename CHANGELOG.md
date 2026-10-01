@@ -31,6 +31,11 @@ the GitHub Release body.
 
 ### Fixed
 
+- Restore confirmations no longer go stale because of SQLite's `-shm` file. That
+  shared-memory index appears and disappears as connections open and close
+  (the last one deletes it) without any write, so comparing it rejected valid
+  restores, for example right after the server stopped. The check now compares
+  path, existence, size, WAL size and modification time.
 - Restoring an S3 backup no longer fails with "Database changed after restore
   confirmation" when the in-agent Workflow Engine still held the database open.
   The agent released that connection before checking the operator's
