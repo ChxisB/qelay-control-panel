@@ -142,14 +142,6 @@ Explore parent/child/dependency DAGs, create every official FlowProducer shape, 
 
 </article>
 
-<article class="lp-card"><span class="lp-num">12</span>
-
-### AI Copilot <em class="lp-tag">experimental</em>
-
-An in-app assistant that reads the same API through tools; its only mutations are Promote, Pause and Resume, each confirmed by you. Bring your own key, and requests go straight from your browser to your provider. <a href="./guide/copilot">Copilot →</a>
-
-</article>
-
 </div>
 
 </section>
@@ -369,7 +361,7 @@ Alerts are evaluated in the browser while a tab is open, so it's not away-from-d
 
 ### Is my data sent anywhere?
 
-The dashboard does not send analytics. If enabled, Copilot requests go directly from your browser to your configured model provider. Remote broker/agent connections, configured S3 operations and broker webhook deliveries also contact the endpoints you choose.
+The dashboard does not send analytics. The Copilot is switched off in official builds; only a custom build that enables it sends Copilot requests, directly from your browser to your configured model provider. Remote broker/agent connections, configured S3 operations and broker webhook deliveries also contact the endpoints you choose.
 
 </article>
 

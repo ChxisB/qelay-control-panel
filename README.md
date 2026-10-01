@@ -60,7 +60,7 @@ The live demo uses sample data. The docs explain how to connect and operate a re
 
 > ✅ **Stable (1.x).** The dashboard follows [Semantic Versioning](https://semver.org/):
 > breaking changes to its configuration, routes or agent API only ship in a new
-> major version. The in-app Copilot remains an opt-in beta feature.
+> major version.
 
 ## 📚 Documentation
 
@@ -129,8 +129,8 @@ contracts; it never patches Bunqueue internals.
 > registration or flow order. Cancel, Discard, Drain, Clean, Obliterate and DLQ Purge also fail
 > closed. Bunqueue 2.9's `Queue.removeDlqJob()` also accepts only queue + job ID, so custom-ID reuse
 > prevents the dashboard from proving that a later deletion still targets the observed generation.
-> DLQ `maxAge`/`maxEntries` are read-only, auto-retry can only be disabled, and Copilot's only
-> mutations are Promote, Pause and Resume.
+> DLQ `maxAge`/`maxEntries` are read-only, and auto-retry can only be disabled. The in-app Copilot
+> is switched off in official builds (`VITE_ENABLE_COPILOT=1` opts a custom build back in).
 
 ## Quick start
 

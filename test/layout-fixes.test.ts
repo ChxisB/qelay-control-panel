@@ -135,6 +135,9 @@ describe('mobile navigation modal', () => {
 describe('Copilot modal in AppLayout', () => {
   test('isolates the actual shell across its dedicated wrapper and restores it', async () => {
     ensureDom();
+    // The Copilot is off by default; exercise a build that opts in.
+    const previousCopilotFlag = process.env.VITE_ENABLE_COPILOT;
+    process.env.VITE_ENABLE_COPILOT = '1';
     useCopilotStore.getState().setOpen(false);
     const previousRequestAnimationFrame = globalThis.requestAnimationFrame;
     const previousCancelAnimationFrame = globalThis.cancelAnimationFrame;
@@ -189,6 +192,8 @@ describe('Copilot modal in AppLayout', () => {
       act(() => root.unmount());
       host.remove();
       useCopilotStore.getState().setOpen(false);
+      if (previousCopilotFlag === undefined) delete process.env.VITE_ENABLE_COPILOT;
+      else process.env.VITE_ENABLE_COPILOT = previousCopilotFlag;
       if (previousRequestAnimationFrame) {
         globalThis.requestAnimationFrame = previousRequestAnimationFrame;
       } else {

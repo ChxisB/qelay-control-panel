@@ -2,6 +2,13 @@ import { E2E_APP_URL, E2E_SERVER_TOKEN } from '../config';
 import { api, expect, expectNoBrowserErrors, test, unlockDashboard } from './helpers';
 import { localModel } from './local-model';
 
+// The Copilot is switched off in official builds. This scenario only applies to
+// a build made with VITE_ENABLE_COPILOT=1 (and run with the same variable set).
+test.skip(
+  process.env.VITE_ENABLE_COPILOT !== '1',
+  'Copilot is disabled unless the dashboard is built with VITE_ENABLE_COPILOT=1'
+);
+
 test('verifies Copilot streaming and confirmed, declined and stopped mutations against real Bunqueue', async ({
   page,
   request,

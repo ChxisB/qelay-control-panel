@@ -12,7 +12,8 @@ import { resetFailedLazyImports, retryableLazy } from '@/lib/retryableLazy';
  * (which imports the Vercel AI SDK, ~160 KB gz) is lazy-loaded on first open, so
  * the SDK never touches the initial bundle.
  */
-const CopilotPanel = retryableLazy(() =>
+// Pure: a build without the Copilot (the default) drops this chunk entirely.
+const CopilotPanel = /* @__PURE__ */ retryableLazy(() =>
   import('./CopilotPanel').then((m) => ({ default: m.CopilotPanel }))
 );
 
@@ -212,9 +213,6 @@ export function Copilot() {
         >
           <SparkleIcon className="size-4 text-accent" />
           Copilot
-          <span className="rounded bg-accent/15 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-accent">
-            beta
-          </span>
         </button>
       )}
       {visible && (

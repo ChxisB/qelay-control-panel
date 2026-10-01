@@ -11,6 +11,9 @@ import { ensureDom, settle } from './domSetup';
 describe('global modal arbitration', () => {
   test('palette and authentication replace lower-priority dialogs without overlapping traps', async () => {
     ensureDom();
+    // The Copilot is off by default; this arbitration test opts into a Copilot build.
+    const previousCopilotFlag = process.env.VITE_ENABLE_COPILOT;
+    process.env.VITE_ENABLE_COPILOT = '1';
     useGlobalModalStore.getState().reset();
     useCopilotStore.getState().setOpen(false);
     useConnectionStore.setState({ baseUrl: 'http://server.test', token: '' });
@@ -88,6 +91,8 @@ describe('global modal arbitration', () => {
       useGlobalModalStore.getState().reset();
       useCopilotStore.getState().setOpen(false);
       useConnectionStore.setState({ baseUrl: '/api', token: '' });
+      if (previousCopilotFlag === undefined) delete process.env.VITE_ENABLE_COPILOT;
+      else process.env.VITE_ENABLE_COPILOT = previousCopilotFlag;
       if (previousRequestAnimationFrame) {
         globalThis.requestAnimationFrame = previousRequestAnimationFrame;
       } else {

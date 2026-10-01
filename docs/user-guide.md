@@ -74,7 +74,7 @@ component → API-client table, see [Pages & routes](/pages).
 
 - [**Database**](/guide/database), the read-only SQLite inspector: tables, schema, rows, and query runner.
 - [**MCP Server**](/guide/mcp), install and connect the separate stdio server.
-- [**Copilot**](/guide/copilot), configure a model and approve safe queue actions.
+- [**Copilot**](/guide/copilot), switched off in official builds; how to enable it in a custom build.
 - [**Usage**](/guide/usage), cumulative usage totals and runtime/storage facts.
 - [**S3 Backup**](/guide/s3), live configuration, status, listing, on-demand
   snapshots, and guarded restore through the local control agent.
