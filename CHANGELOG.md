@@ -25,6 +25,10 @@ the GitHub Release body.
   Playwright browsers and skip the duplicate typecheck. Firefox and WebKit run
   inside the official Playwright image (no slow apt step), and
   `version:check` keeps its tag equal to `@playwright/test`.
+- The multi-arch Docker image builds without QEMU emulation. The build stage
+  produces static files, so it now runs once on the builder's native platform
+  and both the amd64 and arm64 images only copy its output (the arm64 build
+  used to emulate `bun install` and the Vite build).
 - Docker and Pages no longer repeat the whole validation on a push to `main`:
   they wait for CI's `Stability gate` on the same commit (`ci-gate.yml`). Version
   tags and manual runs still validate in full.
