@@ -31,6 +31,10 @@ the GitHub Release body.
 
 ### Fixed
 
+- The soak test's memory budget no longer fails at random on Linux. It measured
+  memory without collecting garbage first, so the reading swung between 53 and
+  153 MiB of growth for the same run; it now forces a full collection before
+  each sample (12 to 26 MiB measured), so only retained memory counts.
 - Restore confirmations no longer go stale because of SQLite's `-shm` file. That
   shared-memory index appears and disappears as connections open and close
   (the last one deletes it) without any write, so comparing it rejected valid
