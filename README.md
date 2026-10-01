@@ -36,9 +36,11 @@ The live demo uses sample data. The docs explain how to connect and operate a re
 
 <br />
 
-<img src="docs/public/tour.gif" alt="A guided tour of the bunqueue dashboard, clicking through the overview, queues, jobs, the dead-letter queue, flows, the SQLite inspector, and the AI Copilot" width="900" />
+<a href="https://www.youtube.com/watch?v=1bQRFXGClcc" title="Watch the full bunqueue dashboard tour on YouTube"><img src="docs/public/video-tour.png" alt="Watch the narrated 4K tour of bunqueue dashboard on YouTube" width="900" /></a>
 
-<sub>A quick tour. <a href="https://egeominotti.github.io/bunqueue-dashboard/">Try it live →</a></sub>
+### [▶ Watch the full tour on YouTube](https://www.youtube.com/watch?v=1bQRFXGClcc)
+
+<sub>A narrated 4K walkthrough (7:45, English with subtitles) recorded against a real bunqueue server under live traffic. <a href="https://egeominotti.github.io/bunqueue-dashboard/">Or try the live demo →</a></sub>
 
 <br /><br />
 
