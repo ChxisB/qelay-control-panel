@@ -75,7 +75,9 @@ process controls. An external-mode disabled Start/Stop button is expected behavi
 
 The managed browser suite uses the same reserved ports plus **49390** for a disposable local MinIO S3 endpoint. It starts the pinned Bunqueue CLI through the agent,
 registers the test Workflow module, and verifies UI commands against that server.
-MinIO has no host mounts and uses only synthetic local credentials. Its container
+MinIO runs from the pinned `pgsty/minio` image, the community-maintained drop-in
+fork (the upstream `minio/minio` images are no longer published). It has no host
+mounts and uses only synthetic local credentials. Its container
 is removed afterward; a pre-existing image is retained. No cloud bucket is used.
 The local model fixture is a scripted HTTP provider, not a language model.
 

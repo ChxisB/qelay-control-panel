@@ -81,6 +81,9 @@ the all-in-one server, the client libraries and every page.
   and disables actions with invalid numbers; S3 retention shows its range error;
   the Flow DAG layering stays acyclic on corrupt data; Bulk Add reports
   whole-text JSON errors; cron previews are labelled as browser-local time.
+- **Tests:** the managed S3 browser scenario uses the maintained `pgsty/minio`
+  fork, since the upstream `minio/minio` images were withdrawn from Docker Hub
+  and quay.io and the scenario could no longer start.
 
 ## [0.0.47] - 2026-09-08
 
