@@ -18,6 +18,9 @@ const server = Bun.serve({
   async fetch(request) {
     if (!tokenOk(request, token)) return new Response(null, { status: 401 });
     const path = new URL(request.url).pathname;
+    // Collect garbage first so the leak budget measures retained memory, not
+    // whatever the collector has not reached yet (that varied by 100+ MiB on Linux).
+    if (path === '/__resilience/metrics') Bun.gc(true);
     if (path === '/__resilience/metrics') return Response.json({ ok: true,
       rss: process.memoryUsage.rss(), children: databaseProcessLoad(),
       // Darwin RSS includes MADV_FREE_REUSABLE pages already returned to the
