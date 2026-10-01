@@ -31,6 +31,9 @@ the GitHub Release body.
 
 ### Fixed
 
+- Dependabot can update dependencies again: it was configured for the `npm`
+  ecosystem, which cannot update `bun.lock`, so every weekly run failed. It now
+  uses the `bun` ecosystem with the same groups.
 - Restoring an S3 backup no longer fails with "Database changed after restore
   confirmation" when the in-agent Workflow Engine still held the database open.
   The agent released that connection before checking the operator's

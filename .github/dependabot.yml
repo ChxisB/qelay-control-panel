@@ -1,7 +1,8 @@
 version: 2
 updates:
-  # Application dependencies (Bun / npm registry).
-  - package-ecosystem: npm
+  # Application dependencies. The lockfile is bun.lock, which only the `bun`
+  # ecosystem can update (`npm` fails every run: it cannot rewrite bun.lock).
+  - package-ecosystem: bun
     directory: "/"
     schedule:
       interval: weekly
