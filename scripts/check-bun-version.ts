@@ -4,7 +4,7 @@ import { assertRequiredBunVersion, REQUIRED_BUN_VERSION } from './bunVersion';
 
 const root = resolve(import.meta.dir, '..');
 const expectedEngine = '1.4.2';
-const workflows = ['ci.yml', 'docker.yml', 'lighthouse.yml', 'pages.yml', 'release.yml', 'validation.yml', 'resilience.yml'];
+const workflows = ['ci.yml', 'ci-gate.yml', 'docker.yml', 'lighthouse.yml', 'pages.yml', 'release.yml', 'validation.yml', 'resilience.yml'];
 
 function assert(condition: unknown, message: string): asserts condition {
   if (!condition) throw new Error(message);
@@ -40,7 +40,9 @@ async function main(): Promise<void> {
       const pins = source.match(/bun-version-file: \.bun-version/g)?.length ?? 0;
       assert(pins === setups, `${workflow} must pin every Bun setup with .bun-version`);
     } else {
-      assert(source.includes('uses: ./.github/workflows/validation.yml'), `${workflow} must delegate to the pinned validation workflow`);
+      // ci-gate.yml is itself checked here to delegate to validation.yml.
+      const delegates = ['validation.yml', 'ci-gate.yml'].some((target) => source.includes(`uses: ./.github/workflows/${target}`));
+      assert(delegates, `${workflow} must delegate to the pinned validation workflow`);
     }
     assert(!source.includes('BUN_VERSION:'), `${workflow} must not duplicate the Bun version`);
   }

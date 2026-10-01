@@ -125,8 +125,11 @@ silence a rule to dodge a real fix.
 
 GitHub Actions under `.github/workflows/` (Bun pinned to the same version as local/Docker):
 
-- **ci.yml** — on push to `main` + every PR: `bun run check`, `bun run build`, `bun test`; uploads
+- **ci.yml** — on push to `main` + every PR: the complete `validation.yml`, fanned out into parallel
+  jobs (`quality:*` groups, six browser suites, five native binaries), behind one `Stability gate`; uploads
   the `dist/` artifact. This is the merge gate.
+- **ci-gate.yml** — used by Pages and Docker: on a push to `main` it waits for CI's `Stability gate`
+  on that commit instead of re-running the validation; tags and manual runs validate in full.
 - **pages.yml** — on push to `main`: builds with `VITE_BASE` = the Pages sub-path, adds a
   `404.html` SPA fallback, deploys to GitHub Pages. It best-effort auto-enables Pages
   (`configure-pages enablement: true`); if the first run fails with `Get Pages site failed`, enable

@@ -15,6 +15,18 @@ the GitHub Release body.
 
 ## [Unreleased]
 
+### Changed
+
+- CI/CD runs much faster. The validation workflow now fans out into parallel jobs:
+  the `quality` checks are split into static, unit and four runtime groups (the
+  new `quality:*` scripts, which `bun run quality` chains locally), the browser
+  E2E runs as six independent suites, and the native binaries start as soon as
+  the bundle is built instead of after every quality check. Browser jobs cache
+  Playwright browsers and skip the duplicate typecheck.
+- Docker and Pages no longer repeat the whole validation on a push to `main`:
+  they wait for CI's `Stability gate` on the same commit (`ci-gate.yml`). Version
+  tags and manual runs still validate in full.
+
 ### Fixed
 
 - Restoring an S3 backup no longer fails with "Database changed after restore
