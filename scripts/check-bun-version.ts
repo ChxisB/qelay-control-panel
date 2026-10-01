@@ -29,7 +29,7 @@ async function main(): Promise<void> {
 
   const dockerfile = await text('Dockerfile');
   assert(
-    dockerfile.includes(`FROM oven/bun:${REQUIRED_BUN_VERSION}-alpine AS build`),
+    new RegExp(`^FROM (?:--platform=\\$BUILDPLATFORM )?oven/bun:${REQUIRED_BUN_VERSION.replaceAll('.', '\\.')}-alpine AS build$`, 'm').test(dockerfile),
     'Docker build stage must pin Bun 1.4.2'
   );
 

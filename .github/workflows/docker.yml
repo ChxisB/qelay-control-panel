@@ -3,7 +3,8 @@ name: Docker
 # Builds the dashboard container and publishes it to the GitHub Container
 # Registry (ghcr.io/<owner>/<repo>). Runs on pushes to main (tagged `edge`) and
 # on version tags `v*` (tagged with the semver + `latest`). Multi-arch
-# (amd64 + arm64) via Buildx + QEMU, with a registry-backed layer cache.
+# (amd64 + arm64) via Buildx: the build stage runs once natively and the runtime
+# stage only copies files, so no QEMU emulation is needed. GitHub Actions layer cache.
 
 on:
   push:
@@ -39,9 +40,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
