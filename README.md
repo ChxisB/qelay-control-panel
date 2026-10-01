@@ -60,7 +60,7 @@ The live demo uses sample data. The docs explain how to connect and operate a re
 
 > ✅ **Stable (1.x).** The dashboard follows [Semantic Versioning](https://semver.org/):
 > breaking changes to its configuration, routes or agent API only ship in a new
-> major version. The in-app Copilot remains an opt-in beta feature.
+> major version.
 
 ## 📚 Documentation
 

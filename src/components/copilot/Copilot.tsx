@@ -212,9 +212,6 @@ export function Copilot() {
         >
           <SparkleIcon className="size-4 text-accent" />
           Copilot
-          <span className="rounded bg-accent/15 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-accent">
-            beta
-          </span>
         </button>
       )}
       {visible && (

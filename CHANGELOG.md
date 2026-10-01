@@ -15,6 +15,13 @@ the GitHub Release body.
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-10-01
+
+### Removed
+
+- Drop the remaining "beta" label from the Copilot button and the README: every
+  part of the dashboard, Copilot included, is covered by the stable 1.x release.
+
 ## [1.0.0] - 2026-10-01
 
 First stable release. The dashboard now follows Semantic Versioning: breaking
@@ -1450,7 +1457,8 @@ documentation site.
 - **Custom brand:** a queue-badge logo and favicon, and hand-drawn monoline
   feature icons on the docs home.
 
-[Unreleased]: https://github.com/egeominotti/bunqueue-dashboard/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/egeominotti/bunqueue-dashboard/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/egeominotti/bunqueue-dashboard/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/egeominotti/bunqueue-dashboard/compare/v0.0.47...v1.0.0
 [0.0.47]: https://github.com/egeominotti/bunqueue-dashboard/compare/v0.0.46...v0.0.47
 [0.0.46]: https://github.com/egeominotti/bunqueue-dashboard/compare/v0.0.45...v0.0.46
