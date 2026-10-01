@@ -123,12 +123,16 @@ export async function routeAgentRequest(
           return sqliteOnly('S3 backup', currentStorageMode);
         }
         return manager.withStoppedMaintenance('restoring a backup', async () => {
+          // Measure what the operator confirmed before our own cleanup: releasing
+          // the Workflow Engine's connection checkpoints the WAL, which changes the
+          // files without any other writer and would void a valid confirmation.
+          const confirmedDatabase = await manager.dbStats(restoreConfig.dataPath);
           await closeWorkflowRuntime(runtime);
           return executePreparedBackupRequest(
             prepared,
             restoreConfig,
             current.status === 'running',
-            await manager.dbStats(restoreConfig.dataPath),
+            confirmedDatabase,
             backupRunner,
             undefined,
             managedTargetPolicy
