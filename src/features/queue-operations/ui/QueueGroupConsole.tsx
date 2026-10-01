@@ -27,10 +27,21 @@ export function QueueGroupConsole({
   const [rateMax, setRateMax] = useState('100');
   const [duration, setDuration] = useState('60000');
   const [concurrency, setConcurrency] = useState('1');
-  const [snapshot, setSnapshot] = useState<QueueGroupSnapshot | null>(null);
+  // The readback is tagged with the group it was read for: a stale (or late)
+  // snapshot of another group must never drive this group's Pause/Resume state.
+  const [readback, setReadback] = useState<{
+    groupId: string;
+    snapshot: QueueGroupSnapshot;
+  } | null>(null);
 
   const id = validGroupId(groupId);
+  const snapshot = readback?.groupId === groupId ? readback.snapshot : null;
+  const setSnapshot = (value: QueueGroupSnapshot) => setReadback({ groupId, snapshot: value });
   const pageRange = groupPageRange(start, end);
+  const rateMaxValue = positiveInteger(rateMax);
+  const durationValue = positiveInteger(duration);
+  const rateValid = rateMaxValue !== null && durationValue !== null;
+  const concurrencyValue = positiveInteger(concurrency);
   const read = () => {
     const threshold = optionalInteger(maxJobs, 0);
     const count = optionalInteger(maxCount, 1);
@@ -95,7 +106,10 @@ export function QueueGroupConsole({
           <Input
             value={groupId}
             maxLength={256}
-            onChange={(event) => setGroupId(event.target.value)}
+            onChange={(event) => {
+              setGroupId(event.target.value);
+              setReadback(null);
+            }}
           />
         </Field>
         <Field label="TTL maxJobs" hint="Optional">
@@ -161,7 +175,7 @@ export function QueueGroupConsole({
         <Button size="sm" disabled={Boolean(busy) || !id || !pageRange} onClick={read}>
           Read group
         </Button>
-        <Button size="sm" disabled={Boolean(busy) || !id} onClick={setRate}>
+        <Button size="sm" disabled={Boolean(busy) || !id || !rateValid} onClick={setRate}>
           Set rate limit
         </Button>
         <Button
@@ -182,7 +196,11 @@ export function QueueGroupConsole({
         >
           Clear rate limit
         </Button>
-        <Button size="sm" disabled={Boolean(busy) || !id} onClick={setConcurrencyLimit}>
+        <Button
+          size="sm"
+          disabled={Boolean(busy) || !id || concurrencyValue === null}
+          onClick={setConcurrencyLimit}
+        >
           Set concurrency
         </Button>
         <Button
@@ -227,6 +245,16 @@ export function QueueGroupConsole({
         <p role="alert" className="mt-3 text-xs text-danger">
           Group job range must be an inclusive page of 1–100 jobs with whole indexes from 0 to
           1000000.
+        </p>
+      )}
+      {!rateValid && (
+        <p role="alert" className="mt-3 text-xs text-danger">
+          Rate max and duration must be positive whole numbers.
+        </p>
+      )}
+      {concurrencyValue === null && (
+        <p role="alert" className="mt-3 text-xs text-danger">
+          Concurrency must be a positive whole number.
         </p>
       )}
       {snapshot && <QueueGroupReadback snapshot={snapshot} />}

@@ -5,6 +5,9 @@ import { IconCheck, IconClose, IconCopy } from './icons';
 /** Copy `value` via the legacy hidden-textarea path (insecure-context fallback). */
 function execCommandCopy(value: string): boolean {
   let ta: HTMLTextAreaElement | null = null;
+  // select() moves focus into the temporary textarea; restore it afterwards so
+  // keyboard users keep their place instead of falling back to <body>.
+  const previous = document.activeElement as HTMLElement | null;
   try {
     ta = document.createElement('textarea');
     ta.value = value;
@@ -18,6 +21,7 @@ function execCommandCopy(value: string): boolean {
     return false;
   } finally {
     ta?.remove();
+    previous?.focus?.();
   }
 }
 

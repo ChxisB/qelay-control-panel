@@ -46,11 +46,13 @@ export function JobsPro() {
     refetch: refetchOverview,
   } = usePolledData(() => bq.stats(), [], { intervalMs: 10000 });
 
-  // Default to the first queue once the list arrives (there is no cross-queue
-  // job-list endpoint, so jobs are always fetched one queue at a time, paginated
-  // server-side — no N-queue fan-out).
+  // Default to the first queue once the list arrives (no cross-queue job list:
+  // one server-paginated queue at a time). Also replace a stale ?queue= with no
+  // <option>; without a summary the URL queue stays the only usable target.
   useEffect(() => {
-    if (!queue && summary?.length) setQueue(summary[0].name);
+    if (!summary || summary.some((q) => q.name === queue)) return;
+    setQueue(summary[0]?.name ?? '');
+    setPage(0);
   }, [summary, queue]);
 
   // Tagged with the view it was fetched for (queue|status|page), so switching

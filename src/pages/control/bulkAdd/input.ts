@@ -35,11 +35,13 @@ export function parseInput(text: string): { items: unknown[]; error: string | nu
   if (budgetError) return { items: [], error: budgetError };
   const trimmed = text.trim();
   if (!trimmed) return { items: [], error: null };
+  let wholeTextError: string;
   try {
     const parsed = JSON.parse(trimmed);
     return { items: Array.isArray(parsed) ? parsed : [parsed], error: null };
-  } catch {
+  } catch (error) {
     // Fall through to newline-delimited JSON.
+    wholeTextError = (error as Error).message;
   }
   const items: unknown[] = [];
   const lines = text.split('\n');
@@ -49,6 +51,10 @@ export function parseInput(text: string): { items: unknown[]; error: string | nu
     try {
       items.push(JSON.parse(line));
     } catch (error) {
+      // Only text whose earlier lines parsed is evidently NDJSON. Otherwise
+      // (e.g. an invalid pretty-printed array, whose "[" line always fails)
+      // a "Line 1" error would point at the wrong place: report the document's.
+      if (items.length === 0) return { items: [], error: `Invalid JSON: ${wholeTextError}` };
       return { items: [], error: `Line ${index + 1}: ${(error as Error).message}` };
     }
   }

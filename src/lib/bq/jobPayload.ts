@@ -17,6 +17,14 @@ const UNSAFE_FIELDS = [
   'debounceId',
   'debounceTtl',
 ] as const;
+/** Broker-owned flow links in job data (mirrors Bunqueue's FLOW_METADATA_KEYS). */
+export const FLOW_METADATA_KEYS = [
+  '__parentId',
+  '__parentQueue',
+  '__childrenIds',
+  '__flowParentId',
+  '__flowParentIds',
+] as const;
 
 function assertSafeRepeat(repeat: RepeatOptions | undefined): void {
   if (repeat === undefined) return;
@@ -49,6 +57,16 @@ function assertNoUnsafeFields(job: BulkJobBody): void {
   if (unsafe.length) {
     throw new TypeError(
       `Unsupported Bunqueue v2.9.3 enqueue option(s): ${unsafe.join(', ')}. Flow topology must use the atomic flow API; inert compatibility fields are not sent.`
+    );
+  }
+}
+
+function assertNoFlowMetadata(data: unknown): void {
+  if (data === null || typeof data !== 'object' || Array.isArray(data)) return;
+  const reserved = FLOW_METADATA_KEYS.filter((key) => Object.hasOwn(data, key));
+  if (reserved.length) {
+    throw new TypeError(
+      `Job data must not contain broker-owned flow metadata: ${reserved.join(', ')}. A plain enqueue with these keys would be misread as a flow child; use the atomic flow API for topology.`
     );
   }
 }
@@ -89,6 +107,7 @@ function validateAddJob(raw: Record<string, unknown>): void {
   assertValidJobName(raw.name);
   assertSafeRepeat(raw.repeat as RepeatOptions | undefined);
   assertNoUnsafeFields(raw as unknown as BulkJobBody);
+  assertNoFlowMetadata(raw.data);
   assertGroupOptions(raw);
   if (raw.groupMaxSize !== undefined) {
     throw new TypeError(
@@ -142,6 +161,7 @@ function validateEncodedBulkJob(encoded: string): void {
   assertValidJobName(raw.name);
   assertSafeRepeat(raw.repeat as RepeatOptions | undefined);
   assertNoUnsafeFields(raw as unknown as BulkJobBody);
+  assertNoFlowMetadata(raw.data);
   assertGroupOptions(raw);
   if (raw.customId !== undefined) {
     if (typeof raw.customId !== 'string') throw new TypeError('customId must be a string');

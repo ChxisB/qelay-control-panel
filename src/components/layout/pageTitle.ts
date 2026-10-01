@@ -45,9 +45,12 @@ const TITLES: Record<string, string> = {
 
 export function titleFor(pathname: string): string {
   const normalized = pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname;
-  if (TITLES[normalized]) return TITLES[normalized];
-  const classic = normalized.startsWith('/queues-classic/');
-  if (classic || normalized.startsWith('/queues/')) {
+  // React Router matches paths case-insensitively, so `/Settings` renders the
+  // Settings page; resolve its title the same way (queue names keep their case).
+  const lower = normalized.toLowerCase();
+  if (TITLES[lower]) return TITLES[lower];
+  const classic = lower.startsWith('/queues-classic/');
+  if (classic || lower.startsWith('/queues/')) {
     // A pasted/hand-typed URL may carry a malformed percent-escape (e.g. `%zz`),
     // which makes decodeURIComponent throw during render. Fall back to the raw slice.
     let name = normalized.slice(classic ? '/queues-classic/'.length : '/queues/'.length);

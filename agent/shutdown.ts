@@ -2,7 +2,8 @@ import { logger } from './logger';
 import { safeErrorMessage } from './errorMessage';
 import type { AgentFetchHandler } from './server';
 
-const DEFAULT_GRACE_MS = 30_000;
+/** Upper bound for a graceful agent drain; supervisors must wait at least this long. */
+export const AGENT_SHUTDOWN_GRACE_MS = 30_000;
 
 export interface AgentShutdownOptions {
   /** Stop listeners synchronously; returned promises drain in-flight HTTP requests. */
@@ -28,7 +29,7 @@ export function createAgentShutdown(
   options: AgentShutdownOptions = {}
 ): (signal: string) => void {
   const exit = options.exit ?? ((code: number) => process.exit(code));
-  const graceMs = options.graceMs ?? DEFAULT_GRACE_MS;
+  const graceMs = options.graceMs ?? AGENT_SHUTDOWN_GRACE_MS;
   let shuttingDown = false;
   let finished = false;
   let graceTimer: ReturnType<typeof setTimeout> | null = null;

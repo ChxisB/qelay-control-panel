@@ -27,8 +27,16 @@ export function BackupOperationsPanel({
   pollIntervalMs?: number;
   repository?: BackupRepository;
 }) {
+  // Same identity usePolledData uses: backups run through the agent, so an
+  // agent-URL or profile switch must invalidate an in-flight operation too.
   const connectionIdentity = useConnectionStore((state) =>
-    JSON.stringify([state.baseUrl, state.token, state.agentToken])
+    JSON.stringify([
+      state.activeProfileId,
+      state.baseUrl,
+      state.agentBaseUrl,
+      state.token,
+      state.agentToken,
+    ])
   );
   const mounted = useRef(true);
   const scopeRef = useRef<OperationScope | null>(null);

@@ -74,8 +74,7 @@ function statusFromEvent(event: string): string {
     case 'added':
       return 'waiting';
     case 'pulled':
-      return 'active';
-    case 'progress':
+    case 'progress': // colours the row as running; not counted as a new activation
       return 'active';
     default:
       return suffix;
@@ -186,7 +185,7 @@ export function useActivityStream(queue?: string) {
       if (status === 'completed') pc.completed += 1;
       else if (status === 'failed') pc.failed += 1;
       else if (status === 'waiting') pc.waiting += 1;
-      else if (status === 'active') pc.active += 1;
+      else if (status === 'active' && frame.event !== 'job:progress') pc.active += 1;
       stamps.current.push(monoNow());
     };
 
@@ -235,7 +234,8 @@ export function useActivityStream(queue?: string) {
         if (!isCurrent()) break;
         setConnected((previous) => (isCurrent() ? false : previous));
         setError((previous) => (isCurrent() ? failure : previous));
-        attempts = failure ? Math.min(attempts + 1, MAX_BACKOFF) : 0;
+        // Delivered frames prove the link was healthy: a later drop restarts the backoff.
+        attempts = failure ? Math.min((deliveredFrame ? 0 : attempts) + 1, MAX_BACKOFF) : 0;
         await delay(RECONNECT_MS * Math.max(1, attempts));
       }
     };

@@ -3,6 +3,7 @@ import { Component } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { ErrorState } from '@/components/ui/feedback';
+import { resetFailedLazyImports } from '@/lib/retryableLazy';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -36,6 +37,8 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
   componentDidUpdate(prev: ErrorBoundaryProps): void {
     if (this.state.error && prev.resetKey !== this.props.resetKey) {
+      // A failed route chunk would otherwise re-throw its cached rejection.
+      resetFailedLazyImports();
       this.setState({ error: null });
     }
   }

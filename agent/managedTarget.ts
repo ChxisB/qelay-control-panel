@@ -72,7 +72,9 @@ function assertLocalTarget(target: string, config: ServerConfig, label: string):
   } catch {
     throw new Error(`${label} must be an absolute local HTTP URL`);
   }
-  const local = ['localhost', '127.0.0.1', '::1'].includes(url.hostname);
+  // URL keeps IPv6 brackets in hostname (`[::1]`), so compare without them.
+  const host = url.hostname.replace(/^\[(.*)\]$/, '$1');
+  const local = ['localhost', '127.0.0.1', '::1'].includes(host);
   const port = Number(url.port || (url.protocol === 'https:' ? 443 : 80));
   if (!local || port !== config.httpPort || (url.protocol !== 'http:' && url.protocol !== 'https:')) {
     throw new Error(

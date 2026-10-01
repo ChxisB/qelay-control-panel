@@ -11,7 +11,7 @@ import { FLOW_BULK_RETRY_UNAVAILABLE, FLOW_DELETION_UNAVAILABLE } from '@/lib/fl
 import { formatNumber, formatRelativeTime } from '@/lib/format';
 import type { DlqEntry } from '@/lib/types';
 import { usePolledData } from '@/lib/usePolledData';
-import { discoverAllQueues } from './Jobs';
+import { discoverAllQueues, jobDataName } from './Jobs';
 
 const PAGE_SIZE = 25;
 
@@ -170,7 +170,7 @@ export function Dlq() {
                 >
                   <td className="px-5 py-3 font-mono text-xs text-muted">{e.job.id}</td>
                   <td className="px-5 py-3 text-fg">
-                    {e.job.name ?? (e.job.data as { name?: string } | undefined)?.name ?? 'default'}
+                    {e.job.name ?? jobDataName(e.job.data) ?? 'default'}
                   </td>
                   <td className="max-w-md px-5 py-3 text-xs text-red-400/90">
                     {String(e.reason || e.error || '—')}

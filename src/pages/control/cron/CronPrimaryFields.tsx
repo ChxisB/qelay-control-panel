@@ -109,17 +109,18 @@ export function CronPrimaryFields({
           {preview.valid ? (
             preview.runs.length ? (
               <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                <span className="text-faint">
-                  Next runs{values.timezone.trim() ? ' (local)' : ''}:
-                </span>
+                {/* nextCronRuns evaluates in the browser's timezone, never the server's. */}
+                <span className="text-faint">Next runs (browser-local time):</span>
                 {preview.runs.map((run) => (
                   <span key={run} className="font-mono text-muted">
                     {formatDateTime(run)}
                   </span>
                 ))}
-                {values.timezone.trim() && (
-                  <span className="text-faint">— server evaluates in {values.timezone.trim()}</span>
-                )}
+                <span className="text-faint">
+                  {values.timezone.trim()
+                    ? `— server evaluates in ${values.timezone.trim()}`
+                    : '— no timezone set: the server evaluates in its own timezone, which may differ'}
+                </span>
               </div>
             ) : (
               <span className="text-warning">Valid, but no runs in the next few years.</span>

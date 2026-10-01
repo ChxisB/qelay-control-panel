@@ -90,6 +90,14 @@ function specOptionError(raw: Record<string, unknown>): string | null {
     if (asStr(raw.uniqueKey) === undefined) return 'dedup requires a non-empty uniqueKey';
   }
 
+  // An invalid name would be coerced away and silently route the job to the
+  // queue's default handler.
+  if (raw.name !== undefined) {
+    const name = asStr(raw.name);
+    if (name === undefined || name.length > 256) {
+      return 'name must be a non-empty string (or finite number) of at most 256 characters';
+    }
+  }
   for (const key of ['removeOnComplete', 'removeOnFail', 'durable', 'lifo']) {
     if (raw[key] !== undefined && typeof raw[key] !== 'boolean') return `${key} must be a boolean`;
   }

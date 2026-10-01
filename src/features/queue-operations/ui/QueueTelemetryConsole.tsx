@@ -179,6 +179,8 @@ function metricRange(start: string, end: string): { start: number; end: number }
 }
 
 function boundedWhole(value: string, minimum: number, maximum: number): number | null {
+  // Number('') is 0: a cleared field must never read as "retain 0 events".
+  if (value.trim() === '') return null;
   const parsed = Number(value);
   return Number.isSafeInteger(parsed) && parsed >= minimum && parsed <= maximum ? parsed : null;
 }

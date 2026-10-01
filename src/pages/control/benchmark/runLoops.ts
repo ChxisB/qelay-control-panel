@@ -26,6 +26,26 @@ export interface BenchmarkLoopContext {
   workerBatch: number;
 }
 
+/**
+ * Pull-and-process holds in flight per run, numbered in start order. A worker
+ * whose pull came back empty waits only for holds that started before its pull
+ * returned (they may own the remaining ids); newer idle pulls never block it.
+ */
+interface DrainTracker {
+  next: number;
+  inFlight: Set<number>;
+}
+const drainTrackers = new WeakMap<BenchmarkLoopContext, DrainTracker>();
+
+function drainTracker(context: BenchmarkLoopContext): DrainTracker {
+  let tracker = drainTrackers.get(context);
+  if (!tracker) {
+    tracker = { next: 0, inFlight: new Set() };
+    drainTrackers.set(context, tracker);
+  }
+  return tracker;
+}
+
 interface PulledBenchmarkJob {
   id: string;
   token: string;
@@ -97,10 +117,13 @@ export function createProducer(context: BenchmarkLoopContext): () => Promise<voi
 export function createConsumer(context: BenchmarkLoopContext): () => Promise<void> {
   return async () => {
     const { stats } = context;
+    const tracker = drainTracker(context);
     while (context.shouldContinue()) {
       if (context.runConfig.mode === 'duration' && performance.now() >= context.deadline) break;
       if (context.runConfig.mode === 'count' && stats.completed >= context.total) break;
       stats.activeWorkers++;
+      const hold = ++tracker.next;
+      tracker.inFlight.add(hold);
       let jobs: PulledBenchmarkJob[] = [];
       try {
         jobs = await pullJobs(context);
@@ -110,11 +133,23 @@ export function createConsumer(context: BenchmarkLoopContext): () => Promise<voi
         }
         if (jobs.length > 0) await processJobs(context, jobs);
       } finally {
+        tracker.inFlight.delete(hold);
         if (context.isCurrent()) stats.activeWorkers--;
       }
       if (!context.shouldContinue()) break;
       if (jobs.length === 0) {
         if (context.runConfig.mode === 'count' && context.producersDone()) {
+          // A sibling whose pull began before ours returned may still hold,
+          // heartbeat or ACK the remaining ids; report only what it leaves.
+          const barrier = tracker.next;
+          while (
+            context.ownJobIds.size > 0 &&
+            context.shouldContinue() &&
+            [...tracker.inFlight].some((other) => other <= barrier)
+          ) {
+            await sleepWhile(50, context.shouldContinue);
+          }
+          if (!context.shouldContinue()) break;
           if (context.ownJobIds.size > 0) {
             stats.error ??= `${context.ownJobIds.size} benchmark job(s) could not be drained.`;
           }

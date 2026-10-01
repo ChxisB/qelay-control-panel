@@ -60,7 +60,7 @@ export function parseAlertQueueSummary(value: unknown): AlertSummaryRow[] | null
       return null;
     const values = counts as Record<string, unknown>;
     if (
-      !['waiting', 'active', 'completed', 'failed', 'delayed'].every((key) =>
+      !['waiting', 'prioritized', 'active', 'completed', 'failed', 'delayed'].every((key) =>
         alertCount(values[key])
       )
     ) {
@@ -106,13 +106,20 @@ const pct = (completed: number, failed: number): number | null => {
   return total > 0 ? (failed / total) * 100 : null;
 };
 
+// Bunqueue 2.9 reports runnable jobs with priority > 0 as `prioritized`, not
+// `waiting`; both are ready backlog (OverviewPro sums them the same way).
+const ready = (row: AlertSummaryRow): number => row.counts.waiting + row.counts.prioritized;
+
 export function alertMetricValue(rule: AlertRule, ctx: AlertMetricContext): number | null {
   const queue = rule.queue.trim();
   if (rule.metric === 'waiting' || rule.metric === 'failed') {
     if (!ctx.summary) return null;
-    const key = rule.metric;
-    if (queue) return ctx.summary.find((row) => row.name === queue)?.counts[key] ?? null;
-    return ctx.summary.reduce((sum, row) => sum + row.counts[key], 0);
+    const count = rule.metric === 'waiting' ? ready : (row: AlertSummaryRow) => row.counts.failed;
+    if (queue) {
+      const row = ctx.summary.find((item) => item.name === queue);
+      return row ? count(row) : null;
+    }
+    return ctx.summary.reduce((sum, row) => sum + count(row), 0);
   }
   if (rule.metric === 'dlq') {
     if (!ctx.queues) return null;

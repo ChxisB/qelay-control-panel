@@ -164,7 +164,14 @@ export function RowDetailDrawer({
                     {value != null && <CopyButton value={String(value)} />}
                     {truncated[i] &&
                       !loaded &&
-                      (Object.hasOwn(loadErrors, c) ? (
+                      // WITHOUT ROWID tables have no key to lazy-fetch the full
+                      // value by, so no request is ever issued for it.
+                      (rowid == null ? (
+                        <span className="normal-case text-warning">
+                          (truncated — full value unavailable: this table has no rowid to fetch it
+                          by)
+                        </span>
+                      ) : Object.hasOwn(loadErrors, c) ? (
                         <span role="alert" className="normal-case text-danger">
                           (full value unavailable — {loadErrors[c]})
                         </span>

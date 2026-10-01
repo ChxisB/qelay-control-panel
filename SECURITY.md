@@ -11,13 +11,13 @@ Please do **not** open a public issue for security problems.
 
 ## Supported versions
 
-This project is pre-1.0 and moves fast. Only the latest released `0.0.x` version
-receives security fixes.
+Security fixes land on the latest `1.x` release. Pre-1.0 (`0.0.x`) versions
+are no longer supported; upgrade to the latest `1.x`.
 
-| Version      | Supported |
-| ------------ | --------- |
-| latest 0.0.x | ✅        |
-| older        | ❌        |
+| Version    | Supported |
+| ---------- | --------- |
+| latest 1.x | ✅        |
+| 0.0.x      | ❌        |
 
 ## Scope and threat model
 

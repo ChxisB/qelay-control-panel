@@ -6,9 +6,10 @@
  * vertically within each column, then every column is centred.
  *
  * Cycle-safe: a genuine cycle (which a job DAG should never contain, but a
- * corrupt/looping `dependsOn` could) can't starve the queue — when nothing is
- * left with in-degree 0 the earliest unplaced node is forced ready, so only the
- * cycle's back-edge is ignored and everything downstream still layers normally.
+ * corrupt/looping `dependsOn` could) can't starve the queue — a depth-first pass
+ * (input order) drops only the back-edges that close a cycle before layering,
+ * so every remaining edge, including ones into or out of the cycle, still puts
+ * its target in a later column.
  */
 export type FlowEdgeKind = 'child' | 'depends';
 export interface FlowEdge {
@@ -45,44 +46,69 @@ const DEFAULTS = { nodeWidth: 168, nodeHeight: 60, colGap: 72, rowGap: 20, paddi
  */
 export function computeLayers(ids: string[], edges: FlowEdge[]): Map<string, number> {
   const layer = new Map<string, number>();
-  const indeg = new Map<string, number>();
-  const out = new Map<string, string[]>();
+  const targets = new Map<string, string[]>();
   for (const id of ids) {
     layer.set(id, 0);
-    indeg.set(id, 0);
-    out.set(id, []);
+    targets.set(id, []);
   }
   for (const e of edges) {
     if (!layer.has(e.from) || !layer.has(e.to) || e.from === e.to) continue;
-    out.get(e.from)?.push(e.to);
-    indeg.set(e.to, (indeg.get(e.to) ?? 0) + 1);
+    targets.get(e.from)?.push(e.to);
   }
-  const queue = ids.filter((id) => (indeg.get(id) ?? 0) === 0);
-  const placed = new Set<string>();
-  while (placed.size < layer.size) {
-    while (queue.length) {
-      const u = queue.shift() as string;
-      if (placed.has(u)) continue;
-      placed.add(u);
-      for (const v of out.get(u) ?? []) {
-        // An already-placed target is never relaxed again: in a real DAG that
-        // cannot happen (a node is popped only once every predecessor relaxed
-        // it), and inside a cycle it is exactly the back-edge to ignore.
-        if (placed.has(v)) continue;
-        layer.set(v, Math.max(layer.get(v) ?? 0, (layer.get(u) ?? 0) + 1));
-        const d = (indeg.get(v) ?? 0) - 1;
-        indeg.set(v, d);
-        if (d === 0) queue.push(v);
-      }
+  const out = withoutBackEdges(ids, targets);
+  const indeg = new Map<string, number>();
+  for (const id of ids) indeg.set(id, 0);
+  for (const list of out.values()) {
+    for (const to of list) indeg.set(to, (indeg.get(to) ?? 0) + 1);
+  }
+  // The remaining graph is acyclic, so Kahn's algorithm places every node.
+  const queue = [...layer.keys()].filter((id) => (indeg.get(id) ?? 0) === 0);
+  for (let head = 0; head < queue.length; head++) {
+    const u = queue[head];
+    for (const v of out.get(u) ?? []) {
+      layer.set(v, Math.max(layer.get(v) ?? 0, (layer.get(u) ?? 0) + 1));
+      const d = (indeg.get(v) ?? 0) - 1;
+      indeg.set(v, d);
+      if (d === 0) queue.push(v);
     }
-    // Cycle backstop: nothing is left with in-degree 0, so force the earliest
-    // unplaced node (input order) ready. That drops one back-edge instead of
-    // stranding the whole downstream subgraph at layer 0.
-    const stuck = ids.find((id) => !placed.has(id));
-    if (stuck === undefined) break;
-    queue.push(stuck);
   }
   return layer;
+}
+
+/**
+ * Iterative DFS (input order, so deep flows cannot overflow the call stack) that
+ * keeps every edge except back-edges — edges into a node still on the DFS stack,
+ * i.e. exactly the edges that close a cycle. Forcing a cyclic node ready instead
+ * would ignore all of its incoming edges, including acyclic prerequisites.
+ */
+function withoutBackEdges(ids: string[], targets: Map<string, string[]>): Map<string, string[]> {
+  const kept = new Map<string, string[]>();
+  for (const id of ids) kept.set(id, []);
+  const onStack = new Set<string>();
+  const visited = new Set<string>();
+  for (const root of ids) {
+    if (visited.has(root)) continue;
+    visited.add(root);
+    onStack.add(root);
+    const stack: Array<{ id: string; next: number }> = [{ id: root, next: 0 }];
+    while (stack.length) {
+      const frame = stack[stack.length - 1];
+      const list = targets.get(frame.id) ?? [];
+      if (frame.next >= list.length) {
+        onStack.delete(frame.id);
+        stack.pop();
+        continue;
+      }
+      const to = list[frame.next++];
+      if (onStack.has(to)) continue;
+      kept.get(frame.id)?.push(to);
+      if (visited.has(to)) continue;
+      visited.add(to);
+      onStack.add(to);
+      stack.push({ id: to, next: 0 });
+    }
+  }
+  return kept;
 }
 
 /** Lay the DAG out in columns (one per layer), each column vertically centred. */

@@ -4,6 +4,7 @@ import {
   MissingDbError,
 } from '../db';
 import { DbReadBusyError, DbReadUnavailableError } from '../db/types';
+import { ManagedProcessStuckError } from '../manager';
 import { safeErrorMessage } from '../errorMessage';
 import { QueueOperationsUnavailableError } from '../queue/types';
 import { WorkflowRuntimeUnavailableError } from '../workflow/runtime';
@@ -15,6 +16,7 @@ const CONFLICT_MESSAGES = [
   'Another backup operation is already running',
   'Another maintenance operation is already running',
   'Cannot start the managed Bunqueue server',
+  'Cannot start while the previous managed process',
   'Cannot restart the managed Bunqueue server',
   'BUNQUEUE_WORKFLOW_QUEUE_NAME must',
   'BUNQUEUE_WORKFLOW_CONCURRENCY must',
@@ -26,6 +28,7 @@ const CONFLICT_MESSAGES = [
 export function errorStatus(error: unknown): number {
   try {
     if (error instanceof AgentLifecycleClosedError) return 503;
+    if (error instanceof ManagedProcessStuckError) return 500;
     if (error instanceof MissingDbError) return 404;
     if (error instanceof DbReadBusyError) return 429;
     if (error instanceof DbReadUnavailableError) return 503;

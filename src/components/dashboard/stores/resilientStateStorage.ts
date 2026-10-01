@@ -3,7 +3,11 @@ import type { StateStorage } from 'zustand/middleware';
 interface ResilientStorageOptions {
   key: string;
   version: number;
-  sanitizeState: (value: unknown) => unknown;
+  /**
+   * Receives the envelope's stored version so version-gated migrations can run
+   * before the canonical rewrite stamps the current version over it.
+   */
+  sanitizeState: (value: unknown, storedVersion?: number) => unknown;
   onError?: (error: unknown) => void;
   reportMissingWrites?: boolean;
 }
@@ -28,8 +32,11 @@ function sanitizedEnvelope(raw: string, options: ResilientStorageOptions) {
   try {
     const parsed = JSON.parse(raw) as unknown;
     const envelope = isRecord(parsed) ? parsed : {};
-    const state = options.sanitizeState('state' in envelope ? envelope.state : envelope);
     const storedVersion = typeof envelope.version === 'number' ? envelope.version : undefined;
+    const state = options.sanitizeState(
+      'state' in envelope ? envelope.state : envelope,
+      storedVersion
+    );
     return {
       hydration: JSON.stringify({
         state,

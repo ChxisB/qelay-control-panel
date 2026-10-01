@@ -271,7 +271,8 @@ reproduce / impact passes before fixing) resolved the following, gate green, wit
 - **Agent orphan fix**: `agent/index.ts` now handles SIGINT/SIGTERM and stops
   the managed bunqueue server before exiting (Ctrl-C on `bun start` used to
   leave it running, holding :6790 and the SQLite db). `scripts/dev.ts` waits
-  10s (was 2s) so the agent's SIGTERM→SIGKILL escalation can complete.
+  the agent's full 30 s drain plus 5 s (was 10 s, before that 2 s) so in-flight
+  operations and the SIGTERM→SIGKILL escalation can complete.
 - **Agent log pipe flushes the final unterminated chunk**, a crash cause
   written without a trailing newline used to vanish from Process Logs.
 - **Agent spawn-failure race**: a `start()` whose spawn throws while a stale

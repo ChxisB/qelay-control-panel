@@ -3,7 +3,9 @@ import { randomUUID } from 'node:crypto';
 import { promisify } from 'node:util';
 
 const exec = promisify(execFile);
-const image = 'minio/minio:RELEASE.2025-04-22T22-12-26Z';
+// The upstream minio/minio images were withdrawn from Docker Hub and quay.io;
+// this is the community-maintained, drop-in MinIO fork (same CLI and S3 API).
+const image = 'pgsty/minio:RELEASE.2026-08-04T00-00-00Z';
 
 export async function startMinio() {
   const name = `bunqueue-ui-s3-${randomUUID()}`;

@@ -49,7 +49,9 @@ function ToastCard({ toast, dismiss }: { toast: Toast; dismiss: (id: number) => 
 export function Toaster() {
   const toasts = useToastStore((s) => s.toasts);
   const dismiss = useToastStore((s) => s.dismiss);
-  if (toasts.length === 0) return null;
+  // The live region stays mounted even when empty: screen readers generally
+  // ignore content inserted together with a brand-new live region, so the
+  // first toast would otherwise go unannounced.
   return (
     <section
       className="pointer-events-none fixed bottom-4 right-4 z-[60] flex flex-col gap-2"

@@ -1,5 +1,7 @@
 import { copyConfig, defaultConfig, validateConfigPatch, validateServerConfig } from './config';
 import { ProcessLogs } from './logs';
+import { splitCommandLine } from './commandLine';
+import { ManagedProcessStuckError } from './errors';
 import type { ConfigStore } from './configStore';
 import { databaseStats } from './storage';
 import { removeSqlitePaths, validateManagedStorage } from './storageMode';
@@ -118,7 +120,7 @@ export class ProcessManager {
 
     const launchConfig = validateServerConfig(this.config);
     const storageMode = validateManagedStorage(launchConfig);
-    const [command, ...args] = launchConfig.command.trim().split(/\s+/);
+    const [command, ...args] = splitCommandLine(launchConfig.command);
     this.status = 'starting';
     this.exitCode = null;
     const token = ++this.procToken;
@@ -219,7 +221,7 @@ export class ProcessManager {
       if (!(await exitsWithin(process, this.stopTimeoutMs))) {
         const message = `pid ${process.pid} did not exit after SIGKILL`;
         this.output.push('sys', `${message} — retaining failed-process tracking`);
-        throw new Error(message);
+        throw new ManagedProcessStuckError(message);
       }
     }
     this.output.cancel(token);
