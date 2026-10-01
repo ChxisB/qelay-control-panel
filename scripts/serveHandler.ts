@@ -44,6 +44,11 @@ const NON_FORWARDED_API_HEADERS = [
 
 export function upstreamHeaders(incoming: Headers): Headers {
   const headers = new Headers(incoming);
+  // RFC 9110 §7.6.1: headers named in Connection are hop-by-hop as well.
+  for (const name of (headers.get('connection') ?? '').split(',')) {
+    const option = name.trim();
+    if (option) headers.delete(option);
+  }
   for (const name of NON_FORWARDED_API_HEADERS) headers.delete(name);
   return headers;
 }

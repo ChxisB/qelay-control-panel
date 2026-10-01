@@ -66,6 +66,18 @@ describe('/api proxy upstream headers', () => {
     );
     expect([...headers.keys()].sort()).toEqual(['authorization', 'content-type']);
   });
+
+  it('also drops headers the Connection header declares hop-by-hop', () => {
+    const headers = upstreamHeaders(
+      new Headers({
+        connection: 'keep-alive, X-Internal ,x-trace',
+        'x-internal': 'secret',
+        'x-trace': '1',
+        'x-request-id': 'kept',
+      })
+    );
+    expect([...headers.keys()].sort()).toEqual(['x-request-id']);
+  });
 });
 
 describe('Docker image asset caching', () => {

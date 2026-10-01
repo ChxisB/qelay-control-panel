@@ -42,8 +42,8 @@ the all-in-one server, the client libraries and every page.
   loopback target is accepted. Process-state conflicts return 409 and a child
   that survives SIGKILL returns 500 instead of 400.
 - **All-in-one server:** the `/api` proxy no longer forwards the browser's
-  `Host`, cookies or hop-by-hop headers to `BUNQUEUE_URL`, so host-routed
-  ingresses in front of Bunqueue work.
+  `Host`, cookies or hop-by-hop headers (including those named in `Connection`)
+  to `BUNQUEUE_URL`, so host-routed ingresses in front of Bunqueue work.
 - **Docker image:** a missing `/assets/*` file is served with `no-store` instead
   of being cached as immutable for a year during rolling deploys.
 - **`bun start`:** waits for the agent's full 30 s drain before force-killing it
