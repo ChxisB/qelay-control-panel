@@ -88,8 +88,16 @@ jobs:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ matrix.browser }}-${{ hashFiles('bun.lock') }}
 
+      # The runner image already ships what headless Chromium needs (Google Chrome
+      # is preinstalled), so its slow apt step runs only if the browser cannot start.
       - name: Install browser and OS dependencies
-        run: bunx playwright install --with-deps ${{ matrix.browser }}
+        env:
+          BROWSER: ${{ matrix.browser }}
+        run: |
+          bunx playwright install "$BROWSER"
+          if [ "$BROWSER" != chromium ] || ! bun -e 'const { chromium } = await import("@playwright/test"); await (await chromium.launch()).close()'; then
+            bunx playwright install-deps "$BROWSER"
+          fi
 
       - name: Build production browser fixture
         if: matrix.app
