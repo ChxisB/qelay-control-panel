@@ -1,21 +1,31 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { toast } from '@/components/dashboard/stores/toastStore';
-import { Button } from '@/components/ui/Button';
 import { ErrorState, LoadingState, OfflineBanner } from '@/components/ui/feedback';
-import { IconDownload } from '@/components/ui/icons';
+import { IconPlus } from '@/components/ui/icons';
+import { LinkButton } from '@/components/ui/LinkButton';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { bq } from '@/lib/bq';
 import type { JobFull } from '@/lib/bqTypes';
-import { downloadCsv } from '@/lib/exportFile';
-import { errorRate, formatNumber, formatPercent } from '@/lib/format';
 import { actionGates } from '@/lib/jobActions';
 import { usePolledData } from '@/lib/usePolledData';
-import { JobsStats } from './jobsPro/JobsStats';
+import { exportJobs } from './jobsPro/exportJobs';
+import { JobsHeadline } from './jobsPro/JobsHeadline';
+import { JobsSelectionBar } from './jobsPro/JobsSelectionBar';
 import { JobsTable } from './jobsPro/JobsTable';
+import { JobStateTabs } from './jobsPro/JobStateTabs';
 import { JobsToolbar } from './jobsPro/JobsToolbar';
-import { JOB_STATUSES, JOBS_PAGE_SIZE, type JobStatusFilter } from './jobsPro/model';
+import {
+  emptyCopy,
+  footerLabel,
+  JOB_STATUSES,
+  JOBS_PAGE_SIZE,
+  type JobStatusFilter,
+  jobsHeadline,
+  matchesFilter,
+  stateCount,
+} from './jobsPro/model';
 import { useJobMutations } from './jobsPro/useJobMutations';
+import { useJobsPage } from './jobsPro/useJobsPage';
 
 export { selectionLabel, withoutActed } from './jobsPro/model';
 
@@ -30,21 +40,14 @@ export function JobsPro() {
   const [page, setPage] = useState(0);
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
-  // Queue dropdown: one /queues/summary call (all queues), polled slowly — the
-  // queue set changes rarely, so it doesn't ride the fast job cadence.
+  // Queue dropdown and per-state tab counts: one /queues/summary call (all queues), polled
+  // slowly — the queue set changes rarely, so it doesn't ride the fast job cadence.
   const {
     data: summary,
     error: discoveryError,
     loading: discoveryLoading,
     refetch: refetchSummary,
   } = usePolledData(() => bq.queuesSummary(), [], { intervalMs: 30000 });
-  // `/dashboard` omits prioritized and waiting-children in v2.9.3. `/stats`
-  // carries every state needed by the inventory cards.
-  const {
-    data: overview,
-    error: overviewError,
-    refetch: refetchOverview,
-  } = usePolledData(() => bq.stats(), [], { intervalMs: 10000 });
 
   // Default to the first queue once the list arrives (no cross-queue job list:
   // one server-paginated queue at a time). Also replace a stale ?queue= with no
@@ -55,41 +58,18 @@ export function JobsPro() {
     setPage(0);
   }, [summary, queue]);
 
-  // Tagged with the view it was fetched for (queue|status|page), so switching
-  // any of them can't leave the previous view's rows rendered — with live
-  // action buttons — under the new selection for one round-trip.
-  const view = `${queue}|${status}|${page}`;
-  const fetcher = useCallback(async () => {
-    if (!queue) return { view, jobs: [] as JobFull[] };
-    const states = status === 'all' ? undefined : [status];
-    const r = await bq.jobsList(queue, states, JOBS_PAGE_SIZE, page * JOBS_PAGE_SIZE);
-    return { view, jobs: (r.jobs ?? []).map((j) => ({ ...j, queue: j.queue ?? queue })) };
-  }, [queue, status, page, view]);
-  const { data: raw, error, loading, refetch } = usePolledData(fetcher, [queue, status, page]);
-  const jobs = raw?.view === view ? raw.jobs : null;
+  const { jobs, updatedAt, error, loading, refetch } = useJobsPage(queue, status, page);
 
   // No `total` from jobs/list — a full page means there may be a next one.
   const hasNext = (jobs?.length ?? 0) === JOBS_PAGE_SIZE;
 
-  const rows = useMemo(() => {
-    const term = search.trim().toLowerCase();
-    if (!term) return jobs ?? [];
-    return (jobs ?? []).filter(
-      (j) => j.id.toLowerCase().includes(term) || j.name?.toLowerCase().includes(term)
-    );
-  }, [jobs, search]);
-
-  const stats = overview?.stats;
-  // Recorded counts (stats.completed + per-queue failed sums) — the
-  // totalCompleted/totalFailed session counters zero on every server restart.
-  const failedTotal = useMemo(
-    () => summary?.reduce((a, q) => a + (q.counts?.failed ?? 0), 0) ?? null,
-    [summary]
+  const term = search.trim().toLowerCase();
+  const rows = useMemo(
+    () => (term ? (jobs ?? []).filter((j) => matchesFilter(j, term)) : (jobs ?? [])),
+    [jobs, term]
   );
-  const rate = stats && failedTotal != null ? errorRate(stats.completed, failedTotal) : null;
-  // While the overview poll is still in flight the cards would render hard
-  // zeros — a "0" that looks like data. Show placeholders until it arrives.
-  const stat = (n: number | undefined) => (stats ? formatNumber(n) : '—');
+  const counts = summary?.find((q) => q.name === queue)?.counts;
+  const count = stateCount(counts, status);
 
   const resetPage = () => setPage(0);
 
@@ -136,163 +116,121 @@ export function JobsPro() {
     promote: (j: JobFull) => actionGates(j.state).promote,
   };
   const selectedRows = rows.filter((r) => selected.has(r.id));
-  const canBulk = {
-    promote: selectedRows.some(eligibleFor.promote),
-  };
-
-  const exportRows = () => {
-    if (rows.length === 0) {
-      toast.info('No jobs to export on this page');
-      return;
-    }
-    const out = rows.map((j) => ({
-      id: j.id,
-      name: j.name ?? 'default',
-      queue: j.queue ?? queue,
-      state: j.state ?? '',
-      priority: j.priority ?? 0,
-      attempts: j.attempts ?? 0,
-      maxAttempts: j.maxAttempts ?? '',
-      createdAt: j.createdAt ? new Date(j.createdAt).toISOString() : '',
-      durationMs: j.startedAt && j.completedAt ? j.completedAt - j.startedAt : '',
-    }));
-    downloadCsv(`jobs-${queue}-${status}`, out, [
-      'id',
-      'name',
-      'queue',
-      'state',
-      'priority',
-      'attempts',
-      'maxAttempts',
-      'createdAt',
-      'durationMs',
-    ]);
-  };
-
   // Targets are pre-filtered to eligible rows by runBulk, so each fn is a direct
   // call — no per-job state guard needed (it can never receive an ineligible job).
   const bulkPromote = () => runBulk('Promote', (j) => bq.promoteJob(j.id), eligibleFor.promote);
+
+  const headline = queue
+    ? jobsHeadline(queue, status, count)
+    : discoveryLoading
+      ? 'Discovering queues…'
+      : 'Select a queue to see its jobs.';
+
   return (
     <div>
       <PageHeader
-        title="Jobs Explorer"
-        description="Browse, inspect, and manage individual jobs."
-        live={!!queue && jobs != null && !error && !discoveryError && !overviewError}
+        title="Jobs"
+        description={<JobsHeadline text={headline} updatedAt={queue ? updatedAt : null} />}
         actions={
-          <Button size="sm" disabled={!jobs || rows.length === 0} onClick={exportRows}>
-            <IconDownload className="size-3.5" /> Export CSV
-          </Button>
+          <>
+            <LinkButton to="/jobs/bulk-add">Bulk add</LinkButton>
+            <LinkButton to="/add-job" variant="primary">
+              <IconPlus className="size-4" /> Add job
+            </LinkButton>
+          </>
         }
       />
 
-      {discoveryError && (
-        <OfflineBanner
-          onRetry={refetchSummary}
-          message={
-            summary
-              ? `Queue inventory refresh failed — showing the last successful queue totals. ${discoveryError.message}`
-              : `Could not discover queues — ${discoveryError.message}. Select an existing queue from the URL or retry.`
-          }
-        />
-      )}
-      {overviewError && (
-        <OfflineBanner
-          onRetry={refetchOverview}
-          message={
-            overview
-              ? `Server-wide totals refresh failed — showing the last successful totals. ${overviewError.message}`
-              : `Server-wide job totals are unavailable — ${overviewError.message}. The selected queue page may still be current.`
-          }
-        />
-      )}
+      <div className="flex flex-col gap-4">
+        {discoveryError && (
+          <OfflineBanner
+            onRetry={refetchSummary}
+            message={
+              summary
+                ? `Queue inventory refresh failed — showing the last successful queue totals. ${discoveryError.message}`
+                : `Could not discover queues — ${discoveryError.message}. Select an existing queue from the URL or retry.`
+            }
+          />
+        )}
 
-      <JobsStats
-        total={
-          stats && failedTotal != null
-            ? formatNumber(
-                stats.completed +
-                  failedTotal +
-                  stats.waiting +
-                  stats.prioritized +
-                  stats.active +
-                  stats.delayed +
-                  stats['waiting-children']
-              )
-            : '—'
-        }
-        waiting={stat(stats?.waiting)}
-        prioritized={stat(stats?.prioritized)}
-        active={stat(stats?.active)}
-        flowBlocked={stat(stats?.['waiting-children'])}
-        completed={stat(stats?.completed)}
-        failed={failedTotal == null ? '—' : formatNumber(failedTotal)}
-        failedCount={failedTotal}
-        errorRate={rate == null ? '—' : formatPercent(rate)}
-        errorRateTone={rate == null ? 'default' : rate > 0.05 ? 'red' : 'green'}
-      />
-      <JobsToolbar
-        queue={queue}
-        summary={summary ?? []}
-        status={status}
-        search={search}
-        selectedTotal={selected.size}
-        selectedVisible={selectedRows.length}
-        canPromote={canBulk.promote}
-        bulkBusy={bulkBusy}
-        onQueue={(next) => {
-          setQueue(next);
-          resetPage();
-          syncUrl(next, status);
-        }}
-        onStatus={(next) => {
-          setStatus(next);
-          resetPage();
-          syncUrl(queue, next);
-        }}
-        onSearch={setSearch}
-        onPromote={bulkPromote}
-      />
-
-      {actionMsg && (
-        <div
-          role="status"
-          className={`mb-3 text-sm ${actionMsg.ok ? 'text-success' : 'text-danger'}`}
-        >
-          {actionMsg.text}
-        </div>
-      )}
-
-      {error && jobs && (
-        <OfflineBanner
-          message="Job refresh failed — showing the last successful page."
-          onRetry={refetch}
-        />
-      )}
-
-      {error && !jobs ? (
-        <ErrorState error={error} onRetry={refetch} />
-      ) : discoveryLoading && !summary && !queue && !discoveryError ? (
-        <LoadingState label="Discovering queues…" />
-      ) : loading && !jobs ? (
-        <LoadingState label="Loading jobs…" />
-      ) : (
-        <JobsTable
+        <JobsToolbar
           queue={queue}
-          rows={rows}
+          summary={summary ?? []}
           search={search}
-          discoveryError={!!discoveryError}
-          selected={selected}
-          allSelected={allSelected}
-          bulkBusy={bulkBusy}
-          busyIds={busyIds}
-          page={page}
-          hasNext={hasNext}
-          onToggleAll={toggleAll}
-          onToggle={toggle}
-          onRun={(job, label, operation) => void runOne(job, label, operation)}
-          onPage={setPage}
+          canExport={!!jobs && rows.length > 0}
+          onQueue={(next) => {
+            setQueue(next);
+            resetPage();
+            syncUrl(next, status);
+          }}
+          onSearch={setSearch}
+          onExport={() => exportJobs(rows, queue, status)}
         />
-      )}
+        <JobStateTabs
+          status={status}
+          counts={counts}
+          onStatus={(next) => {
+            setStatus(next);
+            resetPage();
+            syncUrl(queue, next);
+          }}
+        />
+
+        {selected.size > 0 && (
+          <JobsSelectionBar
+            selectedTotal={selected.size}
+            selectedVisible={selectedRows.length}
+            canPromote={selectedRows.some(eligibleFor.promote)}
+            bulkBusy={bulkBusy}
+            onPromote={bulkPromote}
+            onClear={() => setSelected(new Set())}
+          />
+        )}
+
+        {actionMsg && (
+          <div role="status" className={`text-sm ${actionMsg.ok ? 'text-success' : 'text-danger'}`}>
+            {actionMsg.text}
+          </div>
+        )}
+
+        {error && jobs && (
+          <OfflineBanner
+            message="Job refresh failed — showing the last successful page."
+            onRetry={refetch}
+          />
+        )}
+
+        {error && !jobs ? (
+          <ErrorState error={error} onRetry={refetch} />
+        ) : discoveryLoading && !summary && !queue && !discoveryError ? (
+          <LoadingState label="Discovering queues…" />
+        ) : loading && !jobs ? (
+          <LoadingState label="Loading jobs…" />
+        ) : (
+          <JobsTable
+            rows={rows}
+            now={updatedAt ?? Date.now()}
+            empty={emptyCopy({ search, queue, status, discoveryError: !!discoveryError })}
+            selected={selected}
+            allSelected={allSelected}
+            bulkBusy={bulkBusy}
+            busyIds={busyIds}
+            footer={footerLabel({
+              start: page * JOBS_PAGE_SIZE,
+              shown: rows.length,
+              onPage: jobs?.length ?? 0,
+              total: status === 'all' ? null : count,
+              searching: !!term,
+            })}
+            page={page}
+            hasNext={hasNext}
+            onToggleAll={toggleAll}
+            onToggle={toggle}
+            onRun={(job, label, operation) => void runOne(job, label, operation)}
+            onPage={setPage}
+          />
+        )}
+      </div>
     </div>
   );
 }

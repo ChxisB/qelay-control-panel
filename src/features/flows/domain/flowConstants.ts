@@ -11,14 +11,17 @@ export const MAX_FLOW_DEPTH = 100;
 export const MAX_PARENT_HOPS = 100;
 export const DEMO_FLOW_ROOT = 'flow-order-9a3f';
 
+// Node chrome per state, on the job-state tokens (index.css). `waiting-children` reads as
+// waiting; the dashed border keeps it distinguishable from a plain waiting job.
 const STATE_STYLE: Record<string, string> = {
-  completed: 'border-success/50 bg-success/10 text-success',
-  failed: 'border-danger/50 bg-danger/10 text-danger',
-  active: 'border-blue-400/60 bg-blue-400/10 text-blue-400',
-  delayed: 'border-accent/50 bg-accent/10 text-accent',
-  waiting: 'border-warning/50 bg-warning/10 text-warning',
-  prioritized: 'border-warning/50 bg-warning/10 text-warning',
-  'waiting-children': 'border-cyan-400/60 bg-cyan-400/10 text-cyan-400',
+  completed: 'border-state-completed-fg/50 bg-state-completed-bg text-state-completed-fg',
+  failed: 'border-state-failed-fg/50 bg-state-failed-bg text-state-failed-fg',
+  active: 'border-state-active-fg/50 bg-state-active-bg text-state-active-fg',
+  delayed: 'border-state-delayed-fg/50 bg-state-delayed-bg text-state-delayed-fg',
+  waiting: 'border-state-waiting-fg/50 bg-state-waiting-bg text-state-waiting-fg',
+  prioritized: 'border-state-prioritized-fg/50 bg-state-prioritized-bg text-state-prioritized-fg',
+  'waiting-children':
+    'border-dashed border-state-waiting-fg/60 bg-state-waiting-bg text-state-waiting-fg',
 };
 
 export const flowStateStyle = (state?: string) =>

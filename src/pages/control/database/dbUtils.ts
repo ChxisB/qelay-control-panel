@@ -4,8 +4,9 @@ import {
   type DbCsvExportResult,
   type DbExportRequest,
 } from '@/lib/bq';
+import { LEGACY_STORAGE_KEYS, readWithLegacy } from '@/lib/legacyStorage';
 
-const HISTORY_KEY = 'bq-dash-db-history';
+const HISTORY_KEY = 'qelay-db-history';
 const HISTORY_MAX = 10;
 const HISTORY_ENTRY_MAX = 20_000;
 const HISTORY_SCAN_MAX = 100;
@@ -63,7 +64,9 @@ export function sanitizeQueryHistory(value: unknown): string[] {
 
 export function loadHistory(): string[] {
   try {
-    const h = JSON.parse(localStorage.getItem(HISTORY_KEY) ?? '[]');
+    const h = JSON.parse(
+      readWithLegacy(localStorage, HISTORY_KEY, LEGACY_STORAGE_KEYS.dbHistory) ?? '[]'
+    );
     return sanitizeQueryHistory(h);
   } catch {
     return [];

@@ -3,11 +3,11 @@ import { cn } from '@/lib/cn';
 
 const METRICS = [
   ['Active', 'activeTotal', 'text-fg'],
-  ['Running', 'running', 'text-blue-400'],
-  ['Waiting', 'waiting', 'text-warning'],
+  ['Running', 'running', 'text-state-active-fg'],
+  ['Waiting', 'waiting', 'text-state-waiting-fg'],
   ['Completed', 'completed', 'text-success'],
   ['Failed', 'failed', 'text-danger'],
-  ['Compensating', 'compensating', 'text-violet-400'],
+  ['Compensating', 'compensating', 'text-state-delayed-fg'],
   ['Stuck', 'compensation-stuck', 'text-danger'],
 ] as const;
 

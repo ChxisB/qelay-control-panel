@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, test } from 'bun:test';
 import { useThemeStore } from '../src/components/dashboard/stores/themeStore';
 import { ensureDom } from './domSetup';
 
-const STORAGE_KEY = 'bq-dash-theme';
+const STORAGE_KEY = 'qelay-theme';
 
 beforeEach(() => {
   ensureDom();

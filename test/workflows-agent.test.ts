@@ -11,7 +11,7 @@ const paths: string[] = [];
 const packr = new Packr({ structuredClone: true });
 
 function database() {
-  const path = `/tmp/bunqueue-dashboard-workflow-${crypto.randomUUID()}.db`;
+  const path = `/tmp/qelay-control-panel-workflow-${crypto.randomUUID()}.db`;
   paths.push(path);
   const db = new Database(path, { create: true });
   for (const [table, archived] of [

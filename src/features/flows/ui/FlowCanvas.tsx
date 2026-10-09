@@ -100,9 +100,9 @@ export function FlowCanvas({
                 height: FLOW_NODE_HEIGHT,
               }}
               className={cn(
-                'absolute flex flex-col justify-center gap-0.5 rounded-lg border px-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/70',
+                'absolute flex flex-col justify-center gap-0.5 rounded-lg border px-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                 flowStateStyle(job?.state),
-                selected === node.id && 'ring-2 ring-accent'
+                selected === node.id && 'ring-2 ring-ring'
               )}
             >
               <span translate="no" className="truncate font-mono text-xs text-fg">

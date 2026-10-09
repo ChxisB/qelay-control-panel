@@ -113,10 +113,10 @@ export function McpServer() {
         description="Connect bunqueue to AI agents (Claude Desktop, Claude Code) over the Model Context Protocol."
         actions={
           <a
-            href="https://egeominotti.github.io/bunqueue-dashboard/docs/guide/mcp"
+            href="https://chxisb.github.io/qelay-control-panel/docs/guide/mcp"
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-lg border border-line px-3 py-1.5 text-sm text-muted hover:bg-surface-2 hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+            className="rounded-lg border border-line px-3 py-1.5 text-sm text-muted hover:bg-surface-2 hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             Docs
           </a>

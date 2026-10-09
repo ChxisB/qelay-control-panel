@@ -83,7 +83,7 @@ export function S3BackupPro() {
         title="S3 Backup Setup"
         description="Configure and operate Bunqueue 2.9.3 S3 backups."
       />
-      <div className="mb-6 flex items-center justify-between rounded-xl border border-line bg-surface px-5 py-4">
+      <div className="mb-6 flex items-center justify-between rounded-card border border-line bg-surface px-5 py-4">
         <div className="flex items-center gap-3">
           <span className="flex size-10 items-center justify-center rounded-lg bg-surface-2 text-faint">
             <IconS3 className="size-5" />
@@ -104,8 +104,8 @@ export function S3BackupPro() {
         <span
           className={
             environment.ok
-              ? 'rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-success'
-              : 'rounded-full bg-amber-500/10 px-3 py-1 text-xs font-medium text-warning'
+              ? 'rounded-full bg-success/10 px-3 py-1 text-xs font-medium text-success'
+              : 'rounded-full bg-warning/10 px-3 py-1 text-xs font-medium text-warning'
           }
         >
           {environment.ok ? 'Ready' : 'Configure'}

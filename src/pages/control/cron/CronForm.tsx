@@ -133,7 +133,7 @@ export function CronForm({
         {showAdvanced && <CronAdvancedFields values={values} setValue={setValue} />}
       </div>
       <div className="flex items-center gap-3">
-        <Button type="submit" variant="accent" size="sm" disabled={busy || !!nameConflict}>
+        <Button type="submit" variant="primary" size="sm" disabled={busy || !!nameConflict}>
           {busy ? 'Saving…' : nameConflict ? 'Name already exists' : 'Submit upsert'}
         </Button>
         {nameConflict && !error && (

@@ -1,4 +1,5 @@
 import { chromium, type Locator, type Page } from 'playwright';
+import { clickSidebarLink } from './sidebarNav';
 
 export type DashboardFleetNode = {
   name: string;
@@ -127,7 +128,7 @@ async function runScenario(page: Page, options: DashboardFleetScenarioOptions): 
   console.log(`PASS jobs: group priority and atomic max-size through ${options.nodes[0].name}`);
 
   await activate(page, options.nodes[1].name);
-  await nav(page, 'Jobs', 'Jobs Explorer');
+  await nav(page, 'Jobs', 'Jobs');
   await visible(page.getByText(customJobId, { exact: true }), 'shared job');
   await page.getByRole('link', { name: `Inspect job ${customJobId}` }).click();
   await heading(page, 'Job Inspector');
@@ -225,7 +226,7 @@ async function runScenario(page: Page, options: DashboardFleetScenarioOptions): 
 const sidebar = (page: Page) => page.locator('#app-nav nav');
 
 async function nav(page: Page, link: string, title: string): Promise<void> {
-  await sidebar(page).getByRole('link', { name: link, exact: true }).click();
+  await clickSidebarLink(page, sidebar(page).getByRole('link', { name: link, exact: true }));
   await heading(page, title);
 }
 
@@ -236,7 +237,7 @@ async function heading(page: Page, title: string): Promise<void> {
 async function activate(page: Page, name: string): Promise<void> {
   await page
     .locator('#app-nav')
-    .getByRole('combobox', { name: 'Active Bunqueue node' })
+    .getByRole('combobox', { name: 'Active node' })
     .selectOption({ label: name });
 }
 

@@ -106,7 +106,7 @@ export function QueueDetail() {
         <h1 className="mb-4 font-mono text-2xl font-bold tracking-tight text-fg">{name}</h1>
         <EmptyState
           title="Queue not found"
-          hint={`No queue named "${name}" exists on the current Bunqueue server.`}
+          hint={`No queue named "${name}" exists on the current server.`}
           action={
             <Link
               to="/queues-classic"
@@ -134,7 +134,7 @@ export function QueueDetail() {
           <Link
             to="/queues-classic"
             aria-label="Back to classic queues"
-            className="inline-flex size-8 items-center justify-center rounded-lg text-muted transition-colors hover:bg-surface-2 hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+            className="inline-flex size-8 items-center justify-center rounded-lg text-muted transition-colors hover:bg-surface-2 hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <IconChevronLeft className="size-4" />
           </Link>
@@ -152,7 +152,6 @@ export function QueueDetail() {
         <div className="flex flex-wrap items-center gap-2">
           {detail.paused ? (
             <Button
-              variant="success"
               size="sm"
               disabled={busy != null}
               onClick={() => run('resume', () => api.resume(name))}
@@ -161,7 +160,6 @@ export function QueueDetail() {
             </Button>
           ) : (
             <Button
-              variant="warning"
               size="sm"
               disabled={busy != null}
               onClick={() => run('pause', () => api.pause(name))}
@@ -179,15 +177,15 @@ export function QueueDetail() {
       </div>
 
       {actionError && (
-        <div className="mb-4 rounded-lg border border-red-500/20 bg-red-500/5 px-4 py-2 text-sm text-red-400">
+        <div className="mb-4 rounded-lg border border-danger/20 bg-danger/5 px-4 py-2 text-sm text-danger">
           {actionError}
         </div>
       )}
       <p className="mb-4 text-xs text-warning">{FLOW_DELETION_UNAVAILABLE}</p>
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6">
-        <StatCard label="Waiting" value={formatNumber(c.waiting)} tone="amber" />
-        <StatCard label="Active" value={formatNumber(c.active)} tone="blue" />
+        <StatCard label="Waiting" value={formatNumber(c.waiting)} tone="waiting" />
+        <StatCard label="Active" value={formatNumber(c.active)} tone="active" />
         <StatCard label="Completed" value={formatNumber(c.completed)} tone="green" />
         <StatCard
           label="Failed"
@@ -212,27 +210,27 @@ export function QueueDetail() {
             View all jobs <IconArrowRight className="size-3.5" />
           </Link>
         </div>
-        <div className="overflow-x-auto rounded-xl border border-line bg-surface">
+        <div className="overflow-x-auto rounded-card border border-line bg-surface">
           <table className="w-full min-w-[44rem] text-sm">
             <thead>
-              <tr className="border-b border-line text-left text-[11px] uppercase tracking-wider text-faint">
-                <th className="px-5 py-3 font-medium">ID</th>
-                <th className="px-5 py-3 font-medium">Name</th>
-                <th className="px-5 py-3 font-medium">Status</th>
-                <th className="px-5 py-3 text-right font-medium">Duration</th>
-                <th className="px-5 py-3 text-right font-medium">Created</th>
+              <tr className="border-b border-line text-left eyebrow text-muted light:bg-surface-2">
+                <th className="px-4 py-2.5 font-semibold">ID</th>
+                <th className="px-4 py-2.5 font-semibold">Name</th>
+                <th className="px-4 py-2.5 font-semibold">Status</th>
+                <th className="px-4 py-2.5 text-right font-semibold">Duration</th>
+                <th className="px-4 py-2.5 text-right font-semibold">Created</th>
               </tr>
             </thead>
             <tbody>
               {d.recentJobsError ? (
                 <tr>
-                  <td colSpan={5} className="px-5 py-12 text-center text-sm text-danger">
+                  <td colSpan={5} className="px-4 py-12 text-center text-sm text-danger">
                     Could not load recent jobs — {d.recentJobsError}. Retry the page.
                   </td>
                 </tr>
               ) : recent.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-5 py-12 text-center text-sm text-faint">
+                  <td colSpan={5} className="px-4 py-12 text-center text-sm text-faint">
                     No recent jobs.
                   </td>
                 </tr>
@@ -242,24 +240,24 @@ export function QueueDetail() {
                     key={j.id}
                     className="border-b border-line last:border-0 hover:bg-surface-2/40"
                   >
-                    <td className="px-5 py-3 font-mono text-xs">
+                    <td className="px-4 py-2.5 font-mono text-xs">
                       <Link
                         to={`/job?id=${encodeURIComponent(j.id)}`}
-                        className="rounded text-accent hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+                        className="rounded text-link hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       >
                         {j.id}
                       </Link>
                     </td>
-                    <td className="px-5 py-3 text-fg">
+                    <td className="px-4 py-2.5 text-fg">
                       {j.name ?? jobDataName(j.data) ?? 'default'}
                     </td>
-                    <td className="px-5 py-3">
+                    <td className="px-4 py-2.5">
                       <StatusBadge status={String(j.state ?? j.status ?? 'waiting')} />
                     </td>
-                    <td className="px-5 py-3 text-right tnum text-muted">
+                    <td className="px-4 py-2.5 text-right tnum text-muted">
                       {formatDuration(jobDuration(j.startedAt as number, j.completedAt as number))}
                     </td>
-                    <td className="px-5 py-3 text-right text-faint">
+                    <td className="px-4 py-2.5 text-right text-faint">
                       {formatRelativeTime(j.createdAt)}
                     </td>
                   </tr>

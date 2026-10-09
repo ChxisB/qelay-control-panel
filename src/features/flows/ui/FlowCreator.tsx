@@ -100,7 +100,7 @@ export function FlowCreator({
           <button
             type="submit"
             disabled={busy}
-            className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-accent-fg disabled:opacity-50"
+            className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-fg disabled:opacity-50"
           >
             {busy ? 'Creating…' : `Run ${operation}`}
           </button>
@@ -112,7 +112,7 @@ export function FlowCreator({
             spellCheck={false}
             value={source}
             onChange={(event) => setSource(event.target.value)}
-            className="mt-1 min-h-80 w-full resize-y rounded-lg border border-line bg-bg p-3 font-mono text-xs text-fg outline-none focus:ring-2 focus:ring-accent/50"
+            className="mt-1 min-h-80 w-full resize-y rounded-lg border border-line bg-bg p-3 font-mono text-xs text-fg outline-none focus:ring-2 focus:ring-ring"
           />
         </label>
       </form>

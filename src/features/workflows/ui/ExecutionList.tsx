@@ -26,15 +26,15 @@ export function ExecutionList({
 }) {
   return (
     <div>
-      <div className="overflow-x-auto rounded-lg border border-line bg-surface">
+      <div className="overflow-x-auto rounded-card border border-line bg-surface">
         <table className="w-full text-sm">
           <thead className="bg-surface-2/80">
-            <tr className="border-b border-line text-left text-[11px] uppercase tracking-wider text-faint">
-              <th className="px-3 py-2 font-medium">Workflow / execution</th>
-              <th className="px-3 py-2 font-medium">Status</th>
-              <th className="hidden px-3 py-2 font-medium md:table-cell">Node</th>
-              <th className="hidden px-3 py-2 font-medium lg:table-cell">Elapsed</th>
-              <th className="px-3 py-2 text-right font-medium">Updated</th>
+            <tr className="border-b border-line text-left eyebrow text-muted light:bg-surface-2">
+              <th className="px-3 py-2 font-semibold">Workflow / execution</th>
+              <th className="px-3 py-2 font-semibold">Status</th>
+              <th className="hidden px-3 py-2 font-semibold md:table-cell">Node</th>
+              <th className="hidden px-3 py-2 font-semibold lg:table-cell">Elapsed</th>
+              <th className="px-3 py-2 text-right font-semibold">Updated</th>
             </tr>
           </thead>
           <tbody>
@@ -75,7 +75,7 @@ function ExecutionRow({
         <button
           type="button"
           onClick={() => onSelect({ id: execution.id, source: 'page' })}
-          className="block w-full px-3 py-2.5 text-left focus-visible:outline-2 focus-visible:outline-inset focus-visible:outline-accent"
+          className="block w-full px-3 py-2.5 text-left focus-visible:outline-2 focus-visible:outline-inset focus-visible:outline-ring"
         >
           <span className="block truncate font-medium text-fg">{execution.workflowName}</span>
           <span

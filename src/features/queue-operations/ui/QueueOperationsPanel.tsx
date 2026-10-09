@@ -140,7 +140,7 @@ export function QueueOperationsPanel({
     <Card className="mb-6">
       <CardHeader
         title="Queue SDK operations"
-        action={busy ? <span className="font-mono text-xs text-accent">{busy}...</span> : undefined}
+        action={busy ? <span className="font-mono text-xs text-link">{busy}...</span> : undefined}
       />
       <p className="mb-5 max-w-3xl text-xs leading-5 text-faint">
         Live Bunqueue 2.9.3 limit, group, deduplication, metric, and event-journal contracts,

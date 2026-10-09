@@ -77,6 +77,7 @@ export function WorkflowMaintenancePanel({
           <label className="flex h-9 items-center gap-2 text-xs text-muted">
             <input
               type="checkbox"
+              className="size-4 accent-ring"
               checked={completed}
               onChange={(event) => setCompleted(event.target.checked)}
             />
@@ -85,6 +86,7 @@ export function WorkflowMaintenancePanel({
           <label className="flex h-9 items-center gap-2 text-xs text-muted">
             <input
               type="checkbox"
+              className="size-4 accent-ring"
               checked={failed}
               onChange={(event) => setFailed(event.target.checked)}
             />
@@ -97,7 +99,7 @@ export function WorkflowMaintenancePanel({
           type="button"
           disabled={!valid || Boolean(command.busy)}
           onClick={() => run('archive')}
-          className="rounded-md bg-accent px-3 py-2 text-xs font-medium text-accent-fg disabled:opacity-40"
+          className="rounded-md bg-primary px-3 py-2 text-xs font-medium text-primary-fg disabled:opacity-40"
         >
           Archive eligible
         </button>

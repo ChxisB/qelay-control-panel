@@ -191,7 +191,7 @@ export function AuthGate() {
         role="dialog"
         aria-modal="true"
         aria-label="Authentication required"
-        className="w-full max-w-sm rounded-xl border border-line-strong bg-surface p-6 shadow-2xl"
+        className="w-full max-w-sm rounded-card border border-line-strong bg-surface p-6 shadow-2xl"
       >
         <h2 className="text-lg font-semibold text-fg">Authentication required</h2>
         {scope === 'agent' ? (
@@ -220,7 +220,7 @@ export function AuthGate() {
           aria-label={scope === 'agent' ? 'Agent token' : 'Bearer token'}
           name={scope === 'agent' ? 'agent-token' : 'server-token'}
           autoComplete="current-password"
-          className="mt-4 w-full rounded-lg border border-line bg-surface-2 px-3 py-2 text-sm text-fg outline-none placeholder:text-faint focus-visible:ring-2 focus-visible:ring-accent/50"
+          className="mt-4 w-full rounded-lg border border-line bg-surface-2 px-3 py-2 text-sm text-fg outline-none placeholder:text-faint focus-visible:ring-2 focus-visible:ring-ring"
         />
         <div className="mt-4 flex items-center justify-between gap-3">
           <Link
@@ -233,7 +233,7 @@ export function AuthGate() {
           <button
             type="submit"
             disabled={!value.trim()}
-            className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-accent-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 disabled:opacity-50"
+            className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
           >
             Unlock
           </button>

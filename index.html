@@ -11,8 +11,11 @@
       // Pre-paint theme: apply the persisted choice before the bundle loads so
       // light-theme users don't get a dark first-paint flash on every visit.
       // Key + shape must match themeStore (zustand persist: {state:{theme}}).
+      // The second key is the pre-rebrand one; themeStore migrates it on hydration.
       try {
-        const t = JSON.parse(localStorage.getItem('bq-dash-theme')).state.theme;
+        const t = JSON.parse(
+          localStorage.getItem('qelay-theme') ?? localStorage.getItem('bq-dash-theme')
+        ).state.theme;
         if (t === 'light' || t === 'dark') {
           document.documentElement.dataset.theme = t;
           document.documentElement.style.colorScheme = t;
@@ -20,35 +23,44 @@
       } catch {}
     </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>bunqueue dashboard — drive a Bun job queue from your browser</title>
+    <meta name="theme-color" content="#0B0F1A" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
+    <title>Qelay Control Panel</title>
     <meta
       name="description"
-      content="A free, open-source web dashboard that fully drives a bunqueue server: queues, jobs, DLQ, cron, webhooks, workers, live activity, and the server process itself. Try the live demo, no server required."
+      content="Free, open-source control panel for a bunqueue server: queues, jobs, DLQ, cron, workers and the server process, live. Try the demo, no server needed."
     />
-    <link rel="canonical" href="https://egeominotti.github.io/bunqueue-dashboard/" />
+    <!-- CONFIRM: canonical, og:url and og:image use the Pages URL derived from the repo
+         (ChxisB/qelay-control-panel). Replace them all once the real host is known;
+         scrapers cache these URLs. -->
+    <link rel="canonical" href="https://chxisb.github.io/qelay-control-panel/" />
     <!-- Social cards. The demo URL is the project's most-shared link, so it must
          unfurl with a real image/description on Twitter/Slack/Reddit/LinkedIn.
          og:image is an absolute URL (scrapers don't resolve base-relative paths);
          the image is hosted on Pages and loads from there for any deploy. -->
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="bunqueue dashboard" />
-    <meta property="og:title" content="bunqueue dashboard — drive a Bun job queue from your browser" />
+    <meta property="og:site_name" content="Qelay Control Panel" />
+    <meta property="og:title" content="Qelay Control Panel" />
     <meta
       property="og:description"
-      content="Fully drive a bunqueue server from one UI: queues, jobs, DLQ, cron, webhooks, workers, live activity, and start/stop/restart of the server itself. Live demo, no signup."
+      content="Drive a bunqueue server from one UI: queues, jobs, DLQ, cron, webhooks, workers, live activity, and start/stop/restart of the server itself. Live demo, no signup."
     />
-    <meta property="og:url" content="https://egeominotti.github.io/bunqueue-dashboard/" />
-    <meta property="og:image" content="https://egeominotti.github.io/bunqueue-dashboard/og.png" />
-    <meta property="og:image:width" content="1600" />
-    <meta property="og:image:height" content="1196" />
-    <meta property="og:image:alt" content="The bunqueue dashboard: stat cards, a queue-health grid, and a live activity feed." />
+    <meta property="og:url" content="https://chxisb.github.io/qelay-control-panel/" />
+    <meta property="og:image" content="https://chxisb.github.io/qelay-control-panel/og.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="The Qelay mark and wordmark on a dark ground, with the line: Drive a bunqueue server from one UI."
+    />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="bunqueue dashboard — drive a Bun job queue from your browser" />
+    <meta name="twitter:title" content="Qelay Control Panel" />
     <meta
       name="twitter:description"
-      content="Fully drive a bunqueue server from one UI: queues, jobs, DLQ, cron, webhooks, workers, and start/stop/restart. Live demo, no signup."
+      content="Drive a bunqueue server from one UI: queues, jobs, DLQ, cron, webhooks, workers, and start/stop/restart. Live demo, no signup."
     />
-    <meta name="twitter:image" content="https://egeominotti.github.io/bunqueue-dashboard/og.png" />
+    <meta name="twitter:image" content="https://chxisb.github.io/qelay-control-panel/og.png" />
   </head>
   <body>
     <div id="root"></div>

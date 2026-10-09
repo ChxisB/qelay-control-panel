@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { CopyButton } from '@/components/ui/CopyButton';
 import { ErrorState, LoadingState, OfflineBanner } from '@/components/ui/feedback';
@@ -17,7 +18,7 @@ const clock = (ts: number): string =>
   `${new Date(ts).toLocaleTimeString([], { hour12: false })}.${String(ts % 1000).padStart(3, '0')}`;
 
 const toneFor = (stream: ServerLogLine['stream']): string =>
-  stream === 'stderr' ? 'text-danger/90' : stream === 'sys' ? 'text-accent/80' : 'text-muted';
+  stream === 'stderr' ? 'text-danger' : stream === 'sys' ? 'text-link' : 'text-muted';
 
 export function downloadProcessLogs(content: string, timestamp = Date.now()): void {
   const blob = new Blob([content], { type: 'text/plain' });
@@ -84,8 +85,8 @@ export function ProcessLogs() {
 
   return (
     <Card padded={false} className="overflow-hidden">
-      <div className="flex flex-wrap items-center gap-2 border-b border-line px-4 py-3">
-        <h3 className="mr-1 text-base font-semibold text-fg">Process logs</h3>
+      <div className="flex flex-wrap items-center gap-2 border-b border-line px-5 py-3.5">
+        <h2 className="mr-2 text-[15px] font-semibold tracking-tight text-fg">Process logs</h2>
         <SegmentedControl options={STREAMS} value={stream} onChange={setStream} />
         <div className="relative min-w-40 flex-1">
           <IconSearch className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-faint" />
@@ -96,24 +97,19 @@ export function ProcessLogs() {
             name="process-log-filter"
             autoComplete="off"
             placeholder="Filter…"
-            className="h-8 w-full rounded-lg border border-line bg-surface-2 pl-8 pr-2 text-xs text-fg placeholder:text-faint focus:border-accent/60 focus:outline-none focus:ring-2 focus:ring-accent/30"
+            className="h-8 w-full rounded-control border border-line-strong bg-surface-2 pl-8 pr-2 text-xs text-fg placeholder:text-faint focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30 light:bg-surface"
           />
         </div>
         <Toggle on={follow} onClick={() => setFollow((v) => !v)} label="Follow" />
         <Toggle on={showTimes} onClick={() => setShowTimes((v) => !v)} label="Times" />
         <CopyButton value={asText} />
-        <button
-          type="button"
-          onClick={download}
-          disabled={shown.length === 0}
-          className="rounded-md border border-line bg-surface-2 px-2 py-1 text-xs text-muted transition-colors hover:text-fg disabled:opacity-40"
-        >
+        <Button size="sm" onClick={download} disabled={shown.length === 0}>
           Download
-        </button>
+        </Button>
       </div>
 
       {error && data && (
-        <div className="border-b border-line px-4 pt-3 font-sans">
+        <div className="border-b border-line px-5 pt-3 font-sans">
           <OfflineBanner
             message={`Process-log refresh failed — showing the last received lines. ${error.message}`}
             onRetry={refetch}
@@ -123,7 +119,7 @@ export function ProcessLogs() {
 
       <div
         ref={scrollRef}
-        className="max-h-80 min-h-40 overflow-y-auto p-4 font-mono text-xs leading-relaxed"
+        className="max-h-96 min-h-40 overflow-y-auto bg-bg p-5 font-mono text-xs leading-relaxed light:bg-surface-2"
       >
         {loading && !data && !error ? (
           <div className="font-sans">
@@ -147,7 +143,7 @@ export function ProcessLogs() {
         )}
       </div>
 
-      <div className="flex items-center justify-between border-t border-line px-4 py-2 text-[11px] text-faint">
+      <div className="flex items-center justify-between border-t border-line px-5 py-2.5 text-[11px] text-faint">
         <span>
           {error && !data
             ? 'logs unavailable'
@@ -168,9 +164,9 @@ function Toggle({ on, onClick, label }: { on: boolean; onClick: () => void; labe
       onClick={onClick}
       aria-pressed={on}
       className={cn(
-        'rounded-md border px-2 py-1 text-xs transition-colors',
+        'h-8 rounded-control border px-2.5 text-xs transition-colors',
         on
-          ? 'border-accent/40 bg-accent/10 text-accent'
+          ? 'border-link/40 bg-selected text-link'
           : 'border-line bg-surface-2 text-muted hover:text-fg'
       )}
     >

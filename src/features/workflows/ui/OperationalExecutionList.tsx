@@ -32,16 +32,16 @@ export function OperationalExecutionList({
   const now = useWorkflowNow(clock, mode === 'waiting');
   return (
     <div>
-      <section className="overflow-x-auto rounded-lg border border-line bg-surface">
+      <section className="overflow-x-auto rounded-card border border-line bg-surface">
         <table className="w-full min-w-[560px] text-sm">
-          <thead className="border-b border-line bg-surface-2/80 text-left text-[10px] uppercase tracking-wider text-faint">
+          <thead className="border-b border-line bg-surface-2/80 text-left eyebrow text-muted">
             <tr>
-              <th className="px-3 py-2 font-medium">
+              <th className="px-3 py-2 font-semibold">
                 {mode === 'archive' ? 'Execution record' : 'Execution'}
               </th>
-              <th className="px-3 py-2 font-medium">Workflow</th>
-              <th className="px-3 py-2 font-medium">{middleHeading(mode)}</th>
-              <th className="px-3 py-2 text-right font-medium">{lastHeading(mode)}</th>
+              <th className="px-3 py-2 font-semibold">Workflow</th>
+              <th className="px-3 py-2 font-semibold">{middleHeading(mode)}</th>
+              <th className="px-3 py-2 text-right font-semibold">{lastHeading(mode)}</th>
             </tr>
           </thead>
           <tbody>
@@ -62,11 +62,11 @@ export function OperationalExecutionList({
                     {row.id}
                   </button>
                 </td>
-                <td className="px-3 py-3 text-muted">{row.workflowName}</td>
-                <td className="px-3 py-3">
+                <td className="px-3 py-2.5 text-muted">{row.workflowName}</td>
+                <td className="px-3 py-2.5">
                   <MiddleValue mode={mode} row={row} />
                 </td>
-                <td className="whitespace-nowrap px-3 py-3 text-right text-xs text-muted">
+                <td className="whitespace-nowrap px-3 py-2.5 text-right text-xs text-muted">
                   {lastValue(mode, row, now)}
                 </td>
               </tr>

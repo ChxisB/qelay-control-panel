@@ -113,7 +113,7 @@ describe('async feedback semantics', () => {
 });
 
 describe('focus and copy-button feedback', () => {
-  test('interactive UI components use a solid accent focus outline', () => {
+  test('interactive UI components use a solid violet focus outline', () => {
     const { host, unmount } = render(
       createElement(
         'div',
@@ -135,9 +135,9 @@ describe('focus and copy-button feedback', () => {
 
     for (const control of host.querySelectorAll('input, button')) {
       expect(control.className).toContain('focus-visible:outline-2');
-      expect(control.className).toContain('focus-visible:outline-accent');
+      expect(control.className).toContain('focus-visible:outline-ring');
       expect(control.className).not.toContain('outline-none');
-      expect(control.className).not.toContain('ring-accent/50');
+      expect(control.className).not.toContain('ring-ring/');
     }
     unmount();
   });

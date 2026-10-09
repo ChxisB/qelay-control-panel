@@ -12,7 +12,7 @@ describe('Bun runtime pin', () => {
     'rejects unpinned Bun %s',
     (version) => {
       expect(() => assertRequiredBunVersion(version)).toThrow(
-        `bunqueue-dashboard requires Bun ${REQUIRED_BUN_VERSION}; received ${version}`
+        `qelay-control-panel requires Bun ${REQUIRED_BUN_VERSION}; received ${version}`
       );
     }
   );

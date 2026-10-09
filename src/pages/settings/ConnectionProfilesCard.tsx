@@ -56,12 +56,12 @@ export function ConnectionProfilesCard() {
 
   return (
     <Card>
-      <CardHeader title="Bunqueue fleet connections" />
+      <CardHeader title="Fleet connections" />
       <div className="flex flex-col gap-4">
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-[1fr_auto_auto]">
           <Field label="Active node">
             <Select
-              aria-label="Active Bunqueue node"
+              aria-label="Active node"
               value={editor.activeProfileId}
               onChange={(event) => editor.activateProfile(event.target.value)}
             >
@@ -115,7 +115,7 @@ export function ConnectionProfilesCard() {
           </p>
         ) : (
           <p id="server-url-help" className="-mt-2 text-xs text-faint">
-            Bunqueue HTTP API for this broker. All queue pages use the selected node.
+            The bunqueue server's HTTP API for this node. All queue pages use the selected node.
           </p>
         )}
         <Field label="Control agent URL">
@@ -157,7 +157,7 @@ export function ConnectionProfilesCard() {
           placeholder="only if AGENT_TOKEN is set"
         />
         <div className="flex flex-wrap items-center gap-3">
-          <Button variant="accent" onClick={editor.save}>
+          <Button variant="primary" onClick={editor.save}>
             Save
           </Button>
           <Button onClick={editor.testServer}>
@@ -184,8 +184,8 @@ export function ConnectionProfilesCard() {
           )}
         </div>
         <p className="-mt-1 text-xs text-faint">
-          Switching the active node retargets every Dashboard feature atomically. Profile metadata
-          persists; both credentials are erased on reload.
+          Switching the active node retargets every control panel feature atomically. Profile
+          metadata persists; both credentials are erased on reload.
         </p>
       </div>
     </Card>

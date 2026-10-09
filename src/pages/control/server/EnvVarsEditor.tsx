@@ -131,7 +131,7 @@ export function EnvVarsEditor({
             aria-label={`Remove ${r.key || 'variable'}`}
             disabled={disabled}
             onClick={() => removeRow(r.id)}
-            className="shrink-0 rounded-md px-2 py-1 text-xs text-faint transition-colors hover:text-danger disabled:opacity-40"
+            className="shrink-0 rounded-control px-2 py-1 text-xs text-faint transition-colors hover:text-danger disabled:opacity-40"
           >
             ✕
           </button>
@@ -161,7 +161,7 @@ export function EnvVarsEditor({
             type="button"
             disabled={disabled}
             onClick={() => addRow(p)}
-            className="rounded-md border border-line bg-surface-2 px-2 py-1 font-mono text-[11px] text-muted transition-colors hover:border-line-strong hover:text-fg disabled:opacity-40"
+            className="rounded-control border border-line bg-surface-2 px-2 py-1 font-mono text-[11px] text-muted transition-colors hover:border-line-strong hover:text-fg disabled:opacity-40"
           >
             + {p}
           </button>

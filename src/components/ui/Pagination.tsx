@@ -64,18 +64,18 @@ export function Pagination({
           type="button"
           disabled={!canPrev}
           onClick={() => onPageChange(shownPage - 1)}
-          className="rounded-md px-3 py-1 text-xs hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 disabled:opacity-40 disabled:hover:text-faint"
+          className="rounded-md px-3 py-1 text-xs hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-40 disabled:hover:text-faint"
         >
           Previous
         </button>
-        <span className="rounded-md bg-accent/15 px-2.5 py-1 text-xs font-medium text-accent tnum">
+        <span className="rounded-md bg-selected px-2.5 py-1 text-xs font-medium text-link tnum">
           {knownTotal ? `${shownPage + 1} / ${pageCount}` : shownPage + 1}
         </span>
         <button
           type="button"
           disabled={!canNext}
           onClick={() => onPageChange(shownPage + 1)}
-          className="rounded-md px-3 py-1 text-xs hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 disabled:opacity-40 disabled:hover:text-faint"
+          className="rounded-md px-3 py-1 text-xs hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-40 disabled:hover:text-faint"
         >
           Next
         </button>

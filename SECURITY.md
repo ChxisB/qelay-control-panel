@@ -21,7 +21,7 @@ are no longer supported; upgrade to the latest `1.x`.
 
 ## Scope and threat model
 
-The dashboard talks only to a bunqueue server's HTTP API plus a small local
+Qelay Control Panel talks only to a bunqueue server's HTTP API plus a small local
 **control agent** that can start / stop / restart the bunqueue process. Because
 the agent can spawn processes, it is hardened by design:
 
@@ -39,7 +39,7 @@ the agent can spawn processes, it is hardened by design:
 - a **read-only** SQLite inspector (read-only connection, statement allowlist,
   row cap).
 
-The standalone server binds the dashboard to **loopback by default**
+The standalone server binds the control panel to **loopback by default**
 (`BIND_ADDR` to change). Its direct `:6800` agent listener remains loopback;
 the same-origin `/agent` bridge separately detects remote/proxied policy and
 fails closed without a token. A wildcard bind also requires every client-facing
@@ -47,7 +47,7 @@ name/IP in `AGENT_ALLOWED_HOSTS` or `AGENT_ALLOWED_ORIGINS`.
 
 The all-in-one `/api/*` administrative reverse proxy is an authentication
 boundary for remote access: set `BUNQUEUE_TOKEN`, then enter the same value as
-the dashboard's Server token. Its Authorization header is forwarded; if the
+the control panel's Server token. Its Authorization header is forwarded; if the
 Bunqueue server also enables `AUTH_TOKENS`, configure the same value there.
 Static/Caddy deployments bypass this all-in-one boundary and must instead use
 Bunqueue `AUTH_TOKENS` or front-proxy authentication. Host and Origin checks
@@ -66,5 +66,5 @@ attestation. Verify a download with:
 
 ```bash
 sha256sum -c SHA256SUMS
-gh attestation verify <artifact> --repo egeominotti/bunqueue-dashboard
+gh attestation verify <artifact> --repo ChxisB/qelay-control-panel
 ```

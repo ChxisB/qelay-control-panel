@@ -92,7 +92,7 @@ export function Fleet() {
     <div>
       <PageHeader
         title="Fleet"
-        description="Operate every Bunqueue broker and verify shared PostgreSQL topology."
+        description="Operate every server node and verify shared PostgreSQL topology."
         actions={<Button onClick={() => void refetch()}>Refresh all</Button>}
       />
 
@@ -122,7 +122,7 @@ export function Fleet() {
       {error && (
         <div
           role="status"
-          className="mb-4 rounded-lg border border-red-500/20 bg-red-500/5 px-4 py-2 text-sm text-danger"
+          className="mb-4 rounded-lg border border-danger/20 bg-danger/5 px-4 py-2 text-sm text-danger"
         >
           Fleet refresh failed: {error.message}
         </div>
@@ -150,7 +150,7 @@ export function Fleet() {
       )}
 
       {loading && !data ? (
-        <Card>Checking every Bunqueue node…</Card>
+        <Card>Checking every server node…</Card>
       ) : (
         <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
           {(data ?? []).map((snapshot) => (

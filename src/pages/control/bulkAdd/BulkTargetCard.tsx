@@ -103,7 +103,7 @@ export function BulkTargetCard({
         </div>
         <div className="flex items-center gap-3">
           <Button
-            variant="accent"
+            variant="primary"
             disabled={
               busy ||
               parsedCount === 0 ||

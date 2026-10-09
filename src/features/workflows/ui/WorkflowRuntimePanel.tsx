@@ -123,7 +123,7 @@ export function WorkflowRuntimePanel({
             type="button"
             disabled={!ready || !workflowName.trim() || Boolean(command.busy)}
             onClick={start}
-            className="rounded-md bg-accent px-3 py-2 text-xs font-medium text-accent-fg disabled:opacity-40"
+            className="rounded-md bg-primary px-3 py-2 text-xs font-medium text-primary-fg disabled:opacity-40"
           >
             {command.busy === 'start' ? 'Starting…' : 'Start execution'}
           </button>

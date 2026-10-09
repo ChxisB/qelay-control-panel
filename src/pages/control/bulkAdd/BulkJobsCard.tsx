@@ -50,7 +50,7 @@ export function BulkJobsCard({
         rows={16}
         placeholder={BULK_SAMPLE}
         aria-label="Jobs JSON"
-        className="w-full rounded-lg border border-line bg-surface-2 p-3 font-mono text-xs text-fg placeholder:text-faint focus:border-accent/60 focus:outline-none focus:ring-2 focus:ring-accent/30"
+        className="w-full rounded-lg border border-line bg-surface-2 p-3 font-mono text-xs text-fg placeholder:text-faint focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30"
       />
       <fieldset className="mt-3 flex flex-wrap items-center gap-3">
         <legend className="sr-only">Import interpretation</legend>

@@ -151,7 +151,7 @@ export function QueryRunner({
             </Button>
             <Button
               size="sm"
-              variant="accent"
+              variant="primary"
               disabled={running || !sql.trim()}
               onClick={() => run()}
             >
@@ -173,7 +173,7 @@ export function QueryRunner({
         spellCheck={false}
         aria-label="SQL query"
         placeholder="SELECT … — read-only: writes are rejected by the engine"
-        className="w-full resize-y rounded-lg border border-line bg-surface-2 p-3 font-mono text-xs text-fg placeholder:text-faint focus:border-accent/60 focus:outline-none focus:ring-2 focus:ring-accent/30"
+        className="w-full resize-y rounded-lg border border-line bg-surface-2 p-3 font-mono text-xs text-fg placeholder:text-faint focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30"
       />
       <p className="mt-1 text-[11px] text-faint">⌘/Ctrl+Enter runs. Connection is read-only.</p>
 
@@ -186,7 +186,7 @@ export function QueryRunner({
               type="button"
               onClick={() => setSql(h)}
               title={h}
-              className="max-w-56 truncate rounded-md border border-line bg-surface-2 px-2 py-1 font-mono text-[11px] text-muted transition-colors hover:border-line-strong hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+              className="max-w-56 truncate rounded-md border border-line bg-surface-2 px-2 py-1 font-mono text-[11px] text-muted transition-colors hover:border-line-strong hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {h}
             </button>
@@ -194,7 +194,7 @@ export function QueryRunner({
           <button
             type="button"
             onClick={clearHistory}
-            className="rounded-md px-2 py-1 text-[11px] text-faint transition-colors hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+            className="rounded-md px-2 py-1 text-[11px] text-faint transition-colors hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             Clear
           </button>

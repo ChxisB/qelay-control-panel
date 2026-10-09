@@ -87,7 +87,7 @@ Typing a queue name that doesn't exist creates a brand-new queue. Double-check t
 
 - **Name and ID are separate.** **Job name** classifies the work and defaults to `default`; the optional **Custom job ID** controls its caller-selected identity. User payload remains in JSON data.
 - **Group admission stays atomic.** Bunqueue 2.9.3's single HTTP add route does
-  not forward `groupMaxSize`. When **Group max size** is filled, the Dashboard
+  not forward `groupMaxSize`. When **Group max size** is filled, the control panel
   transparently sends a one-entry bulk request, which does preserve the field;
   it never silently submits an uncapped group job.
 - **Count copies are identical.** Every copy shares the exact same data and options. For different payloads, use **Bulk import**, which accepts JSON array/NDJSON job specs and preserves the operator-safe v2.9.3 fields: structured backoff, tags/groups/dependencies, interval repeat, dedup, stall timeout, stack-trace limit and timestamp, in addition to the single-add options.

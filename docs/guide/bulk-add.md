@@ -17,7 +17,7 @@ newline-delimited JSON, or load a file. This screen imports distinct jobs; use
    validation error before submission.
 3. Select an existing queue or enter a new queue name. Set optional default
    priority, attempts, backoff and timeout values.
-4. Submit and inspect the accepted count, then open [Jobs Explorer](/guide/jobs)
+4. Submit and inspect the accepted count, then open [Jobs](/guide/jobs)
    for that queue to inspect the stored jobs.
 
 Example job specs:

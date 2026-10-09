@@ -38,7 +38,7 @@ export function CompensationDetail({
       <section className="overflow-hidden rounded-lg border border-line bg-surface">
         <header className="flex items-start justify-between gap-3 border-b border-line px-4 py-3">
           <div>
-            <div className="text-[11px] uppercase tracking-wider text-violet-400">
+            <div className="text-[11px] uppercase tracking-wider text-state-delayed-fg">
               Recovery plan
             </div>
             <h2 className="mt-1 break-all font-mono text-sm font-semibold text-fg">

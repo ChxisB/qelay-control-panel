@@ -24,12 +24,12 @@ export function OperationLatency({
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-line text-left text-[11px] uppercase tracking-wider text-faint">
-              <th className="px-5 py-3 font-medium">Operation</th>
-              <th className="px-5 py-3 text-right font-medium">Avg</th>
-              <th className="px-5 py-3 text-right font-medium">p50</th>
-              <th className="px-5 py-3 text-right font-medium">p95</th>
-              <th className="px-5 py-3 text-right font-medium">p99</th>
+            <tr className="border-b border-line text-left eyebrow text-muted light:bg-surface-2">
+              <th className="px-4 py-2.5 font-semibold">Operation</th>
+              <th className="px-4 py-2.5 text-right font-semibold">Avg</th>
+              <th className="px-4 py-2.5 text-right font-semibold">p50</th>
+              <th className="px-4 py-2.5 text-right font-semibold">p95</th>
+              <th className="px-4 py-2.5 text-right font-semibold">p99</th>
             </tr>
           </thead>
           <tbody>
@@ -38,17 +38,17 @@ export function OperationLatency({
               const average = latency?.averages?.[`${operation}Ms`];
               return (
                 <tr key={operation} className="border-b border-line last:border-0">
-                  <td className="px-5 py-3 font-medium capitalize text-fg">{operation}</td>
-                  <td className="px-5 py-3 text-right tnum text-muted">{formatMs(average)}</td>
-                  <td className="px-5 py-3 text-right tnum text-muted">
+                  <td className="px-4 py-2.5 font-medium capitalize text-fg">{operation}</td>
+                  <td className="px-4 py-2.5 text-right tnum text-muted">{formatMs(average)}</td>
+                  <td className="px-4 py-2.5 text-right tnum text-muted">
                     {formatMs(percentile?.p50)}
                   </td>
-                  <td className="px-5 py-3 text-right tnum text-muted">
+                  <td className="px-4 py-2.5 text-right tnum text-muted">
                     {formatMs(percentile?.p95)}
                   </td>
                   <td
                     className={cn(
-                      'px-5 py-3 text-right tnum',
+                      'px-4 py-2.5 text-right tnum',
                       (percentile?.p99 ?? 0) > P99_WARN_MS ? 'text-warning' : 'text-muted'
                     )}
                   >
@@ -88,20 +88,20 @@ export function PerQueueMetrics({
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-line text-left text-[11px] uppercase tracking-wider text-faint">
-              <th className="px-5 py-3 font-medium">Queue</th>
-              <th className="px-5 py-3 font-medium">Status</th>
-              <th className="px-5 py-3 text-right font-medium">Waiting</th>
-              <th className="px-5 py-3 text-right font-medium">Prioritized</th>
-              <th className="px-5 py-3 text-right font-medium">Active</th>
-              <th className="px-5 py-3 text-right font-medium">Completed</th>
-              <th className="px-5 py-3 text-right font-medium">Failed</th>
+            <tr className="border-b border-line text-left eyebrow text-muted light:bg-surface-2">
+              <th className="px-4 py-2.5 font-semibold">Queue</th>
+              <th className="px-4 py-2.5 font-semibold">Status</th>
+              <th className="px-4 py-2.5 text-right font-semibold">Waiting</th>
+              <th className="px-4 py-2.5 text-right font-semibold">Prioritized</th>
+              <th className="px-4 py-2.5 text-right font-semibold">Active</th>
+              <th className="px-4 py-2.5 text-right font-semibold">Completed</th>
+              <th className="px-4 py-2.5 text-right font-semibold">Failed</th>
             </tr>
           </thead>
           <tbody>
             {rows.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-5 py-12 text-center text-sm text-faint">
+                <td colSpan={7} className="px-4 py-12 text-center text-sm text-faint">
                   {empty}
                 </td>
               </tr>
@@ -111,32 +111,32 @@ export function PerQueueMetrics({
                   key={queue.name}
                   className="border-b border-line last:border-0 hover:bg-surface-2/40"
                 >
-                  <td className="px-5 py-3 font-mono text-xs text-accent">{queue.name}</td>
-                  <td className="px-5 py-3">
+                  <td className="px-4 py-2.5 font-mono text-xs text-fg">{queue.name}</td>
+                  <td className="px-4 py-2.5">
                     <span
                       className={cn(
                         'rounded-full px-2 py-0.5 text-[11px] font-medium',
                         queue.paused
-                          ? 'bg-orange-500/10 text-orange-400'
-                          : 'bg-emerald-500/10 text-success'
+                          ? 'bg-state-waiting-bg text-state-waiting-fg'
+                          : 'bg-state-completed-bg text-state-completed-fg'
                       )}
                     >
                       {queue.paused ? 'paused' : 'active'}
                     </span>
                   </td>
-                  <td className="px-5 py-3 text-right tnum text-warning">
+                  <td className="px-4 py-2.5 text-right tnum text-state-waiting-fg">
                     {formatNumber(queue.counts.waiting)}
                   </td>
-                  <td className="px-5 py-3 text-right tnum text-orange-400">
+                  <td className="px-4 py-2.5 text-right tnum text-fg">
                     {formatNumber(queue.counts.prioritized)}
                   </td>
-                  <td className="px-5 py-3 text-right tnum text-blue-400">
+                  <td className="px-4 py-2.5 text-right tnum text-state-active-fg">
                     {formatNumber(queue.counts.active)}
                   </td>
-                  <td className="px-5 py-3 text-right tnum text-success">
+                  <td className="px-4 py-2.5 text-right tnum text-success">
                     {formatNumber(queue.counts.completed)}
                   </td>
-                  <td className="px-5 py-3 text-right tnum text-danger">
+                  <td className="px-4 py-2.5 text-right tnum text-danger">
                     {formatNumber(queue.counts.failed)}
                   </td>
                 </tr>

@@ -1,6 +1,6 @@
 ---
 title: Docker
-description: Run the bunqueue dashboard as a Docker container, served by Caddy. Pull the published image, run with docker or docker compose, or build your own.
+description: Run Qelay Control Panel as a Docker container, served by Caddy. Pull the published image, run with docker or docker compose, or build your own.
 ---
 
 # Docker
@@ -15,7 +15,7 @@ Every push to `main` publishes `edge`; tagged releases publish `latest` and the
 semver tag.
 
 ```bash
-docker run --rm -p 8080:80 ghcr.io/egeominotti/bunqueue-dashboard:edge
+docker run --rm -p 8080:80 ghcr.io/chxisb/qelay-control-panel:edge
 # → http://localhost:8080
 ```
 
@@ -31,7 +31,7 @@ Prefer `:latest` or a specific `:vX.Y.Z` over `:edge` for anything you depend on
 ```yaml
 services:
   dashboard:
-    image: ghcr.io/egeominotti/bunqueue-dashboard:latest
+    image: ghcr.io/chxisb/qelay-control-panel:latest
     ports:
       - "8080:80"
     restart: unless-stopped
@@ -49,9 +49,9 @@ Settings:
 ```bash
 docker build \
   --build-arg VITE_BUNQUEUE_URL=https://queue.example.com \
-  -t bunqueue-dashboard .
+  -t qelay-control-panel .
 
-docker run --rm -p 8080:80 bunqueue-dashboard
+docker run --rm -p 8080:80 qelay-control-panel
 ```
 
 `VITE_BUNQUEUE_URL` is a **build argument**, not a runtime env var: the value is
@@ -107,7 +107,7 @@ Mount the file over the image's default and put both containers on one network:
 ```yaml
 services:
   dashboard:
-    image: ghcr.io/egeominotti/bunqueue-dashboard:latest
+    image: ghcr.io/chxisb/qelay-control-panel:latest
     ports: ["8080:80"]
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro

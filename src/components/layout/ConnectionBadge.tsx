@@ -6,10 +6,10 @@ import { usePolledData } from '@/lib/usePolledData';
 type ConnectionState = 'connecting' | 'connected' | 'degraded' | 'offline';
 
 const STATE_META: Record<ConnectionState, { dot: string; label: string }> = {
-  connecting: { dot: 'bg-zinc-500', label: 'connecting' },
-  connected: { dot: 'bg-emerald-400', label: 'connected' },
-  degraded: { dot: 'bg-amber-400', label: 'reachable, degraded' },
-  offline: { dot: 'bg-red-400', label: 'offline' },
+  connecting: { dot: 'bg-state-waiting-fg', label: 'connecting' },
+  connected: { dot: 'bg-success', label: 'connected' },
+  degraded: { dot: 'bg-warning', label: 'reachable, degraded' },
+  offline: { dot: 'bg-danger-fill', label: 'offline' },
 };
 
 /** Passive, honest health indicator shared by desktop and mobile navigation. */
@@ -40,14 +40,14 @@ export function ConnectionBadge() {
   const host = baseUrl.replace(/^https?:\/\//, '') || 'local';
 
   return (
-    <div className="mx-3 mb-4 flex items-center gap-2 rounded-lg border border-line bg-surface px-3 py-1.5">
+    <div className="mx-3.5 mb-3 flex h-9 items-center gap-2 rounded-control border border-line bg-surface px-3 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ring">
       <span className={cn('size-1.5 rounded-full', meta.dot)} title={meta.label} />
-      <label className="sr-only" htmlFor="active-bunqueue-node">
-        Active Bunqueue node
+      <label className="sr-only" htmlFor="active-node">
+        Active node
       </label>
       <select
-        id="active-bunqueue-node"
-        aria-label="Active Bunqueue node"
+        id="active-node"
+        aria-label="Active node"
         value={activeProfileId}
         onChange={(event) => activateProfile(event.target.value)}
         title={`${profiles.length} configured node${profiles.length === 1 ? '' : 's'} · ${baseUrl}`}

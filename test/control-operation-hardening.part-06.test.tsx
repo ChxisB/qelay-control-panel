@@ -108,7 +108,7 @@ function _dbExportResponse(
 
 beforeEach(() => {
   ensureDom();
-  localStorage.removeItem('bq-dash-db-history');
+  localStorage.removeItem('qelay-db-history');
   useConnectionStore.setState({
     baseUrl: 'http://server-a.test',
     token: 'alpha',
@@ -121,7 +121,7 @@ afterEach(() => {
   for (const unmount of [...mounted]) unmount();
   globalThis.fetch = realFetch;
   globalThis.window.confirm = realConfirm;
-  localStorage.removeItem('bq-dash-db-history');
+  localStorage.removeItem('qelay-db-history');
   useConnectionStore.setState({
     baseUrl: '/api',
     token: '',

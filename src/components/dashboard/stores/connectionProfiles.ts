@@ -27,7 +27,7 @@ export interface ConnectionDefaults {
 export function defaultConnectionProfile(defaults: ConnectionDefaults): ConnectionProfile {
   return {
     id: DEFAULT_CONNECTION_PROFILE_ID,
-    name: 'Local Bunqueue',
+    name: 'Local server',
     baseUrl: defaults.baseUrl,
     agentBaseUrl: defaults.agentBaseUrl,
   };
@@ -61,7 +61,7 @@ function profileFrom(
   const id = safeProfileId(raw.id, `profile-${index + 1}`);
   return {
     id,
-    name: safeProfileName(raw.name, `Bunqueue ${index + 1}`),
+    name: safeProfileName(raw.name, `Server ${index + 1}`),
     baseUrl,
     agentBaseUrl: safeTarget(raw.agentBaseUrl, defaults.agentBaseUrl),
   };

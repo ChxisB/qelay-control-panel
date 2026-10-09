@@ -22,29 +22,29 @@ export function CronTable({
   const visible = crons.slice(page * CRON_PAGE_SIZE, page * CRON_PAGE_SIZE + CRON_PAGE_SIZE);
   return (
     <>
-      <div className="overflow-x-auto rounded-xl border border-line bg-surface">
+      <div className="overflow-x-auto rounded-card border border-line bg-surface">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-line text-left text-[11px] uppercase tracking-wider text-faint">
-              <th scope="col" className="px-5 py-3 font-medium">
+            <tr className="border-b border-line text-left eyebrow text-muted light:bg-surface-2">
+              <th scope="col" className="px-4 py-2.5 font-semibold">
                 Name
               </th>
-              <th scope="col" className="px-5 py-3 font-medium">
+              <th scope="col" className="px-4 py-2.5 font-semibold">
                 Queue
               </th>
-              <th scope="col" className="px-5 py-3 font-medium">
+              <th scope="col" className="px-4 py-2.5 font-semibold">
                 Job name
               </th>
-              <th scope="col" className="px-5 py-3 font-medium">
+              <th scope="col" className="px-4 py-2.5 font-semibold">
                 Schedule
               </th>
-              <th scope="col" className="px-5 py-3 font-medium">
+              <th scope="col" className="px-4 py-2.5 font-semibold">
                 Next Run
               </th>
-              <th scope="col" className="px-5 py-3 text-right font-medium">
+              <th scope="col" className="px-4 py-2.5 text-right font-semibold">
                 Runs
               </th>
-              <th scope="col" className="w-12 px-5 py-3" />
+              <th scope="col" className="w-12 px-4 py-2.5" />
             </tr>
           </thead>
           <tbody>
@@ -53,19 +53,19 @@ export function CronTable({
                 key={cron.name}
                 className="border-b border-line last:border-0 hover:bg-surface-2/40"
               >
-                <td className="px-5 py-3 font-medium text-fg">{cron.name}</td>
-                <td className="px-5 py-3 font-mono text-xs text-muted">{cron.queue}</td>
-                <td className="px-5 py-3 font-mono text-xs text-muted">
+                <td className="px-4 py-2.5 font-medium text-fg">{cron.name}</td>
+                <td className="px-4 py-2.5 font-mono text-xs text-muted">{cron.queue}</td>
+                <td className="px-4 py-2.5 font-mono text-xs text-muted">
                   {cron.jobName ?? 'default'}
                 </td>
-                <td className="px-5 py-3 font-mono text-xs text-muted">
+                <td className="px-4 py-2.5 font-mono text-xs text-muted">
                   {cron.schedule ?? (cron.repeatEvery ? `every ${cron.repeatEvery}ms` : '—')}
                 </td>
-                <td className="px-5 py-3 text-faint">{formatDateTime(cron.nextRun)}</td>
-                <td className="px-5 py-3 text-right tnum text-muted">
+                <td className="px-4 py-2.5 text-faint">{formatDateTime(cron.nextRun)}</td>
+                <td className="px-4 py-2.5 text-right tnum text-muted">
                   {formatNumber(cron.executions)}
                 </td>
-                <td className="px-5 py-3 text-right">
+                <td className="px-4 py-2.5 text-right">
                   <IconButton
                     aria-label={`Delete cron ${cron.name}`}
                     disabled={removing.has(cron.name)}

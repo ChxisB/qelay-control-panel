@@ -117,7 +117,7 @@ export function AddJob() {
         }
       />
       {clone && (
-        <div className="mb-4 flex items-center gap-2 rounded-lg border border-accent/30 bg-accent/[0.06] px-4 py-2 text-sm text-accent">
+        <div className="mb-4 flex items-center gap-2 rounded-lg border border-link/30 bg-selected px-4 py-2 text-sm text-link">
           Pre-filled from an existing job. Review the data and options, then enqueue a fresh job.
         </div>
       )}
@@ -152,7 +152,7 @@ export function AddJob() {
               />
             </Field>
           </div>
-          <Button type="submit" variant="accent" disabled={busy}>
+          <Button type="submit" variant="primary" disabled={busy}>
             {busy ? 'Adding…' : 'Add job'}
           </Button>
           {result && (

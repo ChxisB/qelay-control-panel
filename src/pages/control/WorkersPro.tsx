@@ -124,7 +124,7 @@ export function WorkersPro() {
             compact
           />
         </div>
-        <StatCard label="Active Jobs" value={formatNumber(activeJobs)} tone="blue" compact />
+        <StatCard label="Active Jobs" value={formatNumber(activeJobs)} tone="active" compact />
         <StatCard
           label="Quarantined"
           value={formatNumber(quarantinedWorkers.length)}
@@ -170,68 +170,68 @@ export function WorkersPro() {
           }
         />
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-line bg-surface">
+        <div className="overflow-x-auto rounded-card border border-line bg-surface">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-line text-left text-[11px] uppercase tracking-wider text-faint">
-                <th className="px-5 py-3 font-medium">Worker</th>
-                <th className="px-5 py-3 font-medium">Queues</th>
-                <th className="px-5 py-3 font-medium">Status</th>
-                <th className="px-5 py-3 text-right font-medium">Active</th>
-                <th className="px-5 py-3 text-right font-medium">Processed</th>
-                <th className="px-5 py-3 text-right font-medium">
+              <tr className="border-b border-line text-left eyebrow text-muted light:bg-surface-2">
+                <th className="px-4 py-2.5 font-semibold">Worker</th>
+                <th className="px-4 py-2.5 font-semibold">Queues</th>
+                <th className="px-4 py-2.5 font-semibold">Status</th>
+                <th className="px-4 py-2.5 text-right font-semibold">Active</th>
+                <th className="px-4 py-2.5 text-right font-semibold">Processed</th>
+                <th className="px-4 py-2.5 text-right font-semibold">
                   <SortButton
                     label="Failed"
                     active={sort?.key === 'failed' ? sort.dir : null}
                     onClick={() => toggleSort('failed')}
                   />
                 </th>
-                <th className="px-5 py-3 text-right font-medium">
+                <th className="px-4 py-2.5 text-right font-semibold">
                   <SortButton
                     label="Last Seen"
                     active={sort?.key === 'lastSeen' ? sort.dir : null}
                     onClick={() => toggleSort('lastSeen')}
                   />
                 </th>
-                <th className="w-16 px-5 py-3 text-right font-medium">Actions</th>
+                <th className="w-16 px-4 py-2.5 text-right font-semibold">Actions</th>
               </tr>
             </thead>
             <tbody>
               {rows.map((w) => (
                 <tr key={w.id} className="border-b border-line last:border-0 hover:bg-surface-2/40">
-                  <td className="px-5 py-3">
+                  <td className="px-4 py-2.5">
                     <div className="font-medium text-fg">{w.name || 'worker'}</div>
                     <div className="font-mono text-[11px] text-faint">{w.id}</div>
                   </td>
-                  <td className="px-5 py-3 font-mono text-xs text-muted">
+                  <td className="px-4 py-2.5 font-mono text-xs text-muted">
                     {w.queues.join(', ') || '—'}
                   </td>
-                  <td className="px-5 py-3">
+                  <td className="px-4 py-2.5">
                     <span
                       title={w.status === 'active' ? undefined : STALE_EXPLAINER}
                       className={cn(
                         'rounded-full px-2 py-0.5 text-[11px] font-medium',
                         w.status === 'active'
-                          ? 'bg-emerald-500/10 text-success'
-                          : 'bg-amber-500/10 text-warning'
+                          ? 'bg-state-completed-bg text-state-completed-fg'
+                          : 'bg-state-delayed-bg text-state-delayed-fg'
                       )}
                     >
                       {w.status}
                     </span>
                   </td>
-                  <td className="px-5 py-3 text-right tnum text-blue-400">
+                  <td className="px-4 py-2.5 text-right tnum text-state-active-fg">
                     {formatNumber(w.activeJobs)}
                   </td>
-                  <td className="px-5 py-3 text-right tnum text-muted">
+                  <td className="px-4 py-2.5 text-right tnum text-muted">
                     {formatNumber(w.processedJobs)}
                   </td>
-                  <td className="px-5 py-3 text-right tnum text-muted">
+                  <td className="px-4 py-2.5 text-right tnum text-muted">
                     {formatNumber(w.failedJobs)}
                   </td>
-                  <td className="px-5 py-3 text-right text-faint">
+                  <td className="px-4 py-2.5 text-right text-faint">
                     {formatRelativeTime(w.lastSeen)}
                   </td>
-                  <td className="px-5 py-3">
+                  <td className="px-4 py-2.5">
                     <div className="flex justify-end">
                       {w.status === 'stale' && w.activeJobs === 0 ? (
                         <IconButton
@@ -288,8 +288,8 @@ function SortButton({
       onClick={onClick}
       title={`Sort by ${label}`}
       className={cn(
-        'inline-flex items-center gap-1 uppercase tracking-wider transition-colors hover:text-fg',
-        active ? 'text-fg' : 'text-faint'
+        'inline-flex items-center gap-1 uppercase transition-colors hover:text-fg',
+        active ? 'text-fg' : 'text-muted'
       )}
     >
       {label}

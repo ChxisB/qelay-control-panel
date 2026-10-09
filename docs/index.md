@@ -1,36 +1,29 @@
 ---
-title: "Web dashboard for bunqueue with full queue control and server lifecycle"
-description: "bunqueue dashboard is a free, open source web UI for safely operating a bunqueue server: queues, jobs, dead-letter queue, cron, webhooks, workers, live activity, and the server process itself. Try the live demo, no server required."
+title: "Web control panel for bunqueue with full queue control and server lifecycle"
+description: "Qelay Control Panel is a free, open source web UI for safely operating a bunqueue server: queues, jobs, dead-letter queue, cron, webhooks, workers, live activity, and the server process itself. Try the live demo, no server required."
 layout: home
 ---
-
-<script setup>
-// Public assets and raw-HTML srcs are NOT base-rewritten by VitePress (only
-// markdown links/images are), so the tour video must be resolved explicitly,
-// because the docs deploy under /bunqueue-dashboard/docs/ on Pages.
-import { withBase } from 'vitepress'
-</script>
 
 <div class="lp">
 
 <section class="lp-hero">
 
-<p class="lp-chip">bunqueue dashboard</p>
+<p class="lp-chip">Qelay Control Panel</p>
 
-<h1 class="lp-h1">The only queue dashboard that also<br>runs the server</h1>
+<h1 class="lp-h1">The only queue control panel that also<br>runs the server</h1>
 
 <p class="lp-sub">A free, open source web UI that <strong>safely operates</strong> a bunqueue server (a fast, Redis-free, Bun-native background-job queue): queues, jobs, dead-letter queue, cron, webhooks, workers and live activity, plus start / stop / restart of the server process itself. Built for Bun developers and AI-agent builders who want to <em>operate</em> their queue, not just watch it. It uses Bunqueue's public HTTP API plus its pinned public client/CLI behind a tiny loopback control agent, and fails closed when the v2.9.3 contract cannot make a mutation atomic.</p>
 
 <p class="lp-ctas">
-<a class="lp-btn lp-btn-primary" href="https://egeominotti.github.io/bunqueue-dashboard/" target="_blank" rel="noreferrer">Open the live demo</a>
+<a class="lp-btn lp-btn-primary" href="https://chxisb.github.io/qelay-control-panel/" target="_blank" rel="noreferrer">Open the live demo</a>
 <a class="lp-btn" href="./quickstart">Quick start</a>
-<a class="lp-btn" href="https://github.com/egeominotti/bunqueue-dashboard">GitHub</a>
+<a class="lp-btn" href="https://github.com/ChxisB/qelay-control-panel">GitHub</a>
 </p>
 
-<a class="lp-window" href="https://egeominotti.github.io/bunqueue-dashboard/" target="_blank" rel="noreferrer" aria-label="Open the live demo of the bunqueue dashboard">
+<a class="lp-window" href="https://chxisb.github.io/qelay-control-panel/" target="_blank" rel="noreferrer" aria-label="Open the live demo of Qelay Control Panel">
 <span class="lp-window-bar"><span class="lp-dot"></span><span class="lp-dot"></span><span class="lp-dot"></span><span class="lp-live">● live demo, click to drive it</span></span>
 
-![The bunqueue dashboard overview: stat cards, queue health grid and a live activity feed](./screenshots/overview.png){.lp-window-shot}
+![Qelay Control Panel overview: headline numbers, throughput, recent activity and a queue health table](./screenshots/overview.png){.lp-window-shot}
 
 </a>
 
@@ -38,7 +31,7 @@ import { withBase } from 'vitepress'
 
 <section class="lp-proof" aria-label="Project facts">
 <span>MIT license</span>
-<span>Zero-dependency npm package</span>
+<span>Prebuilt npm package</span>
 <span>Standalone binaries for 5 platforms</span>
 <span>Multi-arch Docker image</span>
 <a href="./known-issues">Limits documented honestly →</a>
@@ -74,7 +67,7 @@ A Server-Sent-Events feed with automatic reconnect shows jobs flowing in real ti
 
 ### DLQ triage
 
-A fleet-wide dead-letter dashboard plus a single-queue triage surface: failure reasons, per-attempt history and CSV export. Manual, bulk and Copilot retry remain unavailable because the GET + POST sequence has no atomic generation/state/topology precondition; purge is disabled too. <a href="./guide/dlq-control">DLQ Control →</a>
+A fleet-wide dead-letter view plus a single-queue triage surface: failure reasons, per-attempt history and CSV export. Manual, bulk and Copilot retry remain unavailable because the GET + POST sequence has no atomic generation/state/topology precondition; purge is disabled too. <a href="./guide/dlq-control">DLQ Control →</a>
 
 </article>
 
@@ -122,7 +115,7 @@ Rolling live throughput charts, error-rate gauge, per-operation latency percenti
 
 ### Client-side alerts
 
-Threshold rules on queue depth, failures, error rate and latency, evaluated in the browser, with in-app toasts and desktop notifications. <a href="./user-guide">Alerts →</a>
+Threshold rules on queue depth, failures, error rate and latency, evaluated in the browser, with in-app toasts and desktop notifications. <a href="./guide/alerts">Alerts →</a>
 
 </article>
 
@@ -143,18 +136,6 @@ Explore parent/child/dependency DAGs, create every official FlowProducer shape, 
 </article>
 
 </div>
-
-</section>
-
-<section class="lp-section">
-
-<p class="lp-chip">Tour</p>
-
-## See it in action {.lp-title}
-
-<p class="lp-lead">A real control surface, not a read-only viewer, so every screen in this tour is a live page you can drive in the <a href="https://egeominotti.github.io/bunqueue-dashboard/" target="_blank" rel="noreferrer">demo</a>.</p>
-
-<video class="lp-video" :src="withBase('/tour.mp4')" autoplay muted loop playsinline preload="metadata" aria-label="A guided tour of the bunqueue dashboard: overview, queues, jobs, DLQ, flows, the SQLite inspector, and the AI Copilot"></video>
 
 </section>
 
@@ -183,7 +164,7 @@ Explore parent/child/dependency DAGs, create every official FlowProducer shape, 
 
 ## Up and running in four steps {.lp-title}
 
-<p class="lp-lead">The priority is simplicity: one command serves the dashboard, proxies the API and runs the control agent. No clone, no build.</p>
+<p class="lp-lead">The priority is simplicity: one command serves the control panel, proxies the API and runs the control agent. No clone, no build.</p>
 
 <div class="lp-step">
 <div class="lp-step-text">
@@ -191,13 +172,13 @@ Explore parent/child/dependency DAGs, create every official FlowProducer shape, 
 
 ### Run it
 
-One process serves the dashboard on `http://127.0.0.1:8080`, proxies `/api/*` to your bunqueue server and runs the control agent.
+One process serves the control panel on `http://127.0.0.1:8080`, proxies `/api/*` to your bunqueue server and runs the control agent.
 
 </div>
 <div class="lp-step-media">
 
 ```bash
-bunx bunqueue-dashboard
+bunx qelay-control-panel
 ```
 
 </div>
@@ -214,7 +195,7 @@ Create one or more named server + paired-agent profiles in Settings. Tokens stay
 </div>
 <div class="lp-step-media">
 
-![The Settings page: Bunqueue connection profiles and refresh interval](./screenshots/settings.png)
+![Settings: fleet connections, theme and refresh interval](./screenshots/settings.png)
 
 </div>
 </div>
@@ -230,7 +211,7 @@ From **Control ▸ Server** the agent starts, stops and restarts the bunqueue pr
 </div>
 <div class="lp-step-media">
 
-![Server Control: lifecycle buttons, launch config and live process logs](./screenshots/server.png)
+![Server: status bar with Start, Stop and Restart, launch configuration, storage and live process logs](./screenshots/server.png)
 
 </div>
 </div>
@@ -246,7 +227,7 @@ Explore jobs, triage the DLQ, schedule cron, watch live activity. Destructive ac
 </div>
 <div class="lp-step-media">
 
-![The Jobs explorer: filters, multi-select and state-gated bulk actions](./screenshots/jobs.png)
+![Jobs: state tabs with counts, a filter, and Promote on delayed jobs](./screenshots/jobs.png)
 
 </div>
 </div>
@@ -264,27 +245,27 @@ Explore jobs, triage the DLQ, schedule cron, watch live activity. Destructive ac
 ::: code-group
 
 ```bash [Bun 1.4 (recommended)]
-bunx bunqueue-dashboard
+bunx qelay-control-panel
 # → http://127.0.0.1:8080, serves the SPA plus the /api proxy and control agent
 ```
 
 ```bash [Standalone binary]
 # Download the binary for your platform from the GitHub Releases page,
 # then make it executable and run it, nothing else to install:
-chmod +x bunqueue-dashboard-v*-darwin-arm64
-./bunqueue-dashboard-v*-darwin-arm64
+chmod +x qelay-control-panel-v*-darwin-arm64
+./qelay-control-panel-v*-darwin-arm64
 # → http://localhost:8080
 ```
 
 ```bash [Docker]
-docker run --rm -p 8080:80 ghcr.io/egeominotti/bunqueue-dashboard:edge
+docker run --rm -p 8080:80 ghcr.io/chxisb/qelay-control-panel:edge
 # → http://localhost:8080, set the server URL from the Settings page
 ```
 
 ```bash [From source]
 bun install
 bun start
-# agent (http://127.0.0.1:6800) + dashboard (http://localhost:5273) together
+# agent (http://127.0.0.1:6800) + control panel (http://localhost:5273) together
 ```
 
 :::
@@ -337,7 +318,7 @@ In memory only. Server tokens, agent tokens, S3 keys and webhook targets are del
 
 ### Can I try it without a bunqueue server?
 
-Yes, the <a href="https://egeominotti.github.io/bunqueue-dashboard/" target="_blank" rel="noreferrer">live demo</a> runs the real app against fixture data in your browser. Every page works, no backend required.
+Yes, the <a href="https://chxisb.github.io/qelay-control-panel/" target="_blank" rel="noreferrer">live demo</a> runs the real app against fixture data in your browser. Every page works, no backend required.
 
 </article>
 
@@ -345,7 +326,7 @@ Yes, the <a href="https://egeominotti.github.io/bunqueue-dashboard/" target="_bl
 
 ### How do I deploy it?
 
-Four ways: the prebuilt npm package (`bunx bunqueue-dashboard`), a standalone binary for linux/macOS/windows, the multi-arch Docker image, or from source. The binary embeds the SPA, the API proxy and the agent in one file.
+Four ways: the prebuilt npm package (`bunx qelay-control-panel`), a standalone binary for linux/macOS/windows, the multi-arch Docker image, or from source. The binary embeds the SPA, the API proxy and the agent in one file.
 
 </article>
 
@@ -361,7 +342,7 @@ Alerts are evaluated in the browser while a tab is open, so it's not away-from-d
 
 ### Is my data sent anywhere?
 
-The dashboard does not send analytics. The Copilot is switched off in official builds; only a custom build that enables it sends Copilot requests, directly from your browser to your configured model provider. Remote broker/agent connections, configured S3 operations and broker webhook deliveries also contact the endpoints you choose.
+The control panel does not send analytics. The Copilot is switched off in official builds; only a custom build that enables it sends Copilot requests, directly from your browser to your configured model provider. Remote broker/agent connections, configured S3 operations and broker webhook deliveries also contact the endpoints you choose.
 
 </article>
 
@@ -374,7 +355,7 @@ The dashboard does not send analytics. The Copilot is switched off in official b
 ## Drive your queue server from the browser
 
 <p class="lp-ctas">
-<a class="lp-btn lp-btn-primary" href="https://egeominotti.github.io/bunqueue-dashboard/" target="_blank" rel="noreferrer">Open the live demo</a>
+<a class="lp-btn lp-btn-primary" href="https://chxisb.github.io/qelay-control-panel/" target="_blank" rel="noreferrer">Open the live demo</a>
 <a class="lp-btn" href="./quickstart">Quick start</a>
 </p>
 

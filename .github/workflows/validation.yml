@@ -186,14 +186,14 @@ jobs:
       - name: Compile native release artifact
         run: |
           bun scripts/gen-embed.ts
-          bun build scripts/serve.ts agent/dbReadWorker.ts agent/backup/standaloneWorker.ts --compile --minify --target=bun-${{ matrix.platform }} --outfile bunqueue-dashboard-${{ matrix.platform }}${{ matrix.suffix }}
+          bun build scripts/serve.ts agent/dbReadWorker.ts agent/backup/standaloneWorker.ts --compile --minify --target=bun-${{ matrix.platform }} --outfile qelay-control-panel-${{ matrix.platform }}${{ matrix.suffix }}
       - name: Execute the exact artifact with no Bun on PATH
-        run: bun scripts/validate-standalone-runtime.ts ./bunqueue-dashboard-${{ matrix.platform }}${{ matrix.suffix }}
+        run: bun scripts/validate-standalone-runtime.ts ./qelay-control-panel-${{ matrix.platform }}${{ matrix.suffix }}
       - name: Upload tested executable
         if: inputs.release_artifacts
         uses: actions/upload-artifact@v4
         with:
           name: native-${{ matrix.platform }}-${{ github.sha }}
-          path: bunqueue-dashboard-${{ matrix.platform }}${{ matrix.suffix }}
+          path: qelay-control-panel-${{ matrix.platform }}${{ matrix.suffix }}
           if-no-files-found: error
           retention-days: 1

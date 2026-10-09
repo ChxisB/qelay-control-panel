@@ -98,7 +98,7 @@ export function FlowJobToolkit({
               2.9.4.
             </p>
           </div>
-          {busy && <span className="font-mono text-xs text-accent">{busy}…</span>}
+          {busy && <span className="font-mono text-xs text-link">{busy}…</span>}
         </div>
         <div className="mt-4">
           <FlowTargetFields target={target} onChange={setTarget} />

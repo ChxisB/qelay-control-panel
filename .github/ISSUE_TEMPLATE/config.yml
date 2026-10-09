@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: 📚 Documentation
-    url: https://egeominotti.github.io/bunqueue-dashboard/docs/
+    url: https://chxisb.github.io/qelay-control-panel/docs/
     about: Read the illustrated guide, deployment docs, and known issues first.
   - name: 🔒 Report a security vulnerability
-    url: https://github.com/egeominotti/bunqueue-dashboard/security/advisories/new
+    url: https://github.com/ChxisB/qelay-control-panel/security/advisories/new
     about: Please report security issues privately, not as a public issue.

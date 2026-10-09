@@ -93,7 +93,7 @@ export function StallForm({
         </Field>
       </div>
       <div className="mt-3 flex items-center gap-3">
-        <Button variant="accent" size="sm" disabled={save.saving || !payload.ok} onClick={submit}>
+        <Button variant="primary" size="sm" disabled={save.saving || !payload.ok} onClick={submit}>
           Save
         </Button>
         {save.saved && (

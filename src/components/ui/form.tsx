@@ -62,9 +62,9 @@ export function Field({
 }
 
 const controlClass =
-  'h-9 rounded-lg border border-line bg-surface-2 px-3 text-sm text-fg placeholder:text-faint ' +
-  'transition-colors focus-visible:border-accent focus-visible:outline-2 ' +
-  'focus-visible:outline-offset-2 focus-visible:outline-accent';
+  'h-9 rounded-control border border-line-strong bg-surface-2 px-3 text-[13px] text-fg ' +
+  'placeholder:text-faint light:bg-surface transition-colors focus-visible:border-ring ' +
+  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring';
 
 export function Input({ className, ...props }: InputHTMLAttributes<HTMLInputElement>) {
   return <input className={cn(controlClass, 'w-full', className)} {...props} />;
@@ -103,8 +103,8 @@ export function Toggle({
       onClick={() => onChange(!checked)}
       className={cn(
         'relative inline-flex h-6 w-11 items-center rounded-full transition-colors',
-        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
-        checked ? 'bg-accent' : 'bg-surface-2 border border-line',
+        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
+        checked ? 'bg-ring' : 'bg-surface-2 border border-line',
         disabled && 'opacity-40'
       )}
     >
@@ -125,6 +125,7 @@ export function SegmentedControl<T extends string>({
   onChange,
   disabled,
   label = 'View options',
+  format,
 }: {
   options: readonly T[];
   value: T;
@@ -132,9 +133,11 @@ export function SegmentedControl<T extends string>({
   disabled?: boolean;
   /** Accessible name for this mutually exclusive group. */
   label?: string;
+  /** Visible text for an option when it should differ from its value, e.g. to append a count. */
+  format?: (option: T) => ReactNode;
 }) {
   return (
-    <fieldset className="inline-flex items-center gap-1 rounded-lg border border-line bg-surface p-1">
+    <fieldset className="inline-flex items-center gap-0.5 rounded-control border border-line bg-surface p-[3px] light:border-transparent light:bg-surface-2">
       <legend className="sr-only">{label}</legend>
       {options.map((opt) => (
         <button
@@ -144,13 +147,15 @@ export function SegmentedControl<T extends string>({
           disabled={disabled}
           onClick={() => onChange(opt)}
           className={cn(
-            'rounded-md px-3 py-1 text-xs font-medium capitalize transition-colors',
-            'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
-            value === opt ? 'bg-surface-2 text-fg' : 'text-muted hover:text-fg',
+            'h-7 rounded-segment px-3 text-[13px] capitalize transition-colors',
+            'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
+            value === opt
+              ? 'bg-segment-active font-semibold text-fg light:ring-1 light:ring-line'
+              : 'font-medium text-muted hover:text-fg',
             disabled && 'opacity-40'
           )}
         >
-          {opt}
+          {format ? format(opt) : opt}
         </button>
       ))}
     </fieldset>

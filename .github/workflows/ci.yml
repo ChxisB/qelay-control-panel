@@ -19,13 +19,43 @@ jobs:
     name: Validation
     uses: ./.github/workflows/validation.yml
 
+  # A pull request must carry the SemVer version its Conventional Commits call for (see
+  # scripts/release-version.ts). It is measured against the base branch, so it only makes sense
+  # on a pull request; on a push to main the PR already passed it.
+  version:
+    name: Semantic version
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # The commits since the base and the release tags.
+          fetch-depth: 0
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+
+      - name: Check the version against the commits
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: bun scripts/release-version.ts --check --base "origin/${BASE_REF}"
+
   gate:
     name: Stability gate
     if: always()
-    needs: validation
+    needs: [validation, version]
     runs-on: ubuntu-latest
     steps:
       - name: Require every quality, browser and native binary check
         env:
+          EVENT: ${{ github.event_name }}
           VALIDATION_RESULT: ${{ needs.validation.result }}
-        run: test "$VALIDATION_RESULT" = success
+          VERSION_RESULT: ${{ needs.version.result }}
+        run: |
+          test "$VALIDATION_RESULT" = success
+          # The version job exists only on pull requests, where it must have passed.
+          if [ "$EVENT" = pull_request ]; then test "$VERSION_RESULT" = success; fi

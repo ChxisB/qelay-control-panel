@@ -1,13 +1,13 @@
 ---
 title: Quickstart
-description: Get the bunqueue dashboard running in one command, then point it at a bunqueue server or let the control agent start one for you.
+description: Get Qelay Control Panel running in one command, then point it at a bunqueue server or let the control agent start one for you.
 ---
 
 # Quickstart
 
 Get the dashboard running in under a minute, then connect it to a bunqueue
 server. Prefer to look before you install? Open the
-[live demo](https://egeominotti.github.io/bunqueue-dashboard/), the full
+[live demo](https://chxisb.github.io/qelay-control-panel/), the full
 dashboard running on sample data with no server needed.
 
 ## Prerequisites
@@ -18,11 +18,11 @@ dashboard running on sample data with no server needed.
 ## The one-liner: run from npm
 
 No clone, no build, the
-[`bunqueue-dashboard` npm package](https://www.npmjs.com/package/bunqueue-dashboard)
+[`qelay-control-panel` npm package](https://www.npmjs.com/package/qelay-control-panel)
 ships the prebuilt dashboard and installs the exact compatible Bunqueue client:
 
 ```bash
-bunx bunqueue-dashboard
+bunx qelay-control-panel
 ```
 
 Open **`http://127.0.0.1:8080`**. One process serves the UI, proxies `/api/*`
@@ -39,8 +39,8 @@ reverse-proxy deployments require an explicit Host/origin allowlist plus
 To install it permanently instead of running via `bunx`:
 
 ```bash
-bun add -g bunqueue-dashboard
-bunqueue-dashboard
+bun add -g qelay-control-panel
+qelay-control-panel
 ```
 
 Then jump to [step 3](#_3-connect-a-server). Prefer to hack on it or run the
@@ -51,8 +51,8 @@ dev setup? Take the source route:
 ### 1. Install
 
 ```bash
-git clone https://github.com/egeominotti/bunqueue-dashboard.git
-cd bunqueue-dashboard
+git clone https://github.com/ChxisB/qelay-control-panel.git
+cd qelay-control-panel
 bun install
 ```
 
@@ -67,7 +67,7 @@ on `Ctrl-C`:
 
 | Service | URL | Role |
 | --- | --- | --- |
-| Dashboard | `http://localhost:5273` | the UI (`/api` is proxied to `:6790`) |
+| Control panel | `http://localhost:5273` | the UI (`/api` is proxied to `:6790`) |
 | Control agent | `http://127.0.0.1:6800` | starts / stops / restarts the server process |
 
 Open **`http://localhost:5273`**.
@@ -94,7 +94,7 @@ can prove that the broker has released its database.
 
 - Take the [illustrated tour of every screen](/user-guide).
 - [Add your first job](/guide/add-job), then watch it in the
-  [Jobs Explorer](/guide/jobs).
+  [Jobs](/guide/jobs).
 - Ship it: [Docker, Kubernetes, PM2, or a hosting platform](/deploy/).
 - Press **Cmd / Ctrl-K** anywhere for the command palette.
 

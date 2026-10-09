@@ -30,9 +30,9 @@ export function MetricsStatusPanels({
         {rate == null ? (
           <div className="mt-4 h-2 overflow-hidden rounded-full bg-surface-2" />
         ) : (
-          <div className="mt-4 h-2 overflow-hidden rounded-full bg-red-500/40">
+          <div className="mt-4 h-2 overflow-hidden rounded-full bg-danger/40">
             <div
-              className="h-full rounded-full bg-emerald-500"
+              className="h-full rounded-full bg-success"
               style={{ width: `${(1 - rate) * 100}%` }}
             />
           </div>
@@ -43,37 +43,37 @@ export function MetricsStatusPanels({
         <p className="-mt-3 mb-4 text-xs text-faint">Current server-wide statistics</p>
         <dl className="divide-y divide-line text-sm">
           <ServerRow
-            color="bg-blue-400"
+            color="bg-state-waiting-fg"
             label="Standard waiting"
             value={stats ? formatNumber(stats.waiting) : '—'}
           />
           <ServerRow
-            color="bg-accent"
+            color="bg-state-active-fg"
             label="Processing"
             value={stats ? formatNumber(stats.active) : '—'}
           />
           <ServerRow
-            color="bg-amber-400"
+            color="bg-warning"
             label="Delayed"
             value={stats ? formatNumber(stats.delayed) : '—'}
           />
           <ServerRow
-            color="bg-red-400"
+            color="bg-danger-fill"
             label="Dead Letter"
             value={stats ? formatNumber(stats.dlq) : '—'}
           />
           <ServerRow
-            color="bg-zinc-500"
+            color="bg-state-waiting-fg"
             label="Pushed (since restart)"
             value={stats ? formatCompact(stats.totalPushed) : '—'}
           />
           <ServerRow
-            color="bg-zinc-500"
+            color="bg-state-waiting-fg"
             label="Pulled (since restart)"
             value={stats ? formatCompact(stats.totalPulled) : '—'}
           />
           <ServerRow
-            color="bg-emerald-400"
+            color="bg-success"
             label="Uptime"
             value={stats ? formatUptime(stats.uptime / 1000) : '—'}
           />

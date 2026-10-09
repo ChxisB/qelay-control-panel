@@ -8,7 +8,7 @@ import { assert, freePort, waitForServer } from './flowRuntimeSupport';
 type Child = ReturnType<typeof Bun.spawn>;
 const message = (value: unknown) => (value instanceof Error ? value.message : String(value));
 
-const root = await mkdtemp(join(tmpdir(), 'bunqueue-dashboard-sqlite-upgrade-'));
+const root = await mkdtemp(join(tmpdir(), 'qelay-control-panel-sqlite-upgrade-'));
 const databasePath = join(root, 'bunqueue.db');
 const queue = `upgrade-${Date.now()}`;
 const oldCli = resolve('node_modules/bunqueue-v2-9-2/dist/cli/index.js');

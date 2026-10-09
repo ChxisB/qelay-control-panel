@@ -2,21 +2,75 @@
 
 All notable changes to this project are documented here.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
-The version is owned by `package.json` (starting at `0.0.1`) and bumped on every
-push to `main`; `.github/workflows/release.yml` tags and publishes `v<version>`
-to match.
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the
+project follows [Semantic Versioning](https://semver.org). The version in `package.json` is
+derived from the Conventional Commits of each pull request (`bun run release:version`) and
+checked in CI; `.github/workflows/release.yml` tags and publishes `v<version>` to match.
 
-**Process (see `CLAUDE.md`):** before every push to `main`, record changes under
-`## [Unreleased]` and bump `package.json`'s `version`. For every version, rename
-`[Unreleased]` to the bumped version and start a fresh empty `[Unreleased]`. The
-release workflow publishes the matching version section (or `[Unreleased]`) as
-the GitHub Release body.
+**Process (see `CLAUDE.md`):** record changes under `## [Unreleased]`, then run
+`bun run release:version` after the last commit. It bumps `package.json`, renames
+`[Unreleased]` to the new version and starts a fresh empty `[Unreleased]` above it. The
+release workflow publishes the matching version section (or `[Unreleased]`) as the GitHub
+Release body.
 
 ## [Unreleased]
 
+### Added
+
+- `QelayMark` and `QelayLogo` brand components, and a ring-and-tail favicon that stays
+  readable at 16 px.
+- Automatic migration of saved settings. Browser settings kept under the old `bq-dash-*`
+  names are copied to their `qelay-*` names the first time they are read, and an agent
+  settings file at `.bunqueue-dashboard/config.json` is copied to
+  `.qelay-control-panel/config.json` the first time the agent starts without a new one.
+  The old agent file is never deleted; an old browser key is removed once its value has been
+  copied.
+- Design-token tests: the app and docs palettes are checked against each other, and every
+  text, link, pill and button pair is checked for at least 4.5:1 contrast in both themes.
+  Further guard tests cover the accent split, state colors, UI copy, the page metadata and
+  the release file names.
+- An About page in the docs with the project's origin, what changed in the fork and the
+  license.
+- Automated Semantic Versioning. `bun run release:version` works out the next version from the
+  Conventional Commits a branch adds on top of `main`, bumps `package.json` and rolls
+  `[Unreleased]` into a dated section with its compare links. `feat` is a minor release,
+  `fix`, `perf` and `revert` are patch releases, and `!` after the type or a `BREAKING CHANGE:`
+  footer is a major one; `docs`, `style`, `refactor`, `test`, `build`, `ci` and `chore` release
+  nothing on their own. `bun run release:plan` shows the result without writing it, and a
+  `Release-As: x.y.z` footer pins a version.
+- A `Semantic version` job in CI, part of the `Stability gate`, fails a pull request whose
+  commits are not Conventional Commits, whose version does not match them, whose changelog has
+  no section for it, or whose version is already tagged.
+
 ### Changed
 
+- **Rebrand to Qelay Control Panel.** New name, logo and color palette (orange `#FF7A00`,
+  coral `#FF3D61` and violet `#7A3DFF` on a dark navy ground), Inter for text and the system
+  monospace for code, in light and dark themes that meet WCAG AA contrast. The orange fill
+  marks the one primary action on a screen, links and focus rings are violet, and the old
+  pink accent is gone. Buttons, inputs, cards, tables, status pills and charts follow the
+  new palette, and state colors (waiting, active, completed, failed, delayed) are defined in
+  one place.
+- **Navigation and shell.** The sidebar has collapsible groups (the group holding the current
+  page stays open), a breadcrumb and a search shortcut sit in the top bar, and the footer
+  holds the theme toggle and the control agent address.
+- **Overview, Jobs and Server pages redesigned.** Overview leads with a "needs attention"
+  tile (dead letter queue first, then failed jobs). Jobs has state tabs with counts, shortened
+  job IDs and a selection bar. Server has a status bar with start, stop and restart, a facts
+  grid, a configuration card and a storage panel with a disk-health line. The page formerly
+  called Jobs Explorer is now just Jobs.
+- **Names.** The npm package and command are `qelay-control-panel`, the Docker image is
+  `ghcr.io/chxisb/qelay-control-panel`, release files are
+  `qelay-control-panel-<tag>-<platform>` and `qelay-control-panel-<tag>.zip`, and the agent's
+  settings folder is `.qelay-control-panel/`. Prose that only means "the thing we control"
+  says "the server"; technical text keeps bunqueue. The `BUNQUEUE_*` and `AGENT_*`
+  variables, the API paths and the ports are unchanged.
+- **Page metadata.** The browser tab title, description, link previews and the 1200×630
+  share image use the new name and palette.
+- **Documentation.** The docs site wears the new palette, logo and fonts. All 32 screenshots
+  were recaptured from the demo, and the Overview, Jobs and Server guides were rewritten
+  against the new screens. The README, SECURITY, CONTRIBUTING and the issue templates use
+  the new name and repository.
 - CI/CD runs much faster. The validation workflow now fans out into parallel jobs:
   the `quality` checks are split into static, unit and four runtime groups (the
   new `quality:*` scripts, which `bun run quality` chains locally), the browser
@@ -32,12 +86,21 @@ the GitHub Release body.
 - Docker and Pages no longer repeat the whole validation on a push to `main`:
   they wait for CI's `Stability gate` on the same commit (`ci-gate.yml`). Version
   tags and manual runs still validate in full.
-- The README now opens with the narrated 4K video tour on YouTube (7:45, English
-  with subtitles), recorded against a real bunqueue server under live traffic. It
-  replaces the old animated GIF, which still showed the Copilot removed in 1.0.1.
+- A push to `main` no longer needs a version bump. The version follows the commits, so a
+  pull request with only documentation, test or CI commits leaves it alone and publishes
+  nothing.
 
 ### Fixed
 
+- Low-contrast buttons: the green Start button put white text on a bright green fill (about
+  2.5:1, below the 4.5:1 WCAG AA minimum). It and the amber Pause button now use the
+  standard button.
+- Low-contrast error text: failed-job error messages in the dead letter queue, the job
+  timeline, the job inspector and the server logs were drawn at 70–90% opacity, which fell
+  below 4.5:1 in dark mode (3.7:1 in the dead letter queue list). They now use the solid
+  danger color.
+- The docs home page no longer calls the package "zero-dependency". It depends on `bunqueue`
+  and `msgpackr`.
 - Dependabot can update dependencies again: it was configured for the `npm`
   ecosystem, which cannot update `bun.lock`, so every weekly run failed. It now
   uses the `bun` ecosystem with the same groups.
@@ -57,6 +120,28 @@ the GitHub Release body.
   valid confirmation was rejected. The confirmation is now verified first.
 - A rejected restore now names every field that changed (for example
   `walSize 4152 → 0`), so the cause is visible instead of a generic message.
+
+### Removed
+
+- The JetBrains Mono font and its `@fontsource-variable/jetbrains-mono` dependency.
+- The `accent` color tokens, the pink accent, and the `warning` and `success` button
+  variants (their uses moved to the standard, primary or danger button).
+- The `bq` avatar in the top bar.
+- The old product tour: `tour.gif`, `tour.mp4`, `video-tour.png`, the docs hero art and
+  feature icons, and the README's embedded YouTube tour, all of which showed the old
+  interface. A new tour is not yet recorded.
+
+### Migration notes
+
+- **Saved browser settings on a new origin are lost.** The live demo now lives under
+  `chxisb.github.io/qelay-control-panel`, and browser storage is per origin, so settings saved
+  on the old demo site do not carry over. On the same origin (self-hosted, Docker, a binary)
+  the old keys are copied automatically.
+- **Update names in your scripts.** If you ran the upstream `bunqueue-dashboard` package, image
+  or release files, change `bunx bunqueue-dashboard`, `ghcr.io/egeominotti/bunqueue-dashboard`
+  and `bunqueue-dashboard-<tag>-<platform>` to the new names in shell scripts, Compose files,
+  PM2 and Kubernetes manifests.
+- **Nothing to change** for environment variables, ports (`6790`, `6800`) or API paths.
 
 ## [1.0.1] - 2026-10-01
 

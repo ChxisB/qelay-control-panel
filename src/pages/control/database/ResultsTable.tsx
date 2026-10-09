@@ -56,15 +56,15 @@ export function ResultsTable({
   return (
     <div
       className={cn(
-        'max-h-[70vh] overflow-auto rounded-xl border border-line bg-surface transition-opacity',
+        'max-h-[70vh] overflow-auto rounded-card border border-line bg-surface transition-opacity',
         dimmed && 'pointer-events-none opacity-50'
       )}
     >
       <table className="w-full text-sm">
         <thead>
-          <tr className="text-left text-[11px] uppercase tracking-wider text-faint">
+          <tr className="text-left eyebrow text-muted">
             {onRowClick && (
-              <th className="sticky top-0 z-10 whitespace-nowrap border-b border-line bg-surface px-4 py-3 font-medium">
+              <th className="sticky top-0 z-10 whitespace-nowrap border-b border-line bg-surface px-4 py-2.5 font-semibold">
                 <span className="sr-only">Row actions</span>
               </th>
             )}
@@ -74,7 +74,7 @@ export function ResultsTable({
                 <th
                   key={c}
                   className={cn(
-                    'sticky top-0 z-10 whitespace-nowrap border-b border-line bg-surface px-4 py-3 font-medium',
+                    'sticky top-0 z-10 whitespace-nowrap border-b border-line bg-surface px-4 py-2.5 font-semibold',
                     numericCols[ci] && 'text-right'
                   )}
                   aria-sort={
@@ -92,11 +92,11 @@ export function ResultsTable({
                       type="button"
                       onClick={() => onSort(c)}
                       aria-label={`Sort by ${c}`}
-                      className="inline-flex items-center gap-1 uppercase tracking-wider hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+                      className="inline-flex items-center gap-1 uppercase hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
                       {c}
                       {meta?.primaryKey && (
-                        <span className="rounded bg-accent/15 px-1 py-0.5 text-[9px] font-semibold text-accent">
+                        <span className="rounded bg-selected px-1 py-0.5 text-[9px] font-semibold text-link">
                           PK
                         </span>
                       )}
@@ -105,7 +105,7 @@ export function ResultsTable({
                       )}
                       <span
                         aria-hidden="true"
-                        className={sort?.col === c ? 'text-accent' : 'text-faint/60'}
+                        className={sort?.col === c ? 'text-link' : 'text-faint/60'}
                       >
                         {sort?.col === c ? (sort.dir === 'asc' ? '▲' : '▼') : '↕'}
                       </span>
@@ -132,7 +132,7 @@ export function ResultsTable({
                     type="button"
                     aria-label={`View row ${ri + 1} details`}
                     onClick={() => onRowClick(ri)}
-                    className="rounded-md border border-line px-2 py-1 font-sans text-[11px] font-medium text-muted transition-colors hover:border-line-strong hover:text-fg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                    className="rounded-md border border-line px-2 py-1 font-sans text-[11px] font-medium text-muted transition-colors hover:border-line-strong hover:text-fg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
                   >
                     View
                   </button>

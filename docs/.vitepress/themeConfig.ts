@@ -43,7 +43,7 @@ export function createThemeConfig(base: string): DefaultTheme.Config {
         text: 'Guide · Queues',
         items: [
           { text: 'Queues', link: '/guide/queues' },
-          { text: 'Jobs Explorer', link: '/guide/jobs' },
+          { text: 'Jobs', link: '/guide/jobs' },
           { text: 'Dead Letter Queue', link: '/guide/dlq' },
           { text: 'Cron Jobs', link: '/guide/cron' },
           { text: 'Flows', link: '/guide/flows' },
@@ -101,7 +101,10 @@ export function createThemeConfig(base: string): DefaultTheme.Config {
       },
       {
         text: 'Project',
-        items: [{ text: 'Known issues', link: '/known-issues' }],
+        items: [
+          { text: 'Known issues', link: '/known-issues' },
+          { text: 'About and credits', link: '/about' },
+        ],
       },
     ],
     outline: { level: [2, 3], label: 'On this page' },
@@ -109,14 +112,15 @@ export function createThemeConfig(base: string): DefaultTheme.Config {
       provider: 'local',
       options: { detailedView: true },
     },
-    socialLinks: [{ icon: 'github', link: 'https://github.com/egeominotti/bunqueue-dashboard' }],
+    socialLinks: [{ icon: 'github', link: 'https://github.com/ChxisB/qelay-control-panel' }],
     editLink: {
-      pattern: 'https://github.com/egeominotti/bunqueue-dashboard/edit/main/docs/:path',
+      pattern: 'https://github.com/ChxisB/qelay-control-panel/edit/main/docs/:path',
       text: 'Edit this page on GitHub',
     },
     footer: {
       message: 'Drives a bunqueue server over its public HTTP API plus a local control agent.',
-      copyright: 'MIT · bunqueue dashboard',
+      copyright:
+        'MIT · Qelay Control Panel · forked from <a href="https://github.com/egeominotti/bunqueue-dashboard" target="_blank" rel="noreferrer">egeominotti/bunqueue-dashboard</a>',
     },
   };
 }

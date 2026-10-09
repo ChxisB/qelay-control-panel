@@ -35,34 +35,34 @@ export function RunHistory({ history, onClear }: { history: RunRecord[]; onClear
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-line text-left text-[11px] uppercase tracking-wider text-faint">
-              <th className="px-5 py-2 font-medium">Mode</th>
-              <th className="px-5 py-2 text-right font-medium">Prod</th>
-              <th className="px-5 py-2 text-right font-medium">Wkr</th>
-              <th className="px-5 py-2 text-right font-medium">Pushed</th>
-              <th className="px-5 py-2 text-right font-medium">Done</th>
-              <th className="px-5 py-2 text-right font-medium">Push/s</th>
-              <th className="px-5 py-2 text-right font-medium">Done/s</th>
-              <th className="px-5 py-2 text-right font-medium">p95</th>
-              <th className="px-5 py-2 text-right font-medium">Dur</th>
+            <tr className="border-b border-line text-left eyebrow text-muted light:bg-surface-2">
+              <th className="px-4 py-2 font-semibold">Mode</th>
+              <th className="px-4 py-2 text-right font-semibold">Prod</th>
+              <th className="px-4 py-2 text-right font-semibold">Wkr</th>
+              <th className="px-4 py-2 text-right font-semibold">Pushed</th>
+              <th className="px-4 py-2 text-right font-semibold">Done</th>
+              <th className="px-4 py-2 text-right font-semibold">Push/s</th>
+              <th className="px-4 py-2 text-right font-semibold">Done/s</th>
+              <th className="px-4 py-2 text-right font-semibold">p95</th>
+              <th className="px-4 py-2 text-right font-semibold">Dur</th>
             </tr>
           </thead>
           <tbody>
             {history.map((r) => (
               <tr key={r.id} className="border-b border-line last:border-0 hover:bg-surface-2/40">
-                <td className="px-5 py-2 capitalize text-muted">{r.mode}</td>
-                <td className="px-5 py-2 text-right tnum text-muted">{r.producers}</td>
-                <td className="px-5 py-2 text-right tnum text-muted">{r.workers}</td>
-                <td className="px-5 py-2 text-right tnum text-fg">{formatNumber(r.pushed)}</td>
-                <td className="px-5 py-2 text-right tnum text-success">
+                <td className="px-4 py-2 capitalize text-muted">{r.mode}</td>
+                <td className="px-4 py-2 text-right tnum text-muted">{r.producers}</td>
+                <td className="px-4 py-2 text-right tnum text-muted">{r.workers}</td>
+                <td className="px-4 py-2 text-right tnum text-fg">{formatNumber(r.pushed)}</td>
+                <td className="px-4 py-2 text-right tnum text-success">
                   {formatNumber(r.completed)}
                 </td>
-                <td className="px-5 py-2 text-right tnum text-accent">{fmtRate(r.pushPerSec)}/s</td>
-                <td className="px-5 py-2 text-right tnum text-success">
+                <td className="px-4 py-2 text-right tnum text-fg">{fmtRate(r.pushPerSec)}/s</td>
+                <td className="px-4 py-2 text-right tnum text-success">
                   {fmtRate(r.donePerSec)}/s
                 </td>
-                <td className="px-5 py-2 text-right tnum text-muted">{formatMs(r.p95)}</td>
-                <td className="px-5 py-2 text-right tnum text-muted">{formatMs(r.durationMs)}</td>
+                <td className="px-4 py-2 text-right tnum text-muted">{formatMs(r.p95)}</td>
+                <td className="px-4 py-2 text-right tnum text-muted">{formatMs(r.durationMs)}</td>
               </tr>
             ))}
           </tbody>

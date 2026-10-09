@@ -5,14 +5,15 @@ import { SITE, SITE_DESCRIPTION, siteHead, transformPageData } from './seo';
 import { createThemeConfig } from './themeConfig';
 
 // Served at the repo root in dev/preview, and under the Pages sub-path in CI
-// (pages.yml sets DOCS_BASE=/bunqueue-dashboard/docs/). Must have a trailing slash.
+// (pages.yml sets DOCS_BASE=/<repo>/docs/, i.e. /qelay-control-panel/docs/). Must have a
+// trailing slash.
 const base = process.env.DOCS_BASE || '/';
 
 // withMermaid() registers the render component used by ```mermaid fences.
 export default withMermaid({
   base,
   lang: 'en-US',
-  title: 'bunqueue dashboard',
+  title: 'Qelay Control Panel',
   description: SITE_DESCRIPTION,
   cleanUrls: true,
   lastUpdated: true,

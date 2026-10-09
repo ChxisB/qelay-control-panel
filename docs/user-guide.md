@@ -1,5 +1,5 @@
 ---
-description: "An illustrated, section-by-section tour of the bunqueue dashboard, one detailed, screenshot-backed page per dashboard section."
+description: "An illustrated, section-by-section tour of Qelay Control Panel, one detailed, screenshot-backed page per dashboard section."
 title: User guide
 ---
 
@@ -9,9 +9,10 @@ The guides below explain each dashboard section: displayed data, available actio
 state-dependent controls, API calls and known limitations. Screenshots illustrate the main
 operator pages; use the [verification matrix](/testing) for current test coverage.
 
-Screenshots were captured against a live seeded server (queues `emails`, `image-resize`, `reports`, `notifications`, `benchmark`, `maintenance`; real
-completed jobs, DLQ entries, cron schedules, webhooks and workers) in the
-default dark theme.
+Screenshots were captured from the built-in live demo (the four sample queues
+`emails`, `image-processing`, `notifications` and `reports`, with their sample jobs,
+DLQ entries and cron schedules) in the default dark theme. The demo has no
+registered workers, so the Workers pages show their empty state.
 
 ::: tip Two page families, by design
 The **Pro** pages (`src/pages/control/*`, client `lib/bq.ts`) are the complete
@@ -32,7 +33,7 @@ component → API-client table, see [Pages & routes](/pages).
 
 - [**Queues**](/guide/queues), the fleet view: every queue with per-state counts
   and inline pause/resume.
-- [**Jobs Explorer**](/guide/jobs), server-paginated jobs for a queue, with
+- [**Jobs**](/guide/jobs), server-paginated jobs for a queue, with
   filters, multi-select and Promote as the only job-lifecycle mutation.
 - [**Dead Letter Queue**](/guide/dlq), cross-queue DLQ dashboard: reasons,
   attempt history and CSV export; every retry and purge path fails closed.

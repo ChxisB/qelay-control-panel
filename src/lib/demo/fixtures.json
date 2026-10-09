@@ -5,7 +5,7 @@
     "uptime": 133,
     "version": "2.9.4",
     "queues": { "waiting": 13, "active": 2, "delayed": 6, "completed": 4, "dlq": 2 },
-    "connections": { "tcp": 0, "ws": 0, "sse": 0 },
+    "connections": { "tcp": 3, "ws": 1, "sse": 1 },
     "memory": { "heapUsed": 3, "heapTotal": 4, "rss": 68 }
   },
   "ping": { "ok": true, "data": { "pong": true, "time": 1783035131368 } },

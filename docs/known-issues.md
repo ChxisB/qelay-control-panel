@@ -1,6 +1,6 @@
 ---
 title: Known issues
-description: "A verified, non-glossed list of the bunqueue dashboard's current bugs and design constraints, each pointing at the exact file to look at."
+description: "A verified, non-glossed list of Qelay Control Panel's current bugs and design constraints, each pointing at the exact file to look at."
 ---
 
 # Known issues
@@ -100,7 +100,7 @@ the patch when upgrading the SDK.
 Every module was re-read against the invariants it assumes, each suspected
 defect was challenged by an independent reviewer before being accepted, and the
 92 that survived were fixed with regression tests (170 → 314 tests). The full
-list is in [the changelog](https://github.com/egeominotti/bunqueue-dashboard/blob/main/CHANGELOG.md).
+list is in [the changelog](https://github.com/ChxisB/qelay-control-panel/blob/main/CHANGELOG.md).
 What matters for operators:
 
 - **Network-facing agent access fails closed.** Non-loopback binds and
@@ -150,7 +150,7 @@ A security + gate pass resolved these, no longer present:
   request aborts wait for the child to exit before releasing lifecycle leases;
   an IPC supervisor also terminates work after abrupt agent death.
 - **Server configuration survives agent restarts.** Successful changes are
-  atomically saved to `AGENT_CONFIG_PATH` (default `.bunqueue-dashboard/config.json`).
+  atomically saved to `AGENT_CONFIG_PATH` (default `.qelay-control-panel/config.json`).
   Invalid saved state fails startup explicitly; restarting does not start the broker.
 - **Publishing waits for the complete validation gate.** Release, npm, Docker and
   Pages depend on quality, all three Playwright browsers and native execution
@@ -381,6 +381,21 @@ ship with reproducing tests (`test/agent-server.test.ts`, `test/manager.test.ts`
   Alerts page is now routed at `/alerts` with a Monitoring nav item, and a
   client-side engine (`src/lib/useAlertEngine.ts`, mounted app-wide via
   `AlertEngine`) evaluates the enabled rules against live metrics.
+- **Number separators are mixed.** `formatNumber` in `src/lib/format.ts` is pinned to
+  `de-DE` on purpose (dot for thousands, comma for decimals: `14.608`), but rates,
+  durations and sizes use `toFixed` and so a dot for decimals (`0.5/s`, `1.4s`,
+  `1.5 MB`). Counts are always whole numbers, so the two styles never meet in one value
+  except the rounded metric values on `src/pages/Metrics.tsx` (`1.234,57`), which sit next
+  to dot-decimal rates. The setting is inherited from the original dashboard and is not
+  affected by the browser locale.
+- **Three automated accessibility findings remain at 1280 px.** An axe scan of every screen in
+  both themes (WCAG 2.x A/AA) reports them, and the commit this fork started from reports the same
+  ones:
+  - **Database** — the column type captions in the result table
+    (`text-faint/70` in `src/pages/control/database/ResultsTable.tsx`) have a contrast of about
+    3.2:1 in dark and 2.7:1 in light, below the 4.5:1 minimum.
+  - **Metrics** (one region) and **MCP** (two regions) — a scrollable region that keyboard
+    users cannot focus (`scrollable-region-focusable`).
 
 ## Design limitations (not bugs, how bunqueue OSS works)
 

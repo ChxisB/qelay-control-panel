@@ -5,9 +5,9 @@ import { Button } from '@/components/ui/Button';
 import { CopyButton } from '@/components/ui/CopyButton';
 import { OfflineBanner } from '@/components/ui/feedback';
 import { SegmentedControl, Select } from '@/components/ui/form';
-import { IconSearch } from '@/components/ui/icons';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Pagination } from '@/components/ui/Pagination';
+import { SearchField } from '@/components/ui/SearchField';
 import { StatCard } from '@/components/ui/StatCard';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { formatNumber, formatRelativeTime } from '@/lib/format';
@@ -106,9 +106,9 @@ export function LogsPro() {
           tone={counters.failed ? 'red' : 'default'}
           compact
         />
-        <StatCard label="Waiting" value={formatNumber(counters.waiting)} tone="amber" compact />
-        <StatCard label="Active" value={formatNumber(counters.active)} tone="blue" compact />
-        <StatCard label="Throughput" value={`${throughput.toFixed(1)}/s`} tone="accent" compact />
+        <StatCard label="Waiting" value={formatNumber(counters.waiting)} tone="waiting" compact />
+        <StatCard label="Active" value={formatNumber(counters.active)} tone="active" compact />
+        <StatCard label="Throughput" value={`${throughput.toFixed(1)}/s`} compact />
       </div>
 
       <div className="mb-4 flex flex-wrap items-center gap-3">
@@ -131,7 +131,6 @@ export function LogsPro() {
         <SegmentedControl options={STATUS} value={status} onChange={setStatus} />
         <Button
           size="sm"
-          variant={paused ? 'warning' : 'default'}
           onClick={() => setFrozen(paused ? null : events)}
           title={
             paused
@@ -143,38 +142,35 @@ export function LogsPro() {
             ? `Resume${newSincePause ? ` — ${formatNumber(newSincePause)} new` : ''}`
             : 'Following · Pause'}
         </Button>
-        <div className="relative ml-auto min-w-56 flex-1 md:max-w-xs">
-          <IconSearch className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-faint" />
-          <input
-            aria-label="Search by job ID or queue"
-            name="activity-search"
-            autoComplete="off"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by job ID or queue…"
-            className="h-9 w-full rounded-lg border border-line bg-surface pl-9 pr-3 text-sm text-fg placeholder:text-faint focus:border-accent/60 focus:outline-none focus:ring-2 focus:ring-accent/30"
-          />
-        </div>
+        <SearchField
+          containerClassName="ml-auto min-w-56 flex-1 md:max-w-xs"
+          aria-label="Search by job ID or queue"
+          name="activity-search"
+          autoComplete="off"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search by job ID or queue…"
+        />
       </div>
       <p className="-mt-2 mb-4 text-xs text-faint">
         Search and filters cover the last {BUFFER_SIZE} streamed events held in this browser.
       </p>
 
-      <div className="overflow-x-auto rounded-xl border border-line bg-surface">
+      <div className="overflow-x-auto rounded-card border border-line bg-surface">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-line text-left text-[11px] uppercase tracking-wider text-faint">
-              <th className="px-5 py-3 font-medium">Status</th>
-              <th className="px-5 py-3 font-medium">Event</th>
-              <th className="px-5 py-3 font-medium">Queue</th>
-              <th className="px-5 py-3 text-right font-medium">Timestamp</th>
-              <th className="px-5 py-3 text-right font-medium">ID</th>
+            <tr className="border-b border-line text-left eyebrow text-muted light:bg-surface-2">
+              <th className="px-4 py-2.5 font-semibold">Status</th>
+              <th className="px-4 py-2.5 font-semibold">Event</th>
+              <th className="px-4 py-2.5 font-semibold">Queue</th>
+              <th className="px-4 py-2.5 text-right font-semibold">Timestamp</th>
+              <th className="px-4 py-2.5 text-right font-semibold">ID</th>
             </tr>
           </thead>
           <tbody>
             {rows.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-5 py-12 text-center text-sm text-faint">
+                <td colSpan={5} className="px-4 py-12 text-center text-sm text-faint">
                   {streamError
                     ? `Event stream unavailable — ${streamError.message}. Retrying…`
                     : !connected
@@ -190,10 +186,10 @@ export function LogsPro() {
                   key={e.seq}
                   className="border-b border-line last:border-0 hover:bg-surface-2/40"
                 >
-                  <td className="px-5 py-3">
+                  <td className="px-4 py-2.5">
                     <StatusBadge status={e.status} />
                   </td>
-                  <td className="px-5 py-3 font-mono text-xs text-fg">
+                  <td className="px-4 py-2.5 font-mono text-xs text-fg">
                     {e.event}
                     {e.status === 'failed' && e.error && (
                       <div
@@ -204,23 +200,23 @@ export function LogsPro() {
                       </div>
                     )}
                   </td>
-                  <td className="px-5 py-3">
+                  <td className="px-4 py-2.5">
                     <span className="rounded-md bg-surface-2 px-2 py-0.5 font-mono text-xs text-muted">
                       {e.queue || '—'}
                     </span>
                   </td>
                   <td
-                    className="px-5 py-3 text-right text-faint"
+                    className="px-4 py-2.5 text-right text-faint"
                     title={new Date(e.timestamp).toISOString()}
                   >
                     {formatRelativeTime(e.timestamp)}
                   </td>
-                  <td className="px-5 py-3 text-right font-mono text-xs text-faint">
+                  <td className="px-4 py-2.5 text-right font-mono text-xs text-faint">
                     {e.jobId ? (
                       <span className="inline-flex items-center gap-1">
                         <Link
                           to={`/job?id=${encodeURIComponent(e.jobId)}`}
-                          className="text-accent hover:underline"
+                          className="text-link hover:underline"
                         >
                           {e.jobId}
                         </Link>

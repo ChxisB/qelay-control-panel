@@ -1,15 +1,20 @@
 import type { ReactNode } from 'react';
 import { cn } from '@/lib/cn';
 
-export type StatTone = 'default' | 'green' | 'red' | 'blue' | 'amber' | 'accent';
+/**
+ * `active` / `waiting` follow the job-state tokens; `green` / `amber` are the semantic
+ * success / warning colours (rates, health, thresholds); `red` is the attention tile.
+ * Everything else, including brand violet and orange, stays in the text colour.
+ */
+export type StatTone = 'default' | 'green' | 'red' | 'active' | 'waiting' | 'amber';
 
 const toneClass: Record<StatTone, string> = {
   default: 'text-fg',
   green: 'text-success',
   red: 'text-danger',
-  blue: 'text-blue-400 light:text-blue-700',
+  active: 'text-state-active-fg',
+  waiting: 'text-state-waiting-fg',
   amber: 'text-warning',
-  accent: 'text-accent',
 };
 
 export function StatCard({
@@ -21,24 +26,38 @@ export function StatCard({
 }: {
   label: string;
   value: ReactNode;
+  /** `red` is the attention tile: danger border, a dot beside the label and a danger value. */
   tone?: StatTone;
   hint?: ReactNode;
   compact?: boolean;
 }) {
+  const attention = tone === 'red';
   return (
     <div
       className={cn(
-        'rounded-xl border border-line bg-surface',
-        compact ? 'px-4 py-3' : 'px-5 py-4'
+        'rounded-card border bg-surface',
+        attention ? 'border-danger/40' : 'border-line',
+        compact ? 'px-4 py-3' : 'px-[18px] py-4'
       )}
     >
-      <div className="text-[11px] font-medium uppercase tracking-wider text-faint">{label}</div>
+      <div className="eyebrow flex items-center gap-2 text-muted">
+        {attention && (
+          <span className="size-1.5 shrink-0 rounded-full bg-danger-fill" aria-hidden="true" />
+        )}
+        {label}
+      </div>
       <div
-        className={cn('mt-2 font-semibold tnum', compact ? 'text-xl' : 'text-3xl', toneClass[tone])}
+        className={cn(
+          'mt-2 tnum',
+          compact
+            ? 'text-xl font-semibold'
+            : 'text-[32px] font-bold leading-[1.1] tracking-[-0.03em]',
+          toneClass[tone]
+        )}
       >
         {value}
       </div>
-      {hint != null && <div className="mt-1 text-xs text-faint">{hint}</div>}
+      {hint != null && <div className="mt-1 text-xs text-muted">{hint}</div>}
     </div>
   );
 }

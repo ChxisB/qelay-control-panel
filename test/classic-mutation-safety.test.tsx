@@ -200,7 +200,7 @@ describe('classic QueueDetail mutation safety', () => {
     expect(host.textContent).toContain('orders');
 
     await settle(45);
-    expect(host.textContent).toContain('Could not refresh bunqueue data');
+    expect(host.textContent).toContain('Could not refresh server data');
     expect(host.textContent).toContain('Stale');
     expect(
       Array.from(host.querySelectorAll('span')).some((node) => node.textContent === 'Live')

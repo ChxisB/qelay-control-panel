@@ -38,7 +38,7 @@ export function FlowPage() {
             onClick={() => explorer.setMode(item)}
             className={
               explorer.mode === item
-                ? 'border-b-2 border-accent px-4 py-2 text-sm capitalize text-fg'
+                ? 'border-b-2 border-ring px-4 py-2 text-sm capitalize text-fg'
                 : 'border-b-2 border-transparent px-4 py-2 text-sm capitalize text-faint hover:text-fg'
             }
           >

@@ -1,39 +1,82 @@
 import { cn } from '@/lib/cn';
 
-// `text-success/warning/danger` flip with the theme (index.css); the other hues
-// carry explicit `light:` overrides — the 400 shades fail contrast on white.
-const STYLES: Record<string, string> = {
-  completed: 'text-success bg-emerald-500/10',
-  active: 'text-blue-400 light:text-blue-700 bg-blue-500/10',
-  failed: 'text-danger bg-red-500/10',
-  waiting: 'text-zinc-400 light:text-zinc-600 bg-zinc-500/10',
-  prioritized: 'text-violet-400 light:text-violet-700 bg-violet-500/10',
-  delayed: 'text-warning bg-amber-500/10',
-  paused: 'text-orange-400 light:text-orange-700 bg-orange-500/10',
-  'waiting-children': 'text-cyan-400 light:text-cyan-700 bg-cyan-500/10',
-  stalled: 'text-orange-400 light:text-orange-700 bg-orange-500/10',
-  running: 'text-blue-400 light:text-blue-700 bg-blue-500/10',
-  compensating: 'text-violet-400 light:text-violet-700 bg-violet-500/10',
-  'compensation-stuck': 'text-danger bg-red-500/10',
-  compensated: 'text-success bg-emerald-500/10',
-  'compensation-failed': 'text-danger bg-red-500/10',
-  'compensation-skipped': 'text-warning bg-amber-500/10',
-  // Timeline event names (JobTimeline) — distinct, not all-gray.
-  enqueued: 'text-zinc-400 light:text-zinc-600 bg-zinc-500/10',
-  started: 'text-blue-400 light:text-blue-700 bg-blue-500/10',
-  finished: 'text-success bg-emerald-500/10',
-  retry: 'text-warning bg-amber-500/10',
-  cancelled: 'text-zinc-400 light:text-zinc-600 bg-zinc-500/10',
-  default: 'text-zinc-400 light:text-zinc-600 bg-zinc-500/10',
+/**
+ * The six designed job states. Each has a `--state-<name>-{bg,fg}` pair in index.css
+ * that already switches per theme, so no `light:` overrides are needed here.
+ * Class names are written out in full so Tailwind's scanner can see them.
+ */
+export type StateRole = 'waiting' | 'prioritized' | 'active' | 'completed' | 'failed' | 'delayed';
+
+export const STATE_PILL: Record<StateRole, string> = {
+  waiting: 'bg-state-waiting-bg text-state-waiting-fg',
+  prioritized: 'bg-state-prioritized-bg text-state-prioritized-fg',
+  active: 'bg-state-active-bg text-state-active-fg',
+  completed: 'bg-state-completed-bg text-state-completed-fg',
+  failed: 'bg-state-failed-bg text-state-failed-fg',
+  delayed: 'bg-state-delayed-bg text-state-delayed-fg',
 };
 
+/** Solid dot / bar fill in a state's foreground colour (series, progress bars, status dots). */
+export const STATE_SOLID: Record<StateRole, string> = {
+  waiting: 'bg-state-waiting-fg',
+  prioritized: 'bg-state-prioritized-fg',
+  active: 'bg-state-active-fg',
+  completed: 'bg-state-completed-fg',
+  failed: 'bg-state-failed-fg',
+  delayed: 'bg-state-delayed-fg',
+};
+
+/** State text colour, for numerals and inline labels. */
+export const STATE_TEXT: Record<StateRole, string> = {
+  waiting: 'text-state-waiting-fg',
+  prioritized: 'text-state-prioritized-fg',
+  active: 'text-state-active-fg',
+  completed: 'text-state-completed-fg',
+  failed: 'text-state-failed-fg',
+  delayed: 'text-state-delayed-fg',
+};
+
+/**
+ * Every status string callers pass (job, queue, workflow, compensation and timeline
+ * states) mapped onto one of the six roles. Judgment calls: paused / waiting-children
+ * read as waiting (the job is parked, not in trouble); stalled, retry and compensating
+ * (a rollback in flight) as delayed (needs a look, not failed yet); running / started
+ * as active.
+ */
+export const STATE_ROLE: Record<string, StateRole> = {
+  completed: 'completed',
+  active: 'active',
+  failed: 'failed',
+  waiting: 'waiting',
+  prioritized: 'prioritized',
+  delayed: 'delayed',
+  paused: 'waiting',
+  'waiting-children': 'waiting',
+  stalled: 'delayed',
+  running: 'active',
+  compensating: 'delayed',
+  'compensation-stuck': 'failed',
+  compensated: 'completed',
+  'compensation-failed': 'failed',
+  'compensation-skipped': 'delayed',
+  // Timeline event names (JobTimeline).
+  enqueued: 'waiting',
+  started: 'active',
+  finished: 'completed',
+  retry: 'delayed',
+  cancelled: 'waiting',
+};
+
+export function stateRole(status: string): StateRole {
+  return STATE_ROLE[(status || '').toLowerCase()] ?? 'waiting';
+}
+
 export function StatusBadge({ status }: { status: string }) {
-  const key = (status || '').toLowerCase();
-  const cls = STYLES[key] ?? STYLES.default;
+  const cls = STATE_PILL[stateRole(status)];
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium capitalize',
+        'inline-flex items-center gap-1.5 rounded-full py-[3px] pl-2 pr-2.5 text-xs font-medium capitalize',
         cls
       )}
     >
@@ -43,6 +86,13 @@ export function StatusBadge({ status }: { status: string }) {
   );
 }
 
+const DOT: Record<'green' | 'amber' | 'red' | 'zinc', string> = {
+  green: 'bg-success',
+  amber: 'bg-warning',
+  red: 'bg-danger-fill',
+  zinc: 'bg-state-waiting-fg',
+};
+
 /** A small colored dot + label used in headers (e.g. "Active", "Live"). */
 export function StatusDot({
   label,
@@ -51,17 +101,9 @@ export function StatusDot({
   label: string;
   tone?: 'green' | 'amber' | 'red' | 'zinc';
 }) {
-  const dot =
-    tone === 'green'
-      ? 'bg-emerald-400'
-      : tone === 'amber'
-        ? 'bg-amber-400'
-        : tone === 'red'
-          ? 'bg-red-400'
-          : 'bg-zinc-400';
   return (
     <span className="inline-flex items-center gap-1.5 text-xs font-medium text-muted">
-      <span className={cn('size-1.5 rounded-full', dot)} />
+      <span className={cn('size-1.5 rounded-full', DOT[tone])} />
       {label}
     </span>
   );

@@ -38,21 +38,11 @@ export function LifecycleCard({
       <CardHeader title="Lifecycle" />
       <div className="flex flex-wrap items-end gap-3">
         {paused ? (
-          <Button
-            variant="success"
-            size="sm"
-            disabled={busy}
-            onClick={() => run('Resumed', () => bq.resume(queue))}
-          >
+          <Button size="sm" disabled={busy} onClick={() => run('Resumed', () => bq.resume(queue))}>
             Resume
           </Button>
         ) : (
-          <Button
-            variant="warning"
-            size="sm"
-            disabled={busy}
-            onClick={() => run('Paused', () => bq.pause(queue))}
-          >
+          <Button size="sm" disabled={busy} onClick={() => run('Paused', () => bq.pause(queue))}>
             Pause
           </Button>
         )}

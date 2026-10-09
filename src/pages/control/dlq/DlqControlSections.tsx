@@ -1,5 +1,5 @@
 import { Select } from '@/components/ui/form';
-import { IconSearch } from '@/components/ui/icons';
+import { SearchField } from '@/components/ui/SearchField';
 import { StatCard } from '@/components/ui/StatCard';
 import { formatNumber, formatRelativeTime } from '@/lib/format';
 
@@ -118,18 +118,15 @@ export function DlqToolbar({
           ))}
         </Select>
       </div>
-      <div className="relative min-w-40 flex-1">
-        <IconSearch className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-faint" />
-        <input
-          value={search}
-          onChange={(event) => onSearch(event.target.value)}
-          placeholder={pageScoped ? 'Filter this page by job ID…' : 'Filter by job ID…'}
-          aria-label="Filter by job ID"
-          name="dlq-control-job-filter"
-          autoComplete="off"
-          className="h-9 w-full rounded-lg border border-line bg-surface pl-9 pr-3 text-sm text-fg placeholder:text-faint focus:border-accent/60 focus:outline-none focus:ring-2 focus:ring-accent/30"
-        />
-      </div>
+      <SearchField
+        containerClassName="min-w-40 flex-1"
+        value={search}
+        onChange={(event) => onSearch(event.target.value)}
+        placeholder={pageScoped ? 'Filter this page by job ID…' : 'Filter by job ID…'}
+        aria-label="Filter by job ID"
+        name="dlq-control-job-filter"
+        autoComplete="off"
+      />
     </div>
   );
 }

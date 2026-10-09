@@ -6,7 +6,7 @@
  *
  * Dependency-free on purpose: this file ships in the npm package, and it
  * replaced pino/pino-pretty as the package's ONLY runtime dependencies —
- * dropping them makes `bunx bunqueue-dashboard` a zero-dependency install.
+ * dropping them makes `bunx qelay-control-panel` a zero-dependency install.
  * The call signature (`logger.info(obj, msg)` / `logger.info(msg)`) and the
  * NDJSON shape (numeric `level`, `time`, `msg`, merged fields) stay
  * pino-compatible so nothing downstream changes.

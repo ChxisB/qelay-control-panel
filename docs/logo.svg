@@ -1,62 +1,31 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
-  <title>bunqueue dashboard</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 160" fill="none" role="img" aria-label="Qelay Control Panel">
+  <title>Qelay Control Panel</title>
+  <style>
+    .word { fill: #0B0F1A; }
+    .sub { fill: #475569; }
+    @media (prefers-color-scheme: dark) {
+      .word { fill: #F1F5F9; }
+      .sub { fill: #94A3B8; }
+    }
+  </style>
   <defs>
-    <linearGradient id="heroGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fce7f3"/>
-      <stop offset="50%" stop-color="#f9a8d4"/>
-      <stop offset="100%" stop-color="#ec4899"/>
-    </linearGradient>
-    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f9a8d4"/>
-      <stop offset="100%" stop-color="#ec4899"/>
-    </linearGradient>
-    <linearGradient id="bunnyInner" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fce7f3"/>
-      <stop offset="100%" stop-color="#fbcfe8"/>
+    <linearGradient id="qelay-g" gradientUnits="userSpaceOnUse" x1="14" y1="8" x2="190" y2="144">
+      <stop offset="0" stop-color="#FF7A00"/>
+      <stop offset="0.5" stop-color="#FF3D61"/>
+      <stop offset="1" stop-color="#7A3DFF"/>
     </linearGradient>
   </defs>
-
-  <!-- Background halo -->
-  <circle cx="200" cy="150" r="120" fill="url(#heroGrad)" opacity="0.10"/>
-  <circle cx="200" cy="150" r="90" fill="url(#heroGrad)" opacity="0.15"/>
-  <circle cx="200" cy="150" r="60" fill="url(#heroGrad)" opacity="0.20"/>
-
-  <!-- Floating jobs -->
-  <g opacity="0.85">
-    <rect x="60" y="80" width="40" height="40" rx="8" fill="#a78bfa"/>
-    <rect x="300" y="60" width="35" height="35" rx="6" fill="#67e8f9"/>
-    <rect x="320" y="180" width="45" height="45" rx="10" fill="#86efac"/>
-    <rect x="40" y="180" width="30" height="30" rx="6" fill="#fde047"/>
+  <g transform="translate(0 4)">
+    <g stroke="url(#qelay-g)" stroke-linecap="round">
+      <path d="M87 47.3A50 50 0 1 1 87 104.7" stroke-width="36"/>
+      <path d="M162 110L186 134" stroke-width="26"/>
+      <path d="M48 68H84" stroke-width="16"/>
+      <path d="M34 92H86" stroke-width="16"/>
+    </g>
+    <circle cx="14" cy="68" r="8" fill="url(#qelay-g)"/>
   </g>
-
-  <!-- Connection lines -->
-  <g stroke="#ec4899" stroke-width="2" opacity="0.45">
-    <line x1="100" y1="100" x2="150" y2="130"/>
-    <line x1="317" y1="77" x2="250" y2="120"/>
-    <line x1="342" y1="202" x2="250" y2="170"/>
-    <line x1="70" y1="195" x2="150" y2="170"/>
-  </g>
-
-  <!-- Logo box with bunny -->
-  <rect x="150" y="100" width="100" height="100" rx="20" fill="url(#accentGrad)"/>
-  <g transform="translate(200, 150)">
-    <ellipse cx="-16" cy="-32" rx="8" ry="20" fill="#ffffff" opacity="0.9"/>
-    <ellipse cx="-16" cy="-32" rx="4" ry="14" fill="url(#bunnyInner)"/>
-    <ellipse cx="16" cy="-32" rx="8" ry="20" fill="#ffffff" opacity="0.9"/>
-    <ellipse cx="16" cy="-32" rx="4" ry="14" fill="url(#bunnyInner)"/>
-    <circle cx="0" cy="0" r="28" fill="#ffffff" opacity="0.95"/>
-    <ellipse cx="-10" cy="-4" rx="5" ry="6" fill="#18181b"/>
-    <ellipse cx="10" cy="-4" rx="5" ry="6" fill="#18181b"/>
-    <circle cx="-8" cy="-6" r="2" fill="#ffffff"/>
-    <circle cx="12" cy="-6" r="2" fill="#ffffff"/>
-    <ellipse cx="0" cy="8" rx="4" ry="3" fill="#be185d"/>
-    <path d="M -6 14 Q 0 20 6 14" stroke="#be185d" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-  </g>
-
-  <!-- Speed lines -->
-  <g stroke="url(#accentGrad)" stroke-width="3" stroke-linecap="round" opacity="0.6">
-    <line x1="100" y1="250" x2="140" y2="250"/>
-    <line x1="120" y1="260" x2="180" y2="260"/>
-    <line x1="90" y1="270" x2="160" y2="270"/>
+  <g font-family="Inter, 'Helvetica Neue', Arial, sans-serif">
+    <text class="word" x="236" y="102" font-size="120" font-weight="800" letter-spacing="-5.4">Qelay</text>
+    <text class="sub" x="240" y="140" font-size="21" font-weight="600" letter-spacing="3.8">CONTROL PANEL</text>
   </g>
 </svg>

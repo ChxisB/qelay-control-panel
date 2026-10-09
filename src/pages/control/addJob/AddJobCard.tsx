@@ -79,7 +79,7 @@ export function AddJobCard({
               maxLength={MAX_JOB_DATA_CHARS}
               spellCheck={false}
               rows={7}
-              className="w-full rounded-lg border border-line bg-surface-2 p-3 font-mono text-sm text-fg focus:border-accent/60 focus:outline-none focus:ring-2 focus:ring-accent/30"
+              className="w-full rounded-lg border border-line bg-surface-2 p-3 font-mono text-sm text-fg focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30"
             />
           </Field>
           {jsonError && (

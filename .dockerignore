@@ -1,4 +1,5 @@
 .git
+.qelay-control-panel
 .bunqueue-dashboard
 .github
 node_modules

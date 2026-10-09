@@ -60,38 +60,38 @@ export function Workers() {
           hint="Workers appear here once they connect and register with the server."
         />
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-line bg-surface">
+        <div className="overflow-x-auto rounded-card border border-line bg-surface">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-line text-left text-[11px] uppercase tracking-wider text-faint">
-                <th className="px-5 py-3 font-medium">Worker</th>
-                <th className="px-5 py-3 font-medium">Queues</th>
-                <th className="px-5 py-3 text-right font-medium">Active</th>
-                <th className="px-5 py-3 text-right font-medium">Processed</th>
-                <th className="px-5 py-3 text-right font-medium">Failed</th>
-                <th className="px-5 py-3 text-right font-medium">Last Seen</th>
+              <tr className="border-b border-line text-left eyebrow text-muted light:bg-surface-2">
+                <th className="px-4 py-2.5 font-semibold">Worker</th>
+                <th className="px-4 py-2.5 font-semibold">Queues</th>
+                <th className="px-4 py-2.5 text-right font-semibold">Active</th>
+                <th className="px-4 py-2.5 text-right font-semibold">Processed</th>
+                <th className="px-4 py-2.5 text-right font-semibold">Failed</th>
+                <th className="px-4 py-2.5 text-right font-semibold">Last Seen</th>
               </tr>
             </thead>
             <tbody>
               {pageWorkers.map((w) => (
                 <tr key={w.id} className="border-b border-line last:border-0 hover:bg-surface-2/40">
-                  <td className="px-5 py-3">
+                  <td className="px-4 py-2.5">
                     <div className="font-medium text-fg">{w.name || 'worker'}</div>
                     <div className="font-mono text-[11px] text-faint">{w.id}</div>
                   </td>
-                  <td className="px-5 py-3 font-mono text-xs text-muted">
+                  <td className="px-4 py-2.5 font-mono text-xs text-muted">
                     {w.queues.join(', ') || '—'}
                   </td>
-                  <td className="px-5 py-3 text-right tnum text-blue-400">
+                  <td className="px-4 py-2.5 text-right tnum text-state-active-fg">
                     {formatNumber(w.activeJobs)}
                   </td>
-                  <td className="px-5 py-3 text-right tnum text-muted">
+                  <td className="px-4 py-2.5 text-right tnum text-muted">
                     {formatNumber(w.processedJobs)}
                   </td>
-                  <td className="px-5 py-3 text-right tnum text-muted">
+                  <td className="px-4 py-2.5 text-right tnum text-muted">
                     {formatNumber(w.failedJobs)}
                   </td>
-                  <td className="px-5 py-3 text-right text-faint">
+                  <td className="px-4 py-2.5 text-right text-faint">
                     {formatRelativeTime(w.lastSeen)}
                   </td>
                 </tr>
@@ -102,7 +102,7 @@ export function Workers() {
       )}
 
       {workers.truncated && (
-        <p className="mt-3 text-xs text-amber-400">
+        <p className="mt-3 text-xs text-warning">
           Showing first {formatNumber(workers.list.length)} of {formatNumber(workers.total)}{' '}
           workers.
         </p>

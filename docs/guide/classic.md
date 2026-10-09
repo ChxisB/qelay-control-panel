@@ -15,7 +15,7 @@ been superseded by a Pro page at the plain path (the classic version moved to a
 
 ![Queue Detail (classic)](../screenshots/queue-detail.png)
 
-**What it shows:** The single-queue drill-in, opened by clicking a row on the classic Queues list. The screenshot shows the `emails` queue: six stat cards, a 12-row Recent Jobs table and a Configuration section. The route first verifies real membership through `/queues/summary`; an unknown queue exposes no mutations. Pause/Resume is guarded by server+queue ownership and a fresh membership check. Drain and Obliterate remain visible but disabled because v2.9.3 cannot prove cross-queue flow safety. Rate-limit and concurrency cards perform explicitly labelled blind desired-state writes with safe-integer validation, a mandatory rate window, explicit TTL mode, typed queue confirmation for clear, and timestamped receipts.
+**What it shows:** The single-queue drill-in, opened by clicking a row on the classic Queues list. The screenshot shows the demo `emails` queue: six stat cards, a Recent Jobs table (nine jobs) and a Configuration section. The route first verifies real membership through `/queues/summary`; an unknown queue exposes no mutations. Pause/Resume is guarded by server+queue ownership and a fresh membership check. Drain and Obliterate remain visible but disabled because v2.9.3 cannot prove cross-queue flow safety. Rate-limit and concurrency cards perform explicitly labelled blind desired-state writes with safe-integer validation, a mandatory rate window, explicit TTL mode, typed queue confirmation for clear, and timestamped receipts.
 
 **Differences vs the Pro page:** no Pro drill-in exists; [Queue Control](/guide/queue-control) offers the same actions plus stall/DLQ configuration, but via a queue dropdown rather than a per-queue URL.
 
@@ -25,7 +25,7 @@ been superseded by a Pro page at the plain path (the classic version moved to a
 
 ![Overview (classic)](../screenshots/classic-overview.png)
 
-**What it shows.** A single-poll health summary of the whole bunqueue server: six stat cards (Waiting, Active, Completed, Failed, DLQ, Error Rate, DLQ and Error Rate turn red when non-zero / above 5%), a Throughput card with pushed/pulled/completed/failed rates per second, a Resources card (uptime, heap, RSS, and a Healthy/Disk-full storage flag), plus compact Workers and Cron Jobs lists (first 6 of each). In the screenshot the seeded server has 41,300 waiting jobs, two active workers (`emails`, `notifications`) and three crons (`nightly-sales-report`, `hourly-digest`, `cache-warmup`). Read-only, everything comes from one polled `api.overview()` call to the bunqueue HTTP API.
+**What it shows.** A single-poll health summary of the whole bunqueue server: six stat cards (Waiting, Active, Completed, Failed, DLQ, Error Rate, DLQ and Error Rate turn red when non-zero / above 5%), a Throughput card with pushed/pulled/completed/failed rates per second, a Resources card (uptime, heap, RSS, and a Healthy/Disk-full storage flag), plus compact Workers and Cron Jobs lists (first 6 of each). In the demo screenshot there are 13 waiting jobs and 2 DLQ entries, no registered workers (the Workers card shows its empty state) and two crons (`nightly-report` and `heartbeat`). Read-only, everything comes from one polled `api.overview()` call to the bunqueue HTTP API.
 
 **Differences vs the Pro page ([`/`](/guide/overview)):** OverviewPro adds a connection banner, a per-queue health grid, and a live Recent Activity feed.
 
@@ -38,7 +38,7 @@ the Pro overview.
 
 ![Queues (classic)](../screenshots/classic-queues.png)
 
-**What it shows.** A live-polled, read-only list of every queue on the bunqueue server, 20 per page. Four stat cards summarize Waiting / Active / Delayed / DLQ counts; below them, each row shows the same counts per queue plus an Active/Paused badge, in the screenshot, six seeded queues (benchmark with 41,299 waiting, image-resize with 3 DLQ entries in red, reports, notifications with 3 delayed, maintenance, emails), all Active. The search box filters by name, and clicking any row drills into `/queues/:name` (QueueDetail). There are no actions here, pausing, draining, and limits live in Queue Control.
+**What it shows.** A live-polled, read-only list of every queue on the bunqueue server, 20 per page. Four stat cards summarize Waiting / Active / Delayed / DLQ counts; below them, each row shows the same counts per queue plus an Active/Paused badge, in the screenshot, the four demo queues (`emails` with 2 DLQ entries in red, `image-processing` with 2 active, `reports` with 6 delayed, and `notifications`), all Active. The search box filters by name, and clicking any row drills into `/queues/:name` (QueueDetail). There are no actions here, pausing, draining, and limits live in Queue Control.
 
 **Differences vs the Pro page:** [`/queues`](/guide/queues) (QueuesOverview) fetches the full list in one `bq.queuesSummary()` call and adds inline pause/resume; this classic page is paginated and read-only.
 
@@ -83,7 +83,7 @@ disabled by the v2.9.3 atomicity policy.
 
 ![Cron (classic)](../screenshots/classic-cron.png)
 
-**What it shows.** A live-polling, read-only list of every scheduled job on the bunqueue server, paginated 15 per page. Each row shows the schedule's name, target queue, its trigger, a cron expression or an interval (`every 300000ms`), the next run time, and how many times it has executed. In the screenshot three schedules are registered: `nightly-sales-report` on the **reports** queue (`0 3 * * *`), `hourly-digest` on **emails** (`0 * * * *`), and `cache-warmup` on **maintenance** every 5 minutes (2 runs so far). The only action is the trash icon, which deletes a schedule after a confirmation prompt; if the server is unreachable an offline banner appears with a retry button.
+**What it shows.** A live-polling, read-only list of every scheduled job on the bunqueue server, paginated 15 per page. Each row shows the schedule's name, target queue, its trigger, a cron expression or an interval (`every 60000ms`), the next run time, and how many times it has executed. In the screenshot two schedules are registered: `nightly-report` on the **reports** queue (`0 2 * * *`) and `heartbeat` on **notifications** every 60 seconds; neither has run yet. The only action is the trash icon, which deletes a schedule after a confirmation prompt; if the server is unreachable an offline banner appears with a retry button.
 
 **Differences vs the Pro page.** This page is list + delete only, creating schedules lives in [Cron Manager](/guide/cron). No known bugs; the classic/Pro duplication is intentional.
 
@@ -93,7 +93,7 @@ disabled by the v2.9.3 atomicity policy.
 
 ![Metrics (classic)](../screenshots/classic-metrics.png)
 
-**What it shows.** A read-only, auto-refreshing dump of the raw `GET /dashboard` payload from the bunqueue API. The top row is live throughput per second (Pushed/Pulled/Completed/Failed, 1.1 / 1.1 / 0.7 / 0.0 in the screenshot). Below sit lifetime Totals (5,582 pushed, 5,871 completed, 3 failed across the seeded emails/image-resize/reports/notifications/benchmark workload), server Memory (heap 78/96 MB, RSS 436 MB), latency percentiles per operation (`push`/`pull`/`ack` × p50/p95/p99), latency averages (`pushMs`/`pullMs`/`ackMs`), and the server's in-memory collections (`jobIndex` 41,881, `queuedTotal` 41,306, …). Nothing is clickable; it refreshes at the global polling interval from Settings.
+**What it shows.** A read-only, auto-refreshing dump of the raw `GET /dashboard` payload from the bunqueue API. The top row is live throughput per second (Pushed/Pulled/Completed/Failed, 0.3 / 0.1 / 0.0 / 0.0 in the screenshot). Below sit lifetime Totals (34 pushed, 8 pulled, 4 completed, 0 failed in the demo workload), server Memory (heap 3.0 / 4.0 MB, RSS 70.0 MB), latency percentiles per operation (`push`/`pull`/`ack` × p50/p95/p99), latency averages (`pushMs`/`pullMs`/`ackMs`), and the server's in-memory collections (`jobIndex` 34, `completedJobs` 4, …). Nothing is clickable; it refreshes at the global polling interval from Settings.
 
 **Differences vs the Pro page:** [`/metrics`](/guide/metrics) (MetricsPro) adds a rolling 60-second throughput chart, a success-rate gauge, and per-queue counts, this page is flat key-value lists only.
 
@@ -105,7 +105,7 @@ Note: the percentile list once rendered broken values (`[object Object]`/zeros);
 
 ![Workers (classic)](../screenshots/classic-workers.png)
 
-**What it shows.** A live, read-only table of every worker registered with the bunqueue server, polled via the same `api.overview()` call the classic Overview uses. Two stat cards summarize Total and Active counts (2 / 2 in the screenshot). Each row lists the worker's name and full ID (here `notifications` and `emails` workers from the seeded demo), the queues it consumes, and its Active / Processed / Failed job counts plus a relative "Last Seen" timestamp (9s ago). The list is client-paginated at 20 rows; if the server truncates the list at 100 workers, an amber "showing first N of M" hint appears. Nothing here is clickable, the page is purely for monitoring throughput.
+**What it shows.** A live, read-only table of every worker registered with the bunqueue server, polled via the same `api.overview()` call the classic Overview uses. Two stat cards summarize Total and Active counts. The demo has no registered workers, so the screenshot shows the empty state (0 / 0); once workers connect, each row lists the worker's name and full ID, the queues it consumes, and its Active / Processed / Failed job counts plus a relative "Last Seen" timestamp. The list is client-paginated at 20 rows; if the server truncates the list at 100 workers, an amber "showing first N of M" hint appears. Nothing here is clickable, the page is purely for monitoring throughput.
 
 **Differences vs the Pro page:** [`/workers`](/guide/workers) (WorkersPro) adds an active/stale status indicator and guarded registry cleanup for stale, idle records. The action does not stop worker processes.
 
@@ -115,7 +115,7 @@ Note: the percentile list once rendered broken values (`[object Object]`/zeros);
 
 ![Logs (classic)](../screenshots/classic-logs.png)
 
-**What it shows.** A live activity feed of job events streamed over SSE from the bunqueue API, the same stream the Pro Logs page uses. Six stat cards count events since the page opened (Total, Completed, Failed, Waiting, Active) plus a rolling Throughput rate (2.8/s in the screenshot). Below, a table lists each event's status badge, event type, queue, relative timestamp, and job ID, 10 per page. Filter with the queue dropdown (list refreshed every 30 s), the All/Waiting/Active/Completed/Failed segments, or the search box (matches job ID or queue). In the screenshot, seeded `emails` and `notifications` jobs cycle through Waiting → Active → Completed. Counters reset on reload, this is a session view, not history.
+**What it shows.** A live activity feed of job events streamed over SSE from the bunqueue API, the same stream the Pro Logs page uses. Six stat cards count events since the page opened (Total, Completed, Failed, Waiting, Active) plus a rolling Throughput rate (0.8/s in the screenshot). Below, a table lists each event's status badge, event type, queue, relative timestamp, and job ID, 10 per page. Filter with the queue dropdown (list refreshed every 30 s), the All/Waiting/Active/Completed/Failed segments, or the search box (matches job ID or queue). In the screenshot, the demo's synthetic events stream across the four demo queues, cycling through Waiting → Active → Completed or Failed. Counters reset on reload, this is a session view, not history.
 
 **Differences vs the Pro page:** [`/logs`](/guide/logs) adds richer failure details plus export/clear controls; both views use event type because SSE events do not carry job names.
 
@@ -125,7 +125,7 @@ Note: the percentile list once rendered broken values (`[object Object]`/zeros);
 
 ![Usage (classic)](../screenshots/classic-usage.png)
 
-**What it shows.** A read-only snapshot of cumulative server usage, polled live from the bunqueue HTTP API via a single `api.overview()` call. Four stat cards give lifetime totals, in the screenshot the seeded demo workload shows 5,600 jobs pushed, 5,890 completed (green), 3 failed (red), 5,896 pulled (blue). Below them, a **Runtime** card lists uptime, heap used (79.0 MB), RSS (436.0 MB), workers ("2 active / 2") and cron jobs (3), and a **Storage** card shows honest disk-full state and when it began. There is nothing to click; if the server is unreachable the page renders zeroed values with an offline banner instead of an error.
+**What it shows.** A read-only snapshot of cumulative server usage, polled live from the bunqueue HTTP API via a single `api.overview()` call. Four stat cards give lifetime totals, in the screenshot the demo workload shows 34 jobs pushed, 4 completed (green), 0 failed and 8 pulled. Below them, a **Runtime** card lists uptime, heap used (3.0 MB), RSS (70.0 MB), workers ("0 active / 0") and cron jobs (2), and a **Storage** card shows honest disk-full state and when it began. There is nothing to click; if the server is unreachable the page renders zeroed values with an offline banner instead of an error.
 
 **Differences vs the Pro page:** [`/usage`](/guide/usage) (UsagePro) adds an error-rate figure and a more prominent storage warning.
 
@@ -149,6 +149,6 @@ reference.
 ![Not found](../screenshots/not-found.png)
 
 Any unknown path renders this catch-all inside the normal layout shell, the
-sidebar stays usable and a **Back to Overview** button returns to `/`. Note the
-Topbar falls back to a generic "bunqueue · bunqueue" title here, as it does for
-every route missing from its title map (see [Known issues](/known-issues)).
+sidebar stays usable and a **Back to Overview** button returns to `/`. The page
+title reads "Page not found", the fallback for every route missing from the
+title map.

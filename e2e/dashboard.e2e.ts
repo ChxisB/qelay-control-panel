@@ -9,6 +9,7 @@ import {
   test,
   unlockDashboard,
 } from './fixtures';
+import { clickNavLink, expandNavGroups } from './navigation';
 
 test.beforeEach(async ({ request }) => {
   await control(request, '/upstream/start');
@@ -40,6 +41,7 @@ test('authenticates, keeps every route under BASE_PATH, and navigates the full s
     assetUrls.every((url) => new URL(url).pathname.startsWith(`${E2E_BASE_PATH}/assets/`))
   ).toBe(true);
 
+  await expandNavGroups(page);
   const hrefs = await page
     .locator('#app-nav nav a')
     .evaluateAll((links) =>
@@ -153,7 +155,10 @@ test('has no automated WCAG A/AA violations in critical states', async ({
     ['Settings', 'Settings'],
   ] as const;
   for (const [linkName, heading] of criticalRoutes) {
-    await page.locator('#app-nav nav').getByRole('link', { name: linkName, exact: true }).click();
+    await clickNavLink(
+      page,
+      page.locator('#app-nav nav').getByRole('link', { name: linkName, exact: true })
+    );
     await expect(page.getByRole('heading', { name: heading, level: 1 })).toBeVisible();
     await expectAccessible(page, testInfo, linkName.toLowerCase().replaceAll(' ', '-'));
   }

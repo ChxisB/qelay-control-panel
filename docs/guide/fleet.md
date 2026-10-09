@@ -6,7 +6,7 @@ description: "Operate multiple Bunqueue brokers, their paired control agents, an
 # Fleet
 
 Fleet is the multi-broker control surface. It checks every configured Bunqueue
-API and its paired control agent without changing the Dashboard's active node,
+API and its paired control agent without changing the control panel's active node,
 groups brokers that report the same PostgreSQL target and namespace, and lets
 you start, stop, restart, or select each broker.
 
@@ -18,7 +18,7 @@ Use one connection profile per broker and one control agent beside each broker:
 
 ```mermaid
 flowchart LR
-  UI["Dashboard"]
+  UI["Control panel"]
   A1["Agent A"] --> B1["Bunqueue A"]
   A2["Agent B"] --> B2["Bunqueue B"]
   A3["Agent C"] --> B3["Bunqueue C"]
@@ -48,7 +48,7 @@ matching Bunqueue API URL, agent URL, server token, and agent token.
 - Start a stopped managed broker, or stop/restart a running one, through that
   broker's paired agent. Stop and Restart require confirmation.
 - Click **Use node**, or use the node selector under the sidebar, to retarget
-  every other Dashboard page atomically. Old polls are aborted and stale data
+  every other page atomically. Old polls are aborted and stale data
   from the previous broker is hidden before the new node renders.
 - Refresh all nodes immediately; otherwise Fleet polls every 10 seconds with
   endpoint-level failure isolation and a 7.5-second deadline.
@@ -59,12 +59,12 @@ new browser session.
 
 ## Shared versus node-local state
 
-| Scope | Dashboard behaviour with PostgreSQL |
+| Scope | Behaviour with PostgreSQL |
 | --- | --- |
 | Queues, jobs, FlowProducer DAGs, DLQ, crons, worker registry, queue/group limits, deduplication, durable events and metrics | Stored under the PostgreSQL namespace and observable through every healthy broker in that group. Use any member, including after another member created the state. |
 | Broker lifecycle, launch configuration, health, memory/connections and process logs | Node-local. Fleet sends the command to the selected card's paired control agent. |
 | Webhooks | Bunqueue 2.9.3 keeps these in the broker process. Configure and inspect them on the intended active node; they are not a PostgreSQL-wide registry. |
-| Workflow Engine | The Dashboard agent uses that profile's local `dataPath` for Workflow state and module handlers. It is not merged merely because queue storage is PostgreSQL. |
+| Workflow Engine | The control agent uses that profile's local `dataPath` for Workflow state and module handlers. It is not merged merely because queue storage is PostgreSQL. |
 | Database inspector and S3 backup | Deliberately unavailable in PostgreSQL mode because both operate on Bunqueue's SQLite file. The pages return an explicit SQLite-only message instead of touching the Workflow database or another local file. |
 | Alerts and Copilot setup | Browser-local. Their live reads and allowed commands follow the currently active profile. |
 
@@ -89,6 +89,6 @@ Bunqueue 2.9.3 upgrades the published 2.9.2 package's PostgreSQL schema 19 to
 schema 20. Stop or coordinate
 every broker that shares a namespace before the upgrade; every member must run
 2.9.3 before normal traffic resumes, because a 2.9.2 broker cannot join schema
-20. The disposable three-broker runtime and Dashboard browser scenarios assert
+20. The disposable three-broker runtime and control panel browser scenarios assert
 schema 20 before testing cross-broker jobs, policies, groups and lifecycle.
 :::

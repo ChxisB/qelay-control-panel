@@ -7,7 +7,7 @@ import type { ServerConfig } from '../agent/manager';
 import { workflowExecution, workflowStats } from '../agent/workflows';
 import { WorkflowRuntime } from '../agent/workflow/runtime';
 
-const root = await mkdtemp(join(tmpdir(), 'bunqueue-dashboard-workflow-'));
+const root = await mkdtemp(join(tmpdir(), 'qelay-control-panel-workflow-'));
 const httpPort = await freePort();
 const tcpPort = await freePort();
 const dataPath = join(root, 'bunqueue.db');

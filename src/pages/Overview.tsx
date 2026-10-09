@@ -64,8 +64,8 @@ export function Overview() {
       />
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6">
-        <StatCard label="Waiting" value={formatNumber(stats.waiting)} tone="amber" />
-        <StatCard label="Active" value={formatNumber(stats.active)} tone="blue" />
+        <StatCard label="Waiting" value={formatNumber(stats.waiting)} tone="waiting" />
+        <StatCard label="Active" value={formatNumber(stats.active)} tone="active" />
         <StatCard label="Completed" value={formatNumber(stats.totalCompleted)} tone="green" />
         <StatCard label="Failed" value={formatNumber(stats.totalFailed)} tone="red" />
         <StatCard
@@ -85,9 +85,9 @@ export function Overview() {
           <CardHeader title="Throughput" />
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             <Rate label="Pushed" value={throughput.pushPerSec} tone="text-fg" />
-            <Rate label="Pulled" value={throughput.pullPerSec} tone="text-blue-400" />
-            <Rate label="Completed" value={throughput.completePerSec} tone="text-emerald-400" />
-            <Rate label="Failed" value={throughput.failPerSec} tone="text-red-400" />
+            <Rate label="Pulled" value={throughput.pullPerSec} tone="text-state-active-fg" />
+            <Rate label="Completed" value={throughput.completePerSec} tone="text-success" />
+            <Rate label="Failed" value={throughput.failPerSec} tone="text-danger" />
           </div>
         </Card>
 
@@ -100,9 +100,7 @@ export function Overview() {
             <Meta
               label="Storage"
               value={!diskKnown ? 'Unavailable' : storage.diskFull ? 'Disk full' : 'Healthy'}
-              tone={
-                !diskKnown ? 'text-muted' : storage.diskFull ? 'text-red-400' : 'text-emerald-400'
-              }
+              tone={!diskKnown ? 'text-muted' : storage.diskFull ? 'text-danger' : 'text-success'}
             />
           </div>
         </Card>
@@ -115,7 +113,7 @@ export function Overview() {
             icon={<IconWorkers className="size-4 text-faint" />}
             action={
               <span className="text-sm text-muted">
-                <span className="font-semibold text-emerald-400">{workers.active}</span> /{' '}
+                <span className="font-semibold text-success">{workers.active}</span> /{' '}
                 {workers.total} active
               </span>
             }

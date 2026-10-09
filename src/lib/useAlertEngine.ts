@@ -172,7 +172,7 @@ export function useAlertEngine() {
           useAlertRuntimeStore.setState({
             breaching,
             status: 'degraded',
-            error: 'The bunqueue overview endpoint is unavailable; alert results may be stale.',
+            error: 'The server overview endpoint is unavailable; alert results may be stale.',
             connectionIdentity,
           });
           return;

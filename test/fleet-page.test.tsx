@@ -55,7 +55,7 @@ function nodeCard(host: ParentNode, name: string): HTMLElement {
   const heading = [...host.querySelectorAll('h2')].find(
     (candidate) => candidate.textContent?.trim() === name
   );
-  const card = heading?.closest<HTMLElement>('.rounded-xl');
+  const card = heading?.closest<HTMLElement>('.rounded-card');
   if (!card) throw new Error(`Missing node card: ${name}`);
   return card;
 }

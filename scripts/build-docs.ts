@@ -9,7 +9,7 @@ import { rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 
-const storageFile = join(tmpdir(), `bunqueue-vitepress-localstorage-${process.pid}.json`);
+const storageFile = join(tmpdir(), `qelay-vitepress-localstorage-${process.pid}.json`);
 const nodeOptions = [process.env.NODE_OPTIONS, `--localstorage-file=${storageFile}`]
   .filter(Boolean)
   .join(' ');

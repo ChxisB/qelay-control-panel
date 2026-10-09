@@ -64,7 +64,7 @@ function Relationships({
           <button
             type="button"
             onClick={() => onSelect(execution.parentExecutionId as string)}
-            className="mt-1 break-all font-mono text-accent hover:underline"
+            className="mt-1 break-all font-mono text-link hover:underline"
           >
             {execution.parentExecutionId}
           </button>

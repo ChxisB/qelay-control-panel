@@ -21,7 +21,7 @@ import { acceptsTcpConnection, assertUpstreamIsLoopbackOnly } from './networkPol
 type Child = ReturnType<typeof Bun.spawn>;
 
 const repository = resolve(import.meta.dir, '..');
-const scratch = await mkdtemp(join(tmpdir(), 'bunqueue-dashboard-browser-e2e-'));
+const scratch = await mkdtemp(join(tmpdir(), 'qelay-control-panel-browser-e2e-'));
 const database = join(scratch, 'bunqueue.db');
 const upstreamCommand = resolve(repository, 'node_modules/bunqueue/dist/cli/index.js');
 

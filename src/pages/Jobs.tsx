@@ -2,8 +2,8 @@ import { useCallback, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { LoadingState, OfflineBanner } from '@/components/ui/feedback';
 import { SegmentedControl, Select } from '@/components/ui/form';
-import { IconSearch } from '@/components/ui/icons';
 import { PageHeader } from '@/components/ui/PageHeader';
+import { SearchField } from '@/components/ui/SearchField';
 import { StatCard } from '@/components/ui/StatCard';
 import { api } from '@/lib/api';
 import { bq } from '@/lib/bq';
@@ -205,8 +205,8 @@ export function Jobs() {
           }
           compact
         />
-        <StatCard label="Waiting" value={statsValue(stats?.waiting)} tone="amber" compact />
-        <StatCard label="Active" value={statsValue(stats?.active)} tone="blue" compact />
+        <StatCard label="Waiting" value={statsValue(stats?.waiting)} tone="waiting" compact />
+        <StatCard label="Active" value={statsValue(stats?.active)} tone="active" compact />
         <StatCard
           label="Completed"
           value={statsValue(stats?.totalCompleted)}
@@ -245,18 +245,15 @@ export function Jobs() {
           </Select>
         </div>
         <SegmentedControl options={JOB_STATUS} value={status} onChange={setStatus} />
-        <div className="relative ml-auto min-w-56 flex-1 md:max-w-xs">
-          <IconSearch className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-faint" />
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            aria-label="Search jobs"
-            name="jobs-search"
-            autoComplete="off"
-            placeholder="Search by ID or name…"
-            className="h-9 w-full rounded-lg border border-line bg-surface pl-9 pr-3 text-sm text-fg placeholder:text-faint focus:border-accent/60 focus:outline-none focus:ring-2 focus:ring-accent/30"
-          />
-        </div>
+        <SearchField
+          containerClassName="ml-auto min-w-56 flex-1 md:max-w-xs"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          aria-label="Search jobs"
+          name="jobs-search"
+          autoComplete="off"
+          placeholder="Search by ID or name…"
+        />
       </div>
 
       {activeLoad && !activeLoad.blockedReason && (

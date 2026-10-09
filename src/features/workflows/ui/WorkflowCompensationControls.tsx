@@ -46,7 +46,7 @@ export function WorkflowCompensationControls({
               void command.run('resume', () => repository.resumeCompensation(executionId));
             }
           }}
-          className="rounded-md bg-accent px-3 py-2 text-xs font-medium text-accent-fg disabled:opacity-40"
+          className="rounded-md bg-primary px-3 py-2 text-xs font-medium text-primary-fg disabled:opacity-40"
         >
           Resume compensation
         </button>

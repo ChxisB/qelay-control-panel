@@ -8,7 +8,7 @@ const breachBody = (breach: Breach): string =>
 function desktopNotify(breach: Breach) {
   if (globalThis.Notification?.permission === 'granted') {
     try {
-      new Notification(`bunqueue alert: ${breach.ruleName}`, {
+      new Notification(`Qelay alert: ${breach.ruleName}`, {
         body: breachBody(breach),
         tag: breach.ruleId,
       });

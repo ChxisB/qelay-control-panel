@@ -100,7 +100,7 @@ describe('OverviewPro malformed /dashboard responses', () => {
     expect(host.textContent).toContain('Real-time system health is unavailable.');
     expect(host.textContent).toContain('Something went wrong');
     expect(host.textContent).toContain('Malformed /dashboard response');
-    expect(host.textContent).not.toContain('bunqueue server connected');
+    expect(host.textContent).not.toContain('Server connected');
     unmount();
   });
 
@@ -143,7 +143,7 @@ describe('OverviewPro malformed /dashboard responses', () => {
 
     const { host, unmount } = renderOverview();
     await settle(30);
-    expect(host.textContent).toContain('bunqueue server connected');
+    expect(host.textContent).toContain('Server connected');
     expect(host.textContent).toContain('37');
     expect(finishMalformedResponse).toBeDefined();
 
@@ -154,7 +154,7 @@ describe('OverviewPro malformed /dashboard responses', () => {
     expect(host.textContent).toContain('showing the last successful overview snapshot');
     expect(host.textContent).toContain('Connection lost — showing last known data');
     expect(host.textContent).toContain('37');
-    expect(host.textContent).not.toContain('bunqueue server connected');
+    expect(host.textContent).not.toContain('Server connected');
     unmount();
   });
 });

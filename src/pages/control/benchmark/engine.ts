@@ -81,7 +81,7 @@ export const DEFAULT_CONFIG: RunConfig = {
   removeOnComplete: true,
 };
 
-export const BENCHMARK_QUEUE_PREFIX = 'bq-dashboard-benchmark-';
+export const BENCHMARK_QUEUE_PREFIX = 'qelay-benchmark-';
 
 export function createBenchmarkQueueName(): string {
   if (typeof globalThis.crypto?.randomUUID !== 'function') {
@@ -169,7 +169,7 @@ export const makeJobs = (
     ...(runId
       ? {
           jobId: `${runId}-${base + i}`,
-          tags: ['bunqueue-dashboard-benchmark', runId],
+          tags: ['qelay-benchmark', runId],
         }
       : {}),
   }));

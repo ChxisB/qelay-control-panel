@@ -61,8 +61,8 @@ export function S3Backup() {
                     !data?.data
                       ? 'font-medium text-muted'
                       : data.data.diskFull
-                        ? 'font-medium text-red-400'
-                        : 'font-medium text-emerald-400'
+                        ? 'font-medium text-danger'
+                        : 'font-medium text-success'
                   }
                 >
                   {!data?.data ? 'Unavailable' : data.data.diskFull ? 'Full' : 'Healthy'}
@@ -83,7 +83,7 @@ export function S3Backup() {
           <dl className="divide-y divide-line text-sm">
             {ENV_VARS.map(([name, desc]) => (
               <div key={name} className="flex items-center justify-between gap-4 py-2.5">
-                <dt className="font-mono text-xs text-accent/90">{name}</dt>
+                <dt className="font-mono text-xs text-fg">{name}</dt>
                 <dd className="text-right text-xs text-faint">{desc}</dd>
               </div>
             ))}

@@ -17,7 +17,7 @@ type Child = ReturnType<typeof Bun.spawn>;
 type CapturedChild = { child: Child; stdout: Promise<string>; stderr: Promise<string> };
 
 async function main(): Promise<void> {
-  const scratch = await realpath(await mkdtemp(join(tmpdir(), 'bunqueue-dashboard-package-')));
+  const scratch = await realpath(await mkdtemp(join(tmpdir(), 'qelay-control-panel-package-')));
   const packDirectory = join(scratch, 'pack');
   const consumerDirectory = join(scratch, 'consumer');
   let runtime: CapturedChild | undefined;
@@ -56,7 +56,7 @@ async function main(): Promise<void> {
       consumerDirectory,
       'node_modules',
       '.bin',
-      process.platform === 'win32' ? 'bunqueue-dashboard.cmd' : 'bunqueue-dashboard'
+      process.platform === 'win32' ? 'qelay-control-panel.cmd' : 'qelay-control-panel'
     );
     await access(bin, constants.X_OK);
     runtime = spawnRuntime(
@@ -140,7 +140,7 @@ async function onlyTarball(directory: string): Promise<string> {
 }
 
 async function installedPackageDirectory(consumer: string, scratch: string): Promise<string> {
-  const directory = await realpath(join(consumer, 'node_modules', 'bunqueue-dashboard'));
+  const directory = await realpath(join(consumer, 'node_modules', 'qelay-control-panel'));
   assert(
     directory.startsWith(`${scratch}/`),
     `Bun installed the package outside the isolated consumer: ${directory}`

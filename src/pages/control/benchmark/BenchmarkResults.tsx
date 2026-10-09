@@ -1,6 +1,7 @@
 import { AreaChart } from '@/components/ui/AreaChart';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { StatCard } from '@/components/ui/StatCard';
+import { STATE_SOLID } from '@/components/ui/StatusBadge';
 import { cn } from '@/lib/cn';
 import { formatBytes, formatMs, formatNumber } from '@/lib/format';
 import type { RunConfig, Summary } from './engine';
@@ -43,13 +44,13 @@ export function BenchmarkResults({
         <ProgressBar
           label={shown.mode === 'duration' ? 'Elapsed' : 'Produced'}
           pct={shown.mode === 'duration' ? durationPct : producePct}
-          tone="accent"
+          tone="active"
         />
         {shownWorkers > 0 && shown.mode === 'count' && (
-          <ProgressBar label="Completed" pct={drainPct} tone="emerald" />
+          <ProgressBar label="Completed" pct={drainPct} tone="completed" />
         )}
         <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
-          <StatCard label="Pushed" value={formatNumber(live.pushed)} tone="accent" compact />
+          <StatCard label="Pushed" value={formatNumber(live.pushed)} compact />
           <StatCard label="Completed" value={formatNumber(live.completed)} tone="green" compact />
           <StatCard label="Push/sec" value={fmtRate(live.pushPerSec)} compact />
           <StatCard label="Done/sec" value={fmtRate(live.donePerSec)} tone="green" compact />
@@ -57,7 +58,7 @@ export function BenchmarkResults({
           <StatCard
             label="Active workers"
             value={`${live.activeWorkers}/${shownWorkers}`}
-            tone="blue"
+            tone="active"
             compact
           />
           <StatCard label="Data" value={formatBytes(summary?.bytes ?? live.bytes)} compact />
@@ -78,13 +79,23 @@ export function BenchmarkResults({
         </p>
         <AreaChart
           series={[
-            { label: 'Push/sec', color: '#38bdf8', points: live.pushSeries, area: true },
-            { label: 'Done/sec', color: '#34d399', points: live.doneSeries, area: true },
+            {
+              label: 'Push/sec',
+              color: 'var(--state-active-fg)',
+              points: live.pushSeries,
+              area: true,
+            },
+            {
+              label: 'Done/sec',
+              color: 'var(--state-completed-fg)',
+              points: live.doneSeries,
+              area: true,
+            },
           ]}
         />
         <div className="mt-2 flex items-center gap-4 font-mono text-[11px] text-faint">
-          <Legend color="#38bdf8" label="Push/sec" value={live.pushPerSec} />
-          <Legend color="#34d399" label="Done/sec" value={live.donePerSec} />
+          <Legend color="var(--state-active-fg)" label="Push/sec" value={live.pushPerSec} />
+          <Legend color="var(--state-completed-fg)" label="Done/sec" value={live.donePerSec} />
         </div>
       </Card>
     </div>
@@ -97,10 +108,10 @@ export function BenchmarkSummary({ summary }: { summary: Summary | null }) {
     <Card className="mt-6">
       <CardHeader title="Summary" />
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4 xl:grid-cols-8">
-        <StatCard label="Pushed" value={formatNumber(summary.pushed)} tone="accent" compact />
+        <StatCard label="Pushed" value={formatNumber(summary.pushed)} compact />
         <StatCard label="Completed" value={formatNumber(summary.completed)} tone="green" compact />
         <StatCard label="Duration" value={formatMs(summary.durationMs)} compact />
-        <StatCard label="Avg push/s" value={fmtRate(summary.pushPerSec)} tone="accent" compact />
+        <StatCard label="Avg push/s" value={fmtRate(summary.pushPerSec)} compact />
         <StatCard label="Avg done/s" value={fmtRate(summary.donePerSec)} tone="green" compact />
         <StatCard label="Data rate" value={`${formatBytes(summary.mbPerSec)}/s`} compact />
         <StatCard label="Push p95" value={formatMs(summary.p95)} compact />
@@ -147,10 +158,10 @@ export function BenchmarkQueueCounts({
           <StatCard
             label="Waiting"
             value={formatNumber(counts.waiting ?? 0)}
-            tone="amber"
+            tone="waiting"
             compact
           />
-          <StatCard label="Active" value={formatNumber(counts.active ?? 0)} tone="blue" compact />
+          <StatCard label="Active" value={formatNumber(counts.active ?? 0)} tone="active" compact />
           <StatCard
             label="Completed"
             value={formatNumber(counts.completed ?? 0)}
@@ -181,7 +192,7 @@ function ProgressBar({
 }: {
   label: string;
   pct: number;
-  tone: 'accent' | 'emerald';
+  tone: 'active' | 'completed';
 }) {
   return (
     <div className="mb-2">
@@ -200,7 +211,7 @@ function ProgressBar({
         <div
           className={cn(
             'h-full rounded-full transition-[width] motion-reduce:transition-none',
-            tone === 'accent' ? 'bg-accent' : 'bg-emerald-500'
+            tone === 'active' ? STATE_SOLID.active : STATE_SOLID.completed
           )}
           style={{ width: `${pct}%` }}
         />

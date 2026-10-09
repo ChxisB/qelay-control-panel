@@ -20,14 +20,14 @@ export function SchemaView({
 }) {
   return (
     <div className="flex flex-col gap-6">
-      <div className="overflow-x-auto rounded-xl border border-line bg-surface">
+      <div className="overflow-x-auto rounded-card border border-line bg-surface">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-line text-left text-[11px] uppercase tracking-wider text-faint">
-              <th className="px-4 py-3 font-medium">Column</th>
-              <th className="px-4 py-3 font-medium">Type</th>
-              <th className="px-4 py-3 font-medium">Constraints</th>
-              <th className="px-4 py-3 font-medium">Default</th>
+            <tr className="border-b border-line text-left eyebrow text-muted light:bg-surface-2">
+              <th className="px-4 py-2.5 font-semibold">Column</th>
+              <th className="px-4 py-2.5 font-semibold">Type</th>
+              <th className="px-4 py-2.5 font-semibold">Constraints</th>
+              <th className="px-4 py-2.5 font-semibold">Default</th>
             </tr>
           </thead>
           <tbody>
@@ -37,7 +37,7 @@ export function SchemaView({
                 <td className="px-4 py-2 font-mono text-xs text-muted">{c.type}</td>
                 <td className="px-4 py-2 text-xs">
                   {c.primaryKey && (
-                    <span className="mr-1 rounded-md bg-accent/15 px-1.5 py-0.5 text-[10px] font-semibold text-accent">
+                    <span className="mr-1 rounded-md bg-selected px-1.5 py-0.5 text-[10px] font-semibold text-link">
                       PK
                     </span>
                   )}
@@ -64,7 +64,7 @@ export function SchemaView({
               <li key={ix.name} className="flex flex-wrap items-center gap-2 font-mono text-xs">
                 <span className="text-fg">{ix.name}</span>
                 {ix.unique && (
-                  <span className="rounded-md bg-accent/15 px-1.5 py-0.5 text-[10px] font-semibold text-accent">
+                  <span className="rounded-md bg-selected px-1.5 py-0.5 text-[10px] font-semibold text-link">
                     UNIQUE
                   </span>
                 )}

@@ -27,9 +27,13 @@ export function ThroughputCharts({ series }: { series: ReturnType<typeof useThro
           </div>
           {throughput && (
             <div className="flex flex-wrap items-center gap-4 font-mono text-[11px] text-faint">
-              <Legend color="#ec4899" label="Pushed" value={throughput.pushPerSec} />
-              <Legend color="#34d399" label="Completed" value={throughput.completePerSec} />
-              <Legend color="#f87171" label="Failed" value={throughput.failPerSec} />
+              <Legend color="var(--state-active-fg)" label="Pushed" value={throughput.pushPerSec} />
+              <Legend
+                color="var(--state-completed-fg)"
+                label="Completed"
+                value={throughput.completePerSec}
+              />
+              <Legend color="var(--state-failed-fg)" label="Failed" value={throughput.failPerSec} />
             </div>
           )}
         </div>
@@ -39,9 +43,9 @@ export function ThroughputCharts({ series }: { series: ReturnType<typeof useThro
           <AreaChart
             xLabels={X_LABELS}
             series={[
-              { label: 'Pushed', color: '#ec4899', points: series.push, area: true },
-              { label: 'Completed', color: '#34d399', points: series.complete },
-              { label: 'Failed', color: '#f87171', points: series.fail },
+              { label: 'Pushed', color: 'var(--state-active-fg)', points: series.push, area: true },
+              { label: 'Completed', color: 'var(--state-completed-fg)', points: series.complete },
+              { label: 'Failed', color: 'var(--state-failed-fg)', points: series.fail },
             ]}
           />
         )}
@@ -86,7 +90,7 @@ export function ThroughputCharts({ series }: { series: ReturnType<typeof useThro
             series={[
               {
                 label: 'Depth',
-                color: trend.draining ? '#34d399' : '#f59e0b',
+                color: trend.draining ? 'var(--state-completed-fg)' : 'var(--state-delayed-fg)',
                 points: series.depth,
                 area: true,
               },

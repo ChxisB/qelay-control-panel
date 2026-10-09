@@ -13,7 +13,7 @@ export function QueueConfig({ queue }: { queue: string }) {
       <h2 className="mb-3 text-lg font-semibold text-fg">Configuration</h2>
       <p className="mb-4 text-xs text-warning">
         Bunqueue v2.9.3 cannot read either current policy. Every command below is an explicit blind
-        desired-state write; a receipt proves only what this dashboard applied at that time.
+        desired-state write; a receipt proves only what this control panel applied at that time.
       </p>
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <RateLimitCard queue={queue} />
@@ -148,7 +148,7 @@ function RateLimitCard({ queue }: { queue: string }) {
       </div>
       <div className="mt-4 flex flex-wrap items-center gap-2">
         <Button
-          variant="accent"
+          variant="primary"
           size="sm"
           disabled={busy || !valid}
           onClick={() => {
@@ -233,7 +233,7 @@ function ConcurrencyCard({ queue }: { queue: string }) {
       </Field>
       <div className="mt-4 flex items-center gap-2">
         <Button
-          variant="accent"
+          variant="primary"
           size="sm"
           disabled={busy || concurrency === null}
           onClick={() => {

@@ -12,7 +12,7 @@ import { workflowExecution } from '../agent/workflows';
 import { installedBunqueueVersion, verifyBunqueueVersion } from './bunqueueRuntimeVersion';
 import { assert, asRecord, freePort } from './flowRuntimeSupport';
 
-const root = await mkdtemp(join(tmpdir(), 'bunqueue-dashboard-tls-'));
+const root = await mkdtemp(join(tmpdir(), 'qelay-control-panel-tls-'));
 const cert = join(root, 'cert.pem');
 const key = join(root, 'key.pem');
 const config: ServerConfig = {

@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { LoadingState, OfflineBanner } from '@/components/ui/feedback';
-import { IconArrowRight, IconQueues, IconSearch } from '@/components/ui/icons';
+import { IconArrowRight, IconQueues } from '@/components/ui/icons';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Pagination } from '@/components/ui/Pagination';
+import { SearchField } from '@/components/ui/SearchField';
 import { StatCard } from '@/components/ui/StatCard';
 import { api } from '@/lib/api';
 import { cn } from '@/lib/cn';
@@ -55,13 +56,13 @@ export function Queues() {
         <StatCard
           label="Waiting"
           value={totals ? formatNumber(totals.waiting) : '—'}
-          tone="amber"
+          tone="waiting"
           compact
         />
         <StatCard
           label="Active"
           value={totals ? formatNumber(totals.active) : '—'}
-          tone="blue"
+          tone="active"
           compact
         />
         <StatCard
@@ -78,42 +79,39 @@ export function Queues() {
         />
       </div>
 
-      <div className="relative mb-4 max-w-sm">
-        <IconSearch className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-faint" />
-        <input
-          aria-label="Filter queues"
-          name="classic-queue-filter"
-          autoComplete="off"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search queues…"
-          className="h-9 w-full rounded-lg border border-line bg-surface pl-9 pr-3 text-sm text-fg placeholder:text-faint focus:border-accent/60 focus:outline-none focus:ring-2 focus:ring-accent/30"
-        />
-      </div>
+      <SearchField
+        containerClassName="mb-4 max-w-sm"
+        aria-label="Filter queues"
+        name="classic-queue-filter"
+        autoComplete="off"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Search queues…"
+      />
 
-      <div className="overflow-x-auto rounded-xl border border-line bg-surface">
+      <div className="overflow-x-auto rounded-card border border-line bg-surface">
         <table className="w-full min-w-[52rem] text-sm">
           <thead>
-            <tr className="border-b border-line text-left text-[11px] uppercase tracking-wider text-faint">
-              <th className="px-5 py-3 font-medium">Queue</th>
-              <th className="px-5 py-3 text-right font-medium">Waiting</th>
-              <th className="px-5 py-3 text-right font-medium">Active</th>
-              <th className="px-5 py-3 text-right font-medium">Delayed</th>
-              <th className="px-5 py-3 text-right font-medium">DLQ</th>
-              <th className="px-5 py-3 font-medium">Status</th>
-              <th className="w-10 px-5 py-3" />
+            <tr className="border-b border-line text-left eyebrow text-muted light:bg-surface-2">
+              <th className="px-4 py-2.5 font-semibold">Queue</th>
+              <th className="px-4 py-2.5 text-right font-semibold">Waiting</th>
+              <th className="px-4 py-2.5 text-right font-semibold">Active</th>
+              <th className="px-4 py-2.5 text-right font-semibold">Delayed</th>
+              <th className="px-4 py-2.5 text-right font-semibold">DLQ</th>
+              <th className="px-4 py-2.5 font-semibold">Status</th>
+              <th className="w-10 px-4 py-2.5" />
             </tr>
           </thead>
           <tbody>
             {!data && error ? (
               <tr>
-                <td colSpan={7} className="px-5 py-12 text-center text-sm text-warning">
+                <td colSpan={7} className="px-4 py-12 text-center text-sm text-warning">
                   Could not load queues — {error.message}. Retry above.
                 </td>
               </tr>
             ) : queues.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-5 py-12 text-center text-sm text-faint">
+                <td colSpan={7} className="px-4 py-12 text-center text-sm text-faint">
                   {search ? 'No queues match on this page.' : 'No queues yet.'}
                 </td>
               </tr>
@@ -123,46 +121,46 @@ export function Queues() {
                   key={qd.name}
                   className="group border-b border-line last:border-0 transition-colors hover:bg-surface-2/50"
                 >
-                  <td className="px-5 py-3">
+                  <td className="px-4 py-2.5">
                     <Link
                       to={`/queues-classic/${encodeURIComponent(qd.name)}`}
-                      className="flex items-center gap-2 rounded font-medium text-fg hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+                      className="flex items-center gap-2 rounded font-medium text-fg hover:text-link focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
                       <IconQueues className="size-4 text-faint" />
                       {qd.name}
                     </Link>
                   </td>
-                  <td className="px-5 py-3 text-right tnum text-muted">
+                  <td className="px-4 py-2.5 text-right tnum text-muted">
                     {formatNumber(qd.waiting)}
                   </td>
-                  <td className="px-5 py-3 text-right tnum text-blue-400">
+                  <td className="px-4 py-2.5 text-right tnum text-state-active-fg">
                     {formatNumber(qd.active)}
                   </td>
-                  <td className="px-5 py-3 text-right tnum text-muted">
+                  <td className="px-4 py-2.5 text-right tnum text-muted">
                     {formatNumber(qd.delayed)}
                   </td>
                   <td
                     className={cn(
-                      'px-5 py-3 text-right tnum',
-                      qd.dlq ? 'text-red-400' : 'text-muted'
+                      'px-4 py-2.5 text-right tnum',
+                      qd.dlq ? 'text-danger' : 'text-muted'
                     )}
                   >
                     {formatNumber(qd.dlq)}
                   </td>
-                  <td className="px-5 py-3">
+                  <td className="px-4 py-2.5">
                     <span
                       className={cn(
                         'inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium',
                         qd.paused
-                          ? 'bg-orange-500/10 text-orange-400'
-                          : 'bg-emerald-500/10 text-emerald-400'
+                          ? 'bg-state-waiting-bg text-state-waiting-fg'
+                          : 'bg-state-completed-bg text-state-completed-fg'
                       )}
                     >
                       <span className="size-1.5 rounded-full bg-current" />
                       {qd.paused ? 'Paused' : 'Active'}
                     </span>
                   </td>
-                  <td className="px-5 py-3 text-faint">
+                  <td className="px-4 py-2.5 text-faint">
                     <IconArrowRight className="size-4 opacity-0 transition-opacity group-hover:opacity-100" />
                   </td>
                 </tr>

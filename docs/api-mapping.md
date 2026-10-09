@@ -22,7 +22,7 @@ against the exact [bunqueue v2.9.3 server release](https://github.com/egeominott
 
 ## Bunqueue 2.9.3 compatibility boundary
 
-The Dashboard exposes the 2.9.3 operational additions: group admission
+The control panel exposes the 2.9.3 operational additions: group admission
 (`maxSize`), group priority, group pause/resume, bounded group-job listing and
 per-priority counts; completed-history retention is configurable from Server
 Control. SQLite is migrated to schema 37 and PostgreSQL to schema 20 by the
@@ -32,8 +32,8 @@ partially started migration cannot be downgraded safely.
 
 Native Worker batches, processor `AbortSignal`, Observable processor results,
 and the `QueuePro`/`WorkerPro`/`QueueEventsPro` aliases are application-library
-contracts rather than remote operator commands. They need no separate Dashboard
-transport; the Dashboard continues to display the jobs, workers, events and
+contracts rather than remote operator commands. They need no separate control panel
+transport; the control panel continues to display the jobs, workers, events and
 results they produce through the same 2.9.3 server contracts.
 
 ## Fleet and connection profiles
@@ -43,7 +43,7 @@ captures each profile's Bunqueue URL/token and paired agent URL/token, then
 issues independent `GET /health` and `GET /control/status` probes. A failure on
 one endpoint does not discard the other nodes. `POST /control/start|stop|restart`
 is sent directly to the card's captured agent identity, even when that profile
-is not the active Dashboard node.
+is not the active control panel node.
 
 The agent status exposes `storageMode`, `postgresNamespace`, and a
 credential-free `postgresTarget` (`host:port/database`). Fleet groups only exact
@@ -224,7 +224,7 @@ same as dashboard authorization. `lib/jobActions.ts::actionGates(state)` is the
 single client-side model used by `JobInspector` and `JobsPro`; it additionally
 fails closed where v2.9.3 cannot prove worker or reverse-flow safety:
 
-| Action | Endpoint | Upstream scope | Dashboard exposure |
+| Action | Endpoint | Upstream scope | Control panel exposure |
 | --- | --- | --- | --- |
 | Cancel | `DELETE /jobs/:id` | Queue-resident jobs | **Never.** Hidden reverse dependencies can be stranded. |
 | Discard (→ DLQ) | `POST /jobs/:id/discard` | Queue or processing location, without an expected-state precondition or terminal flow-failure resolution | **Never.** A stale runnable snapshot can become active, and a flow child can strand its parent. |
@@ -247,7 +247,7 @@ are Promote, Pause and Resume; DLQ retry and completed-job requeue are absent.
 
 | Action | Method · Path | Body |
 | --- | --- | --- |
-| Add job | `POST /queues/:q/jobs` | `{ name?, data, priority?, delay?, maxAttempts?, backoff?, timeout?, jobId?, removeOnComplete?, removeOnFail?, durable?, ttl?, uniqueKey?, lifo?, tags?, groupId?, dependsOn?, repeat? }` → `{ ok, id }`. `name` defaults to `default` and is separate from user `data`. The upstream single route does not forward 2.9.3 `groupMaxSize`; when that field is set the Dashboard deliberately uses the bulk route even for one job, preventing a silent admission-limit drop. The dashboard accepts only interval repeat `{ every, limit? }`: v2.9.3's continuation path treats `pattern` as `every ?? 0`, so cron expressions must use `/crons`. The client validates and sends one captured JSON representation, preventing mutable getters or root `toJSON()` from changing repeat, IDs, dependencies or topology after preflight |
+| Add job | `POST /queues/:q/jobs` | `{ name?, data, priority?, delay?, maxAttempts?, backoff?, timeout?, jobId?, removeOnComplete?, removeOnFail?, durable?, ttl?, uniqueKey?, lifo?, tags?, groupId?, dependsOn?, repeat? }` → `{ ok, id }`. `name` defaults to `default` and is separate from user `data`. The upstream single route does not forward 2.9.3 `groupMaxSize`; when that field is set the control panel deliberately uses the bulk route even for one job, preventing a silent admission-limit drop. The dashboard accepts only interval repeat `{ every, limit? }`: v2.9.3's continuation path treats `pattern` as `every ?? 0`, so cron expressions must use `/crons`. The client validates and sends one captured JSON representation, preventing mutable getters or root `toJSON()` from changing repeat, IDs, dependencies or topology after preflight |
 | Add bulk | `POST /queues/:q/jobs/bulk` | `{ jobs: JobInput[] }` → `{ ok, ids }`; the domain shape calls a custom id `customId`, so the client translates dashboard `jobId` before sending. Bulk spec mode preserves all single-add fields plus 2.9.3 `groupMaxSize`, grouped priority (`0..2097151`), `stallTimeout`, `dedup`, `stackTraceLimit` and `timestamp`. It rejects `parentId`, `childrenIds` and the four dependency-failure flags, which require atomic Flow creation, as well as the persisted compatibility fields `keepLogs`, `sizeLimit`, `debounceId` and `debounceTtl`, which v2.9.3 does not enforce as enqueue controls. The dashboard incrementally serializes at most 10,000 jobs, caps the exact translated JSON envelope at 64 MiB, validates repeat/ID/dependency/topology safety from those captured fragments, and sends the same string so getters or `toJSON()` cannot create a second-pass bypass |
 | Update data | `PUT /jobs/:id/data` | `{ data }` |
 | Change priority | `PUT /jobs/:id/priority` | `{ priority, lifo? }` |
@@ -259,7 +259,7 @@ are Promote, Pause and Resume; DLQ retry and completed-job requeue are absent.
 | Rate limit | `PUT /queues/:q/rate-limit` | `{ limit, duration?, ttl? }` |
 | Concurrency | `PUT /queues/:q/concurrency` | `{ concurrency }` (or `{ limit }`) |
 | Stall config | `PUT /queues/:q/stall-config` | `{ config: { enabled, stallInterval, maxStalls, gracePeriod } }` |
-| DLQ policy | `PUT /queues/:q/dlq-config` | Upstream accepts `{ config: { autoRetry, autoRetryInterval, maxAutoRetries, maxAge, maxEntries } }`. Dashboard saves omit `maxAge` and `maxEntries` because they drive destructive expiry/evacuation without an atomic target check; those fields are read-only. It may send `autoRetry:false` but rejects enabling it. |
+| DLQ policy | `PUT /queues/:q/dlq-config` | Upstream accepts `{ config: { autoRetry, autoRetryInterval, maxAutoRetries, maxAge, maxEntries } }`. Control panel saves omit `maxAge` and `maxEntries` because they drive destructive expiry/evacuation without an atomic target check; those fields are read-only. It may send `autoRetry:false` but rejects enabling it. |
 | Retry DLQ | `POST /queues/:q/dlq/retry` | Upstream accepts `{ jobId? }`; the dashboard never calls either the exact-ID or retry-all form because the mutation has no atomic generation/state/topology precondition |
 | Create/upsert cron | `POST /crons` | Last-writer-wins upsert `{ name, jobName?, queue, data?, schedule? \| repeatEvery?, priority?, timezone?, dedup?, jobOptions? }`; `jobName` is assigned to every spawned job and defaults to `default`; there is no atomic create-only precondition |
 | Add webhook | `POST /webhooks` | `{ url, events[], queue?, secret? }` (events ∈ `job.pushed/started/completed/failed/progress`) |

@@ -239,18 +239,18 @@ export function DlqControl() {
           }
         />
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-line bg-surface">
+        <div className="overflow-x-auto rounded-card border border-line bg-surface">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-line text-left text-[11px] uppercase tracking-wider text-faint">
-                <th className="w-8 py-3 pl-4" />
-                <th className="px-3 py-3 font-medium">Name</th>
-                <th className="px-3 py-3 font-medium">Job ID</th>
-                <th className="px-3 py-3 font-medium">Reason</th>
-                <th className="px-3 py-3 font-medium">Error</th>
-                <th className="px-3 py-3 text-right font-medium">Attempts</th>
-                <th className="px-3 py-3 text-right font-medium">Entered</th>
-                <th className="w-20 px-4 py-3" />
+              <tr className="border-b border-line text-left eyebrow text-muted light:bg-surface-2">
+                <th className="w-8 py-2.5 pl-4" />
+                <th className="px-3 py-2.5 font-semibold">Name</th>
+                <th className="px-3 py-2.5 font-semibold">Job ID</th>
+                <th className="px-3 py-2.5 font-semibold">Reason</th>
+                <th className="px-3 py-2.5 font-semibold">Error</th>
+                <th className="px-3 py-2.5 text-right font-semibold">Attempts</th>
+                <th className="px-3 py-2.5 text-right font-semibold">Entered</th>
+                <th className="w-20 px-4 py-2.5" />
               </tr>
             </thead>
             <tbody>

@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, test } from 'bun:test';
 import {
+  chmodSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
@@ -107,6 +108,82 @@ describe('durable agent configuration', () => {
       expect(() => new FileConfigStore(path).load(fallback)).toThrow('Cannot read');
     }
     expect(agentConfigStore({ AGENT_CONFIG_PATH: path }).path).toBe(path);
-    expect(agentConfigStore({}).path).toBe(resolve('.bunqueue-dashboard/config.json'));
+    expect(agentConfigStore({}).path).toBe(resolve('.qelay-control-panel/config.json'));
+    expect(agentConfigStore({}).legacyPath).toBe(resolve('.bunqueue-dashboard/config.json'));
+    // An explicit path is never redirected through the legacy fallback.
+    expect(agentConfigStore({ AGENT_CONFIG_PATH: path }).legacyPath).toBeUndefined();
+  });
+});
+
+describe('pre-rebrand saved configuration', () => {
+  const save = (path: string, extra: Record<string, string>) =>
+    new FileConfigStore(path).save({ ...defaultConfig(), extraEnv: extra });
+
+  test('is copied to the new path once, and the old file is left untouched', () => {
+    const directory = scratch();
+    const legacy = join(directory, 'old/config.json');
+    const path = join(directory, 'new/config.json');
+    save(legacy, { KEEP: 'me' });
+    const before = readFileSync(legacy, 'utf8');
+
+    const loaded = new FileConfigStore(path, legacy).load(defaultConfig());
+    expect(loaded.extraEnv).toEqual({ KEEP: 'me' });
+    expect(readFileSync(legacy, 'utf8')).toBe(before);
+    expect(readFileSync(path, 'utf8')).toBe(before);
+    if (process.platform !== 'win32') {
+      expect(statSync(path).mode & 0o777).toBe(0o600);
+      expect(statSync(join(path, '..')).mode & 0o777).toBe(0o700);
+    }
+  });
+
+  test('the new file wins and later edits never reach the old file', () => {
+    const directory = scratch();
+    const legacy = join(directory, 'old/config.json');
+    const path = join(directory, 'new/config.json');
+    save(legacy, { WHICH: 'old' });
+    save(path, { WHICH: 'new' });
+    const before = readFileSync(legacy, 'utf8');
+
+    const store = new FileConfigStore(path, legacy);
+    expect(store.load(defaultConfig()).extraEnv).toEqual({ WHICH: 'new' });
+    store.save({ ...defaultConfig(), extraEnv: { WHICH: 'edited' } });
+    expect(readFileSync(legacy, 'utf8')).toBe(before);
+  });
+
+  test('neither file present falls back to the defaults and writes nothing', () => {
+    const directory = scratch();
+    const path = join(directory, 'new/config.json');
+    const loaded = new FileConfigStore(path, join(directory, 'old/config.json')).load(
+      defaultConfig()
+    );
+    expect(loaded).toEqual(defaultConfig());
+    expect(readdirSync(directory)).toEqual([]);
+  });
+
+  test('a damaged old file fails closed instead of being replaced by defaults', () => {
+    const directory = scratch();
+    const legacy = join(directory, 'old/config.json');
+    mkdirSync(join(directory, 'old'));
+    writeFileSync(legacy, '{not json');
+    expect(() =>
+      new FileConfigStore(join(directory, 'new/config.json'), legacy).load(defaultConfig())
+    ).toThrow('invalid');
+  });
+
+  test('a failed copy still applies the old settings for this run', () => {
+    if (process.platform === 'win32' || process.getuid?.() === 0) return;
+    const directory = scratch();
+    const legacy = join(directory, 'old/config.json');
+    save(legacy, { KEEP: 'me' });
+    // A read-only target directory makes the copy impossible.
+    const target = join(directory, 'new');
+    mkdirSync(target, { mode: 0o500 });
+    try {
+      const loaded = new FileConfigStore(join(target, 'config.json'), legacy).load(defaultConfig());
+      expect(loaded.extraEnv).toEqual({ KEEP: 'me' });
+      expect(readdirSync(target)).toEqual([]);
+    } finally {
+      chmodSync(target, 0o700);
+    }
   });
 });

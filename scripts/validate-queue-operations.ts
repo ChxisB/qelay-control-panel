@@ -8,7 +8,7 @@ import { QueueOperationsRuntime } from '../agent/queue/runtime';
 import { assert, freePort, waitForServer } from './flowRuntimeSupport';
 import { validateGroupScheduling } from './queueOperationsGroupScheduling';
 
-const root = await mkdtemp(join(tmpdir(), 'bunqueue-dashboard-queue-operations-'));
+const root = await mkdtemp(join(tmpdir(), 'qelay-control-panel-queue-operations-'));
 const httpPort = await freePort();
 const tcpPort = await freePort();
 const config: ServerConfig = {

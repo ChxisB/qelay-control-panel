@@ -103,16 +103,16 @@ export function Benchmark() {
         description="Drive real load against the server — producers bulk-enqueue jobs while simulated workers pull, process and ack them. Throughput is measured client-side; the queue genuinely fills and drains."
         actions={
           phase === 'stopping' ? (
-            <Button variant="warning" size="sm" disabled>
+            <Button variant="danger" size="sm" disabled>
               <IconPause className="size-3.5" /> Stopping…
             </Button>
           ) : active ? (
-            <Button variant="warning" size="sm" onClick={benchmark.stop}>
+            <Button variant="danger" size="sm" onClick={benchmark.stop}>
               <IconPause className="size-3.5" /> Stop
             </Button>
           ) : (
             <Button
-              variant="success"
+              variant="primary"
               size="sm"
               disabled={operations.cleaning}
               onClick={operations.start}
@@ -124,7 +124,7 @@ export function Benchmark() {
       />
 
       {live.error && (
-        <div className="mb-4 rounded-lg border border-red-500/20 bg-red-500/5 px-4 py-2 text-sm text-danger">
+        <div className="mb-4 rounded-lg border border-danger/20 bg-danger/5 px-4 py-2 text-sm text-danger">
           {live.error}
         </div>
       )}

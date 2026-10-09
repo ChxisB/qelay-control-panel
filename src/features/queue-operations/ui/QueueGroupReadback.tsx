@@ -21,14 +21,14 @@ export function QueueGroupReadback({ snapshot }: { snapshot: QueueGroupSnapshot 
         <Readback label="Paused" value={snapshot.paused ? 'Yes' : 'No'} />
         <Readback label="Priority counts" value={prioritySummary(snapshot.priorityCounts)} />
       </dl>
-      <div className="mt-3 overflow-x-auto rounded-lg border border-line">
+      <div className="mt-3 overflow-x-auto rounded-control border border-line">
         <table className="w-full text-left text-xs">
-          <thead className="border-b border-line text-faint">
+          <thead className="border-b border-line eyebrow text-muted">
             <tr>
-              <th className="px-3 py-2 font-medium">Pending group job</th>
-              <th className="px-3 py-2 font-medium">Name</th>
-              <th className="px-3 py-2 text-right font-medium">Priority</th>
-              <th className="px-3 py-2 text-right font-medium">Delay</th>
+              <th className="px-3 py-2 font-semibold">Pending group job</th>
+              <th className="px-3 py-2 font-semibold">Name</th>
+              <th className="px-3 py-2 text-right font-semibold">Priority</th>
+              <th className="px-3 py-2 text-right font-semibold">Delay</th>
             </tr>
           </thead>
           <tbody>
@@ -45,7 +45,7 @@ export function QueueGroupReadback({ snapshot }: { snapshot: QueueGroupSnapshot 
                     <Link
                       to={`/job?id=${encodeURIComponent(job.id)}`}
                       aria-label={`Inspect grouped job ${job.id}`}
-                      className="text-accent hover:underline"
+                      className="text-link hover:underline"
                     >
                       {job.id}
                     </Link>

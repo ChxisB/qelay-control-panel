@@ -1,6 +1,7 @@
+import { LEGACY_STORAGE_KEYS, readWithLegacy } from '@/lib/legacyStorage';
 import { MAX_FLOW_NODES } from './flowConstants';
 
-const RECENT_KEY = 'bq-dash-recent-flows';
+const RECENT_KEY = 'qelay-recent-flows';
 const RECENT_MAX = 8;
 
 export interface RecentFlow {
@@ -9,14 +10,23 @@ export interface RecentFlow {
   at: number;
 }
 
+function targetSuffix(target: string): string {
+  return encodeURIComponent(target.trim() || '/api');
+}
+
 export function recentFlowsStorageKey(target: string): string {
-  return `${RECENT_KEY}:${encodeURIComponent(target.trim() || '/api')}`;
+  return `${RECENT_KEY}:${targetSuffix(target)}`;
 }
 
 export function readRecentFlows(target: string, persist: boolean): RecentFlow[] {
   if (!persist) return [];
   try {
-    const raw: unknown = JSON.parse(localStorage.getItem(recentFlowsStorageKey(target)) ?? '[]');
+    const stored = readWithLegacy(
+      localStorage,
+      recentFlowsStorageKey(target),
+      `${LEGACY_STORAGE_KEYS.recentFlows}:${targetSuffix(target)}`
+    );
+    const raw: unknown = JSON.parse(stored ?? '[]');
     if (!Array.isArray(raw)) return [];
     return raw
       .filter(

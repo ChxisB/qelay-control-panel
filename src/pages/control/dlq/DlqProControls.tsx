@@ -41,12 +41,12 @@ export function DlqSummary({
             className={cn(
               'rounded-full px-2 py-0.5 text-[11px] font-medium',
               discoveryError
-                ? 'bg-amber-500/10 text-warning'
+                ? 'bg-state-delayed-bg text-state-delayed-fg'
                 : total == null
                   ? 'bg-surface-2 text-muted'
                   : healthy
-                    ? 'bg-emerald-500/10 text-success'
-                    : 'bg-red-500/10 text-danger'
+                    ? 'bg-state-completed-bg text-state-completed-fg'
+                    : 'bg-state-failed-bg text-state-failed-fg'
             )}
           >
             {discoveryError
@@ -139,7 +139,7 @@ export function DlqQueueGrid({
             className={cn(
               'rounded-lg border p-3 text-left transition-colors',
               queue === item.name
-                ? 'border-accent/50 bg-surface-2'
+                ? 'border-link/50 bg-surface-2'
                 : 'border-line hover:border-line-strong'
             )}
           >
@@ -233,7 +233,7 @@ export function DlqFilters({
         aria-label="Filter this page by job ID"
         name="dlq-job-filter"
         autoComplete="off"
-        className="h-9 min-w-40 flex-1 rounded-lg border border-line bg-surface px-3 text-sm text-fg placeholder:text-faint focus:border-accent/60 focus:outline-none focus:ring-2 focus:ring-accent/30"
+        className="h-9 min-w-40 flex-1 rounded-lg border border-line bg-surface px-3 text-sm text-fg placeholder:text-faint focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30"
       />
       <Button size="sm" disabled title={FLOW_BULK_RETRY_UNAVAILABLE}>
         <IconRefresh className="size-3.5" /> Retry All

@@ -1,6 +1,6 @@
 ---
 title: Kubernetes
-description: Deploy the bunqueue dashboard to Kubernetes with a Deployment, Service, and Ingress. Copy-paste manifests, health probes, and TLS notes.
+description: Deploy Qelay Control Panel to Kubernetes with a Deployment, Service, and Ingress. Copy-paste manifests, health probes, and TLS notes.
 ---
 
 # Kubernetes
@@ -17,19 +17,19 @@ Save as `dashboard.yaml` and `kubectl apply -f dashboard.yaml`.
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: bunqueue-dashboard
-  labels: { app: bunqueue-dashboard }
+  name: qelay-control-panel
+  labels: { app: qelay-control-panel }
 spec:
   replicas: 2
   selector:
-    matchLabels: { app: bunqueue-dashboard }
+    matchLabels: { app: qelay-control-panel }
   template:
     metadata:
-      labels: { app: bunqueue-dashboard }
+      labels: { app: qelay-control-panel }
     spec:
       containers:
         - name: dashboard
-          image: ghcr.io/egeominotti/bunqueue-dashboard:latest
+          image: ghcr.io/chxisb/qelay-control-panel:latest
           ports:
             - containerPort: 80
           readinessProbe:
@@ -47,9 +47,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: bunqueue-dashboard
+  name: qelay-control-panel
 spec:
-  selector: { app: bunqueue-dashboard }
+  selector: { app: qelay-control-panel }
   ports:
     - port: 80
       targetPort: 80
@@ -57,14 +57,14 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: bunqueue-dashboard
+  name: qelay-control-panel
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   ingressClassName: nginx
   tls:
     - hosts: [dashboard.example.com]
-      secretName: bunqueue-dashboard-tls
+      secretName: qelay-control-panel-tls
   rules:
     - host: dashboard.example.com
       http:
@@ -73,7 +73,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: bunqueue-dashboard
+                name: qelay-control-panel
                 port: { number: 80 }
 ```
 

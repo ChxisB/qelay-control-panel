@@ -17,6 +17,7 @@ export const demoStatus = (): Json => ({
   exitCode: null,
   healthy: true,
   version: '2.9.4',
+  storageMode: 'sqlite',
   config: DEMO_CONFIG,
   runningConfig: DEMO_CONFIG,
   db: {

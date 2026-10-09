@@ -3,7 +3,7 @@ import { Card, CardHeader } from '@/components/ui/Card';
 import type { FleetNodeSnapshot } from './fleetClient';
 
 function Dot({ ok, reachable }: { ok: boolean; reachable: boolean }) {
-  const color = !reachable ? 'bg-red-400' : ok ? 'bg-emerald-400' : 'bg-amber-400';
+  const color = !reachable ? 'bg-danger-fill' : ok ? 'bg-success' : 'bg-warning';
   return <span className={`inline-block size-2 rounded-full ${color}`} />;
 }
 
@@ -34,12 +34,12 @@ export function FleetNodeCard({
       : (status?.storageMode ?? 'unknown');
 
   return (
-    <Card className={active ? 'border-accent/60' : undefined}>
+    <Card className={active ? 'border-link/60' : undefined}>
       <CardHeader
         title={target.name}
         action={
           active ? (
-            <span className="rounded-full bg-accent/15 px-2 py-1 text-[10px] font-semibold uppercase text-accent">
+            <span className="rounded-full bg-selected px-2 py-1 text-[10px] font-semibold uppercase text-link">
               active
             </span>
           ) : (
@@ -90,7 +90,6 @@ export function FleetNodeCard({
         <div className="mt-4 flex flex-wrap gap-2 border-t border-line pt-4">
           <Button
             size="sm"
-            variant="success"
             disabled={!agent.reachable || running || transitioning}
             onClick={() => onAction('start')}
           >
@@ -98,7 +97,7 @@ export function FleetNodeCard({
           </Button>
           <Button
             size="sm"
-            variant="warning"
+            variant="danger"
             disabled={!agent.reachable || !running || transitioning}
             onClick={() => onAction('stop')}
           >

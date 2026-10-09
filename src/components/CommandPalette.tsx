@@ -24,7 +24,7 @@ import { NAV } from '@/components/layout/Sidebar';
 
 type Command = { id: string; label: string; hint: string; run: () => void };
 
-const DOCS_URL = 'https://egeominotti.github.io/bunqueue-dashboard/docs/';
+const DOCS_URL = 'https://chxisb.github.io/qelay-control-panel/docs/';
 const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
@@ -214,7 +214,7 @@ export function CommandPalette() {
         role="dialog"
         aria-modal="true"
         aria-label="Command palette"
-        className="relative z-10 w-full max-w-lg overflow-hidden rounded-xl border border-line-strong bg-surface shadow-2xl"
+        className="relative z-10 w-full max-w-lg overflow-hidden rounded-card border border-line-strong bg-surface shadow-2xl"
       >
         <input
           ref={inputRef}
@@ -233,7 +233,7 @@ export function CommandPalette() {
           aria-activedescendant={filtered[active] ? `command-palette-option-${active}` : undefined}
           autoComplete="off"
           name="command-palette-search"
-          className="w-full border-b border-line bg-transparent px-4 py-3 text-sm text-fg outline-none placeholder:text-faint focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent/50"
+          className="w-full border-b border-line bg-transparent px-4 py-3 text-sm text-fg outline-none placeholder:text-faint focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
         />
         <div
           ref={listRef}
@@ -259,7 +259,7 @@ export function CommandPalette() {
                 onMouseEnter={() => setActive(i)}
                 onClick={() => exec(c)}
                 className={`flex w-full items-center justify-between gap-3 px-4 py-2 text-left text-sm transition-colors ${
-                  i === active ? 'bg-accent/15 text-fg' : 'text-muted'
+                  i === active ? 'bg-selected text-fg' : 'text-muted'
                 }`}
               >
                 <span className="truncate">{c.label}</span>

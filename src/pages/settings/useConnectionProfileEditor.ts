@@ -58,7 +58,7 @@ export function useConnectionProfileEditor() {
     const profile = connection.profiles.find(
       (candidate) => candidate.id === connection.activeProfileId
     );
-    setName(profile?.name ?? 'Bunqueue');
+    setName(profile?.name ?? 'Server');
     setUrl(connection.baseUrl);
     setAgentUrl(connection.agentBaseUrl);
     setTok(connection.token);
@@ -178,7 +178,7 @@ export function useConnectionProfileEditor() {
   const add = () => {
     edit();
     connection.addProfile({
-      name: `Bunqueue ${connection.profiles.length + 1}`,
+      name: `Server ${connection.profiles.length + 1}`,
       baseUrl: 'http://localhost:6790',
       agentBaseUrl: 'http://localhost:6800',
       token: '',

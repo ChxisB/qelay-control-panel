@@ -10,7 +10,7 @@ export function ExecutionHistory({ execution }: { execution: WorkflowExecutionDe
       {history.map((item, index) => (
         <li key={item.id} className="grid grid-cols-[28px_minmax(0,1fr)] gap-3 py-3">
           <div className="relative flex justify-center" aria-hidden="true">
-            <span className="mt-1.5 size-2 rounded-full border-2 border-surface bg-accent ring-1 ring-line" />
+            <span className="mt-1.5 size-2 rounded-full border-2 border-surface bg-state-waiting-fg ring-1 ring-line" />
             {index < history.length - 1 && (
               <span className="absolute top-5 bottom-[-13px] w-px bg-line" />
             )}
