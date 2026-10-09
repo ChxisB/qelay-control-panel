@@ -2,9 +2,10 @@ import { useEffect, useMemo, useState } from 'react';
 import { toast } from '@/components/dashboard/stores/toastStore';
 import { Button } from '@/components/ui/Button';
 import { ErrorState, LoadingState, OfflineBanner } from '@/components/ui/feedback';
-import { IconPause, IconPlay, IconSearch } from '@/components/ui/icons';
+import { IconPause, IconPlay } from '@/components/ui/icons';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Pagination } from '@/components/ui/Pagination';
+import { SearchField } from '@/components/ui/SearchField';
 import { StatCard } from '@/components/ui/StatCard';
 import { bq } from '@/lib/bq';
 import type { QueueSummaryFull } from '@/lib/bqTypes';
@@ -182,7 +183,6 @@ export function QueuesOverview() {
           all.length > 0 ? (
             <>
               <Button
-                variant="warning"
                 size="sm"
                 disabled={bulkBusy || busy.size > 0 || totals.paused >= all.length}
                 onClick={() => bulkToggle('pause')}
@@ -190,7 +190,6 @@ export function QueuesOverview() {
                 <IconPause className="size-3.5" /> Pause all
               </Button>
               <Button
-                variant="success"
                 size="sm"
                 disabled={bulkBusy || busy.size > 0 || totals.paused === 0}
                 onClick={() => bulkToggle('resume')}
@@ -210,14 +209,9 @@ export function QueuesOverview() {
       )}
 
       <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-5">
-        <StatCard label="Waiting" value={formatNumber(totals.waiting)} tone="amber" compact />
-        <StatCard
-          label="Prioritized"
-          value={formatNumber(totals.prioritized)}
-          tone="amber"
-          compact
-        />
-        <StatCard label="Active" value={formatNumber(totals.active)} tone="blue" compact />
+        <StatCard label="Waiting" value={formatNumber(totals.waiting)} tone="waiting" compact />
+        <StatCard label="Prioritized" value={formatNumber(totals.prioritized)} compact />
+        <StatCard label="Active" value={formatNumber(totals.active)} tone="active" compact />
         <StatCard
           label="Failed"
           value={formatNumber(totals.failed)}
@@ -232,21 +226,18 @@ export function QueuesOverview() {
         />
       </div>
 
-      <div className="relative mb-4 max-w-sm">
-        <IconSearch className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-faint" />
-        <input
-          value={search}
-          onChange={(e) => {
-            setSearch(e.target.value);
-            setPage(0);
-          }}
-          placeholder="Search queues…"
-          aria-label="Filter queues"
-          name="queue-filter"
-          autoComplete="off"
-          className="h-9 w-full rounded-lg border border-line bg-surface pl-9 pr-3 text-sm text-fg placeholder:text-faint focus:border-accent/60 focus:outline-none focus:ring-2 focus:ring-accent/30"
-        />
-      </div>
+      <SearchField
+        containerClassName="mb-4 max-w-sm"
+        value={search}
+        onChange={(e) => {
+          setSearch(e.target.value);
+          setPage(0);
+        }}
+        placeholder="Search queues…"
+        aria-label="Filter queues"
+        name="queue-filter"
+        autoComplete="off"
+      />
 
       {msg && (
         <div role="status" className={cn('mb-3 text-sm', msg.ok ? 'text-success' : 'text-danger')}>

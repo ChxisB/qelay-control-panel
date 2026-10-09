@@ -14,7 +14,7 @@ test('embedded workers resolve under the executable root on POSIX and Windows', 
 
 test('encoded virtual roots from native binaries resolve embedded workers', () => {
   for (const [entry, root] of [
-    ['file:///B:/%7EBUN/root/bunqueue-dashboard-windows-x64.exe', 'file:///B:/~BUN/root/'],
+    ['file:///B:/%7EBUN/root/qelay-control-panel-windows-x64.exe', 'file:///B:/~BUN/root/'],
     ['file:///B:/%7eBUN/root/scripts/serve.js?ignored=1#ignored', 'file:///B:/~BUN/root/'],
     ['file:///%24bunfs/root/scripts/serve.js', 'file:///$bunfs/root/'],
   ]) {

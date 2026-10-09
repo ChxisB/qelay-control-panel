@@ -3,7 +3,7 @@ export const SAFE_AGENT_BASE = 'http://localhost:6800';
 export const BASE_URL_ERROR =
   "Use an http(s) URL without credentials, query, or fragment, or a non-root path starting with '/'.";
 
-const RELATIVE_URL_ORIGIN = 'https://bunqueue-dashboard.invalid';
+const RELATIVE_URL_ORIGIN = 'https://qelay-control-panel.invalid';
 const WHITESPACE = /\s/u;
 
 function hasDisallowedUrlCharacters(value: string): boolean {

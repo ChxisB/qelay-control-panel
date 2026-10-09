@@ -136,7 +136,7 @@ export function RowDetailDrawer({
         aria-modal="true"
         aria-label={`${table} row ${rowid ?? 'detail'}`}
         tabIndex={-1}
-        className="fixed inset-y-0 right-0 z-50 flex w-full max-w-xl flex-col border-l border-line bg-surface shadow-xl focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-accent"
+        className="fixed inset-y-0 right-0 z-50 flex w-full max-w-xl flex-col border-l border-line bg-surface shadow-xl focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ring"
       >
         <div className="flex items-center justify-between border-b border-line px-5 py-4">
           <h2 className="font-mono text-sm text-fg">{table} · row detail</h2>
@@ -145,7 +145,7 @@ export function RowDetailDrawer({
             type="button"
             aria-label="Close"
             onClick={onClose}
-            className="flex size-8 items-center justify-center rounded-lg text-muted hover:bg-surface-2 hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+            className="flex size-8 items-center justify-center rounded-lg text-muted hover:bg-surface-2 hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <IconClose className="size-4" />
           </button>

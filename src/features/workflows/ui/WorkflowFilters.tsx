@@ -1,4 +1,5 @@
 import { Card } from '@/components/ui/Card';
+import { SegmentedControl } from '@/components/ui/form';
 import type { WorkflowStateFilter, WorkflowStats, WorkflowStoreKind } from '@/lib/bqTypes';
 import { cn } from '@/lib/cn';
 import type { WorkflowSection } from '../domain/workflowSections';
@@ -92,23 +93,15 @@ function StoreSelector({
   return (
     <div>
       <span className="mb-1 block text-xs text-faint">Store</span>
-      <div className="flex rounded-lg border border-line p-0.5">
-        {(['active', 'archive'] as const).map((value) => (
-          <button
-            key={value}
-            type="button"
-            aria-pressed={kind === value}
-            onClick={() => onChange(value)}
-            className={cn(
-              'rounded-md px-3 py-1.5 text-xs capitalize',
-              kind === value ? 'bg-surface-2 text-fg' : 'text-muted hover:text-fg'
-            )}
-          >
-            {value}
-            {value === 'archive' && archiveTotal !== undefined ? ` (${archiveTotal})` : ''}
-          </button>
-        ))}
-      </div>
+      <SegmentedControl
+        options={['active', 'archive'] as const}
+        value={kind}
+        onChange={onChange}
+        label="Store"
+        format={(value) =>
+          value === 'archive' && archiveTotal !== undefined ? `archive (${archiveTotal})` : value
+        }
+      />
     </div>
   );
 }

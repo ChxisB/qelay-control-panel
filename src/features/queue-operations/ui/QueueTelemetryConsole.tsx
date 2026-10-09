@@ -114,12 +114,7 @@ export function QueueTelemetryConsole({
             />
           </Field>
         </div>
-        <Button
-          variant="warning"
-          size="sm"
-          disabled={maxLength === null || Boolean(busy)}
-          onClick={trim}
-        >
+        <Button size="sm" disabled={maxLength === null || Boolean(busy)} onClick={trim}>
           Trim journal
         </Button>
       </div>
@@ -156,7 +151,7 @@ function MetricSummary({ metrics }: { metrics: QueueMetricsSnapshot }) {
             <span
               key={bucket.timestamp}
               title={`Bucket ${bucket.offset}: ${bucket.value}`}
-              className="min-w-px flex-1 bg-accent/70"
+              className="min-w-px flex-1 bg-state-active-fg/70"
               style={{ height: `${Math.max(2, (bucket.value / maximum) * 100)}%` }}
             />
           ))}

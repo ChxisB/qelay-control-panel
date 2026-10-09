@@ -19,7 +19,7 @@ The header reads **Dead Letter Queue** with a **live** badge, meaning the table 
 
 | Element | What it tells you |
 | --- | --- |
-| **Queue** dropdown | Which queue you're looking at. Each option shows its name and, in parentheses, how many jobs are stuck in its DLQ (e.g. `image-resize (3)`). Queues with none show just the name. |
+| **Queue** dropdown | Which queue you're looking at. Each option shows its name and, in parentheses, how many jobs are stuck in its DLQ (e.g. `emails (2)`). Queues with none show just the name. |
 | **Entries** card | The total number of dead-lettered jobs in the selected queue. It turns **red** when there are any, and stays neutral at `0`. |
 | **Job ID** | The failed job's identifier. |
 | **Reason** | Why the job was dead-lettered, shown as a red badge (for example, `max_attempts_exceeded`). |

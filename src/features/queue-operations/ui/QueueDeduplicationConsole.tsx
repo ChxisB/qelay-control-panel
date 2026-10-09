@@ -67,7 +67,7 @@ export function QueueDeduplicationConsole({
         <Button size="sm" disabled={!valid || Boolean(busy)} onClick={lookup}>
           Find owner
         </Button>
-        <Button variant="warning" size="sm" disabled={!valid || Boolean(busy)} onClick={remove}>
+        <Button size="sm" disabled={!valid || Boolean(busy)} onClick={remove}>
           Remove key
         </Button>
       </div>

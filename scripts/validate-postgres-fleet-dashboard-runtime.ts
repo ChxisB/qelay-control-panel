@@ -12,10 +12,10 @@ type DashboardServer = ReturnType<typeof Bun.serve>;
 
 const repository = resolve(import.meta.dir, '..');
 const dashboardDist = join(repository, 'dist');
-const root = await mkdtemp(join(tmpdir(), 'bunqueue-dashboard-postgres-fleet-browser-'));
-const container = `bunqueue-dashboard-postgres-fleet-browser-${process.pid}`;
+const root = await mkdtemp(join(tmpdir(), 'qelay-control-panel-postgres-fleet-browser-'));
+const container = `qelay-control-panel-postgres-fleet-browser-${process.pid}`;
 const [postgresPort, dashboardPort] = await Promise.all([freePort(), freePort()]);
-const database = 'bunqueue_dashboard_browser';
+const database = 'qelay_control_panel_browser';
 const namespace = `dashboard_browser_${process.pid}`;
 const password = `dashboard-browser-${process.pid}`;
 const postgresUrl = `postgresql://postgres:${password}@127.0.0.1:${postgresPort}/${database}`;

@@ -40,8 +40,10 @@ exposes read-only SQLite observability that the browser cannot perform directly.
 
 ## Saved server configuration
 
-The source agent and standalone dashboard load `.bunqueue-dashboard/config.json`
-relative to their launch directory. Set `AGENT_CONFIG_PATH` to a stable absolute
+The source agent and standalone dashboard load `.qelay-control-panel/config.json`
+relative to their launch directory. If that file does not exist but an older
+`.bunqueue-dashboard/config.json` does, the agent copies it across once and leaves
+the old file untouched; an explicit `AGENT_CONFIG_PATH` is never redirected. Set `AGENT_CONFIG_PATH` to a stable absolute
 path for services, and use a separate path for each agent. Environment variables
 supply initial defaults only when no saved configuration exists. The saved snapshot
 contains the complete command, ports, database path and `extraEnv` values.

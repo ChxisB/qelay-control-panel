@@ -89,7 +89,7 @@ export function CronManager() {
       {actionError && (
         <div
           role="status"
-          className="mb-4 rounded-lg border border-red-500/20 bg-red-500/5 px-4 py-2 text-sm text-danger"
+          className="mb-4 rounded-lg border border-danger/20 bg-danger/5 px-4 py-2 text-sm text-danger"
         >
           {actionError}
         </div>

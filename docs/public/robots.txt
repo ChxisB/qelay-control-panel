@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://egeominotti.github.io/bunqueue-dashboard/docs/sitemap.xml
+Sitemap: https://chxisb.github.io/qelay-control-panel/docs/sitemap.xml

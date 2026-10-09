@@ -108,7 +108,7 @@ function ExecutionDetailContent({
             className={cn(
               'border-b-2 px-3 py-2 text-xs font-medium',
               tab === item.id
-                ? 'border-accent text-fg'
+                ? 'border-ring text-fg'
                 : 'border-transparent text-faint hover:text-muted'
             )}
           >

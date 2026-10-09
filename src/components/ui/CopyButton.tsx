@@ -75,7 +75,7 @@ export function CopyButton({ value, className }: { value: string; className?: st
         title={accessibleLabel}
         className={cn(
           'inline-flex size-6 shrink-0 items-center justify-center rounded-md text-faint transition-colors hover:bg-surface-2 hover:text-fg',
-          'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
+          'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
           className
         )}
       >

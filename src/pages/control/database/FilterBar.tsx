@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Select } from '@/components/ui/form';
-import { IconSearch } from '@/components/ui/icons';
+import { SearchField } from '@/components/ui/SearchField';
 import type { DbFilter } from '@/lib/bq';
 
 export function FilterBar({
@@ -55,19 +55,16 @@ export function FilterBar({
           <option value="ne">≠</option>
         </Select>
       </div>
-      <div className="relative min-w-40 flex-1">
-        <IconSearch className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-faint" />
-        <input
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && apply()}
-          aria-label="Filter value"
-          name="database-filter-value"
-          autoComplete="off"
-          placeholder="value — Enter to filter"
-          className="h-9 w-full rounded-lg border border-line bg-surface pl-8 pr-3 text-sm text-fg placeholder:text-faint focus:border-accent/60 focus:outline-none focus:ring-2 focus:ring-accent/30"
-        />
-      </div>
+      <SearchField
+        containerClassName="min-w-40 flex-1"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onKeyDown={(e) => e.key === 'Enter' && apply()}
+        aria-label="Filter value"
+        name="database-filter-value"
+        autoComplete="off"
+        placeholder="value — Enter to filter"
+      />
       <Button size="sm" onClick={apply} disabled={!value.trim()}>
         Filter
       </Button>

@@ -79,7 +79,7 @@ export function CopilotPanel() {
         {/* Header */}
         <header className="flex items-center gap-2 border-b border-line px-4 py-3">
           <span className="font-semibold text-fg">Copilot</span>
-          <span className="rounded bg-accent/15 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-accent">
+          <span className="rounded bg-selected px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-link">
             experimental
           </span>
           <div className="ml-auto flex items-center gap-1">
@@ -184,7 +184,7 @@ export function CopilotPanel() {
                   href={def.keyUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-accent hover:underline"
+                  className="text-link hover:underline"
                 >
                   Get a key
                 </a>
@@ -218,7 +218,7 @@ export function CopilotPanel() {
                     key={s}
                     onClick={() => submit(s)}
                     disabled={!configured}
-                    className="block w-full rounded-lg border border-line px-3 py-2 text-left text-sm text-muted transition-colors hover:border-accent/50 hover:text-fg disabled:opacity-50"
+                    className="block w-full rounded-lg border border-line px-3 py-2 text-left text-sm text-muted transition-colors hover:border-link/50 hover:text-fg disabled:opacity-50"
                   >
                     {s}
                   </button>
@@ -268,7 +268,7 @@ export function CopilotPanel() {
               rows={2}
               placeholder={configured ? 'Ask the Copilot…' : 'Add an API key in settings first'}
               disabled={!configured}
-              className="min-h-0 flex-1 resize-none rounded-lg border border-line bg-surface-2 px-3 py-2 text-sm text-fg outline-none placeholder:text-faint focus-visible:ring-2 focus-visible:ring-accent/40 disabled:opacity-50"
+              className="min-h-0 flex-1 resize-none rounded-lg border border-line bg-surface-2 px-3 py-2 text-sm text-fg outline-none placeholder:text-faint focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
             />
             {busy ? (
               <button
@@ -283,7 +283,7 @@ export function CopilotPanel() {
                 type="button"
                 onClick={() => submit(input)}
                 disabled={!input.trim() || !configured}
-                className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-accent-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 disabled:opacity-50"
+                className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
               >
                 Send
               </button>

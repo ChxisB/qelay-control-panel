@@ -184,7 +184,7 @@ async function main(): Promise<void> {
       allowedHosts,
       serverManagement: controlTarget.mode,
     },
-    'bunqueue dashboard (standalone) ready'
+    'Qelay Control Panel (standalone) ready'
   );
 }
 

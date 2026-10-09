@@ -151,15 +151,15 @@ export function Dlq() {
           hint="Jobs land here after exhausting their retry attempts."
         />
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-line bg-surface">
+        <div className="overflow-x-auto rounded-card border border-line bg-surface">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-line text-left text-[11px] uppercase tracking-wider text-faint">
-                <th className="px-5 py-3 font-medium">Job ID</th>
-                <th className="px-5 py-3 font-medium">Name</th>
-                <th className="px-5 py-3 font-medium">Reason</th>
-                <th className="px-5 py-3 text-right font-medium">Attempts</th>
-                <th className="px-5 py-3 text-right font-medium">Failed</th>
+              <tr className="border-b border-line text-left eyebrow text-muted light:bg-surface-2">
+                <th className="px-4 py-2.5 font-semibold">Job ID</th>
+                <th className="px-4 py-2.5 font-semibold">Name</th>
+                <th className="px-4 py-2.5 font-semibold">Reason</th>
+                <th className="px-4 py-2.5 text-right font-semibold">Attempts</th>
+                <th className="px-4 py-2.5 text-right font-semibold">Failed</th>
               </tr>
             </thead>
             <tbody>
@@ -168,17 +168,17 @@ export function Dlq() {
                   key={e.job.id || i}
                   className="border-b border-line last:border-0 align-top hover:bg-surface-2/40"
                 >
-                  <td className="px-5 py-3 font-mono text-xs text-muted">{e.job.id}</td>
-                  <td className="px-5 py-3 text-fg">
+                  <td className="px-4 py-2.5 font-mono text-xs text-muted">{e.job.id}</td>
+                  <td className="px-4 py-2.5 text-fg">
                     {e.job.name ?? jobDataName(e.job.data) ?? 'default'}
                   </td>
-                  <td className="max-w-md px-5 py-3 text-xs text-red-400/90">
+                  <td className="max-w-md px-4 py-2.5 text-xs text-danger">
                     {String(e.reason || e.error || '—')}
                   </td>
-                  <td className="px-5 py-3 text-right tnum text-muted">
+                  <td className="px-4 py-2.5 text-right tnum text-muted">
                     {e.attempts?.length ?? e.job.attempts ?? '—'}
                   </td>
-                  <td className="px-5 py-3 text-right text-faint">
+                  <td className="px-4 py-2.5 text-right text-faint">
                     {formatRelativeTime(e.attempts?.at(-1)?.failedAt ?? e.enteredAt)}
                   </td>
                 </tr>

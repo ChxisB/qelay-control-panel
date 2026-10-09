@@ -4,9 +4,9 @@ import { cn } from '@/lib/cn';
 import { IconClose } from './icons';
 
 const LEVEL_STYLES: Record<Toast['level'], { bar: string; title: string }> = {
-  success: { bar: 'bg-emerald-500', title: 'text-success' },
-  error: { bar: 'bg-red-500', title: 'text-danger' },
-  info: { bar: 'bg-accent', title: 'text-accent' },
+  success: { bar: 'bg-success', title: 'text-success' },
+  error: { bar: 'bg-danger-fill', title: 'text-danger' },
+  info: { bar: 'bg-state-active-fg', title: 'text-state-active-fg' },
 };
 
 function ToastCard({ toast, dismiss }: { toast: Toast; dismiss: (id: number) => void }) {
@@ -20,7 +20,7 @@ function ToastCard({ toast, dismiss }: { toast: Toast; dismiss: (id: number) => 
 
   const style = LEVEL_STYLES[toast.level];
   return (
-    <div className="pointer-events-auto flex w-80 max-w-[calc(100vw-2rem)] overflow-hidden rounded-lg border border-line bg-surface shadow-lg">
+    <div className="pointer-events-auto flex w-80 max-w-[calc(100vw-2rem)] overflow-hidden rounded-card border border-line bg-surface shadow-lg">
       <span className={cn('w-1 shrink-0', style.bar)} aria-hidden="true" />
       <div className="flex min-w-0 flex-1 items-start gap-3 px-3 py-2.5">
         <div className="min-w-0 flex-1">
@@ -33,7 +33,7 @@ function ToastCard({ toast, dismiss }: { toast: Toast; dismiss: (id: number) => 
           type="button"
           onClick={() => dismiss(toast.id)}
           aria-label="Dismiss notification"
-          className="-mr-1 shrink-0 rounded p-0.5 text-faint hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+          className="-mr-1 shrink-0 rounded p-0.5 text-faint hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <IconClose className="size-4" />
         </button>

@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { EmptyState, ErrorState, LoadingState, OfflineBanner } from '@/components/ui/feedback';
+import { SegmentedControl } from '@/components/ui/form';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Pagination } from '@/components/ui/Pagination';
 import { StatCard } from '@/components/ui/StatCard';
@@ -66,7 +67,7 @@ export function DatabaseShell({ db }: { db: DatabaseController }) {
         title="Database"
         description="SQLite inspector — schema, data and queries over a read-only connection."
         actions={
-          <span className="rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-success">
+          <span className="rounded-full bg-success/10 px-2.5 py-1 text-[11px] font-medium text-success">
             read-only
           </span>
         }
@@ -113,7 +114,7 @@ export function DatabaseShell({ db }: { db: DatabaseController }) {
                     onClick={() => selectTable(t.name)}
                     className={cn(
                       'flex w-full items-center justify-between gap-2 px-4 py-2 text-left text-sm transition-colors',
-                      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50',
+                      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                       selected === t.name
                         ? 'bg-surface-2 text-fg'
                         : 'text-muted hover:bg-surface-2/60 hover:text-fg'
@@ -148,23 +149,12 @@ export function DatabaseShell({ db }: { db: DatabaseController }) {
                     <Button size="sm" variant="ghost" onClick={queryThisTable}>
                       Query
                     </Button>
-                    <div className="inline-flex items-center gap-1 rounded-lg border border-line bg-surface p-1">
-                      {(['data', 'schema'] as const).map((t) => (
-                        <button
-                          key={t}
-                          type="button"
-                          onClick={() => setTab(t)}
-                          aria-pressed={tab === t}
-                          className={cn(
-                            'rounded-md px-3 py-1 text-xs font-medium capitalize transition-colors',
-                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50',
-                            tab === t ? 'bg-surface-2 text-fg' : 'text-muted hover:text-fg'
-                          )}
-                        >
-                          {t}
-                        </button>
-                      ))}
-                    </div>
+                    <SegmentedControl
+                      options={['data', 'schema'] as const}
+                      value={tab}
+                      onChange={setTab}
+                      label="Table view"
+                    />
                     {tab === 'data' && (
                       <>
                         <Button
@@ -181,7 +171,7 @@ export function DatabaseShell({ db }: { db: DatabaseController }) {
                         </Button>
                         <Button
                           size="sm"
-                          variant="accent"
+                          variant="primary"
                           disabled={exportBusy || !data || data.total === 0}
                           onClick={exportTable}
                         >

@@ -1,6 +1,6 @@
 ---
 title: Hosting platforms
-description: Deploy the bunqueue dashboard to Vercel, Netlify, Cloudflare Pages, GitHub Pages, Render, Fly.io, Railway, or Google Cloud Run. Copy-paste config for each.
+description: Deploy Qelay Control Panel to Vercel, Netlify, Cloudflare Pages, GitHub Pages, Render, Fly.io, Railway, or Google Cloud Run. Copy-paste config for each.
 ---
 
 # Hosting platforms
@@ -93,7 +93,7 @@ fallback, so there is nothing extra to configure).
 ### Fly.io
 
 ```bash
-fly launch --image ghcr.io/egeominotti/bunqueue-dashboard:latest
+fly launch --image ghcr.io/chxisb/qelay-control-panel:latest
 ```
 
 Ensure `fly.toml` has `internal_port = 80`, then `fly deploy`. Fly terminates
@@ -102,14 +102,14 @@ TLS for you.
 ### Railway
 
 New project, Deploy from the repo (Railway builds the `Dockerfile`), or Deploy
-an image and paste `ghcr.io/egeominotti/bunqueue-dashboard:latest`. Set the
+an image and paste `ghcr.io/chxisb/qelay-control-panel:latest`. Set the
 service port to **80**.
 
 ### Google Cloud Run
 
 ```bash
-gcloud run deploy bunqueue-dashboard \
-  --image ghcr.io/egeominotti/bunqueue-dashboard:latest \
+gcloud run deploy qelay-control-panel \
+  --image ghcr.io/chxisb/qelay-control-panel:latest \
   --port 80 \
   --allow-unauthenticated \
   --region europe-west1

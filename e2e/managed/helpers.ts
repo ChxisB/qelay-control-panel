@@ -1,11 +1,12 @@
 import type { APIRequestContext, Page } from '@playwright/test';
 import { E2E_APP_URL, E2E_SERVER_TOKEN } from '../config';
 import { expect } from '../fixtures';
+import { clickNavLink } from '../navigation';
 
 export { test, expect, unlockDashboard, expectNoBrowserErrors } from '../fixtures';
 
 export async function visit(page: Page, route: string): Promise<void> {
-  await page.locator(`#app-nav nav a[href="/e2e/dashboard${route}"]`).click();
+  await clickNavLink(page, page.locator(`#app-nav nav a[href="/e2e/dashboard${route}"]`));
   const expected = new URL(`${E2E_APP_URL}${route}`);
   await expect(page).toHaveURL(
     (actual) => actual.origin === expected.origin && actual.pathname === expected.pathname

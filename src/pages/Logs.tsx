@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { EmptyState, OfflineBanner } from '@/components/ui/feedback';
 import { SegmentedControl, Select } from '@/components/ui/form';
-import { IconLogs, IconSearch } from '@/components/ui/icons';
+import { IconLogs } from '@/components/ui/icons';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Pagination } from '@/components/ui/Pagination';
+import { SearchField } from '@/components/ui/SearchField';
 import { StatCard } from '@/components/ui/StatCard';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { formatNumber, formatRelativeTime } from '@/lib/format';
@@ -103,9 +104,9 @@ export function Logs() {
           tone={counters.failed ? 'red' : 'default'}
           compact
         />
-        <StatCard label="Waiting" value={formatNumber(counters.waiting)} tone="amber" compact />
-        <StatCard label="Active" value={formatNumber(counters.active)} tone="blue" compact />
-        <StatCard label="Throughput" value={`${throughput.toFixed(1)}/s`} tone="accent" compact />
+        <StatCard label="Waiting" value={formatNumber(counters.waiting)} tone="waiting" compact />
+        <StatCard label="Active" value={formatNumber(counters.active)} tone="active" compact />
+        <StatCard label="Throughput" value={`${throughput.toFixed(1)}/s`} compact />
       </div>
 
       <div className="mb-4 flex flex-wrap items-center gap-3">
@@ -126,18 +127,15 @@ export function Logs() {
           </Select>
         </div>
         <SegmentedControl options={STATUS} value={status} onChange={setStatus} />
-        <div className="relative ml-auto min-w-56 flex-1 md:max-w-xs">
-          <IconSearch className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-faint" />
-          <input
-            aria-label="Search by job name or ID"
-            name="classic-activity-search"
-            autoComplete="off"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by job name or ID…"
-            className="h-9 w-full rounded-lg border border-line bg-surface pl-9 pr-3 text-sm text-fg placeholder:text-faint focus:border-accent/60 focus:outline-none focus:ring-2 focus:ring-accent/30"
-          />
-        </div>
+        <SearchField
+          containerClassName="ml-auto min-w-56 flex-1 md:max-w-xs"
+          aria-label="Search by job name or ID"
+          name="classic-activity-search"
+          autoComplete="off"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search by job name or ID…"
+        />
       </div>
 
       {rows.length === 0 ? (
@@ -157,15 +155,15 @@ export function Logs() {
           }
         />
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-line bg-surface">
+        <div className="overflow-x-auto rounded-card border border-line bg-surface">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-line text-left text-[11px] uppercase tracking-wider text-faint">
-                <th className="px-5 py-3 font-medium">Status</th>
-                <th className="px-5 py-3 font-medium">Event</th>
-                <th className="px-5 py-3 font-medium">Queue</th>
-                <th className="px-5 py-3 text-right font-medium">Timestamp</th>
-                <th className="px-5 py-3 text-right font-medium">ID</th>
+              <tr className="border-b border-line text-left eyebrow text-muted light:bg-surface-2">
+                <th className="px-4 py-2.5 font-semibold">Status</th>
+                <th className="px-4 py-2.5 font-semibold">Event</th>
+                <th className="px-4 py-2.5 font-semibold">Queue</th>
+                <th className="px-4 py-2.5 text-right font-semibold">Timestamp</th>
+                <th className="px-4 py-2.5 text-right font-semibold">ID</th>
               </tr>
             </thead>
             <tbody>
@@ -174,19 +172,19 @@ export function Logs() {
                   key={e.seq}
                   className="border-b border-line last:border-0 hover:bg-surface-2/40"
                 >
-                  <td className="px-5 py-3">
+                  <td className="px-4 py-2.5">
                     <StatusBadge status={e.status} />
                   </td>
-                  <td className="px-5 py-3 text-fg">{e.event || 'job event'}</td>
-                  <td className="px-5 py-3">
+                  <td className="px-4 py-2.5 text-fg">{e.event || 'job event'}</td>
+                  <td className="px-4 py-2.5">
                     <span className="rounded-md bg-surface-2 px-2 py-0.5 font-mono text-xs text-muted">
                       {e.queue || '—'}
                     </span>
                   </td>
-                  <td className="px-5 py-3 text-right text-faint">
+                  <td className="px-4 py-2.5 text-right text-faint">
                     {formatRelativeTime(e.timestamp)}
                   </td>
-                  <td className="px-5 py-3 text-right font-mono text-xs text-faint">
+                  <td className="px-4 py-2.5 text-right font-mono text-xs text-faint">
                     {e.jobId || '—'}
                   </td>
                 </tr>

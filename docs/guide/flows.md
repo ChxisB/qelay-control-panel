@@ -124,7 +124,7 @@ as storage keys.
 
 ## Try it
 
-The [live demo](https://egeominotti.github.io/bunqueue-dashboard/) ships a sample
+The [live demo](https://chxisb.github.io/qelay-control-panel/) ships a sample
 flow (an order that fans out to charge, ship, and notify, with a shipping-label
 child and a notify-depends-on-charge edge), so the page is populated out of the
 box.

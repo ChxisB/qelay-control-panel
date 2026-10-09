@@ -1,6 +1,6 @@
 ---
 title: Testing & verification
-description: Reproduce real Bunqueue dashboard tests and understand the evidence available for each section.
+description: Reproduce the real Qelay Control Panel tests and understand the evidence available for each section.
 ---
 
 # Testing & verification
@@ -107,7 +107,7 @@ behavioral evidence; it does not claim every possible button and configuration i
 | Jobs and Job Inspector | UI-created payload readback; priority/delay changes, promotion, log add/clear and unavailable destructive actions | Operations, managed and Fleet browser tests |
 | Add Job and Bulk Add | Single submission, two-job JSON import, exact waiting count; group admission rejection | Operations + Fleet browser tests |
 | Dead Letter Queue and DLQ Control | Deliberate unrecoverable job failure appears in both views; purge remains disabled | Monitoring browser tests; no production failure data |
-| Cron Jobs | Cancelled confirmation does not mutate; confirmed create/delete; schedule visible across nodes | Dashboard + Fleet browser tests |
+| Cron Jobs | Cancelled confirmation does not mutate; confirmed create/delete; schedule visible across nodes | Control panel + Fleet browser tests |
 | Workflow Overview, Executions, Waiting & Signals, Compensation, Archive | UI start, durable signal, resume/abandon compensation, archive/history, reload, orphan recovery and terminal cleanup | Managed browser suite with real registered handler module; `test:e2e:workflow` covers runtime contracts |
 | Job Flows | All five FlowProducer create modes, fourteen inspection methods and a safe log mutation through the UI | Managed browser suite plus all safe runtime operations in `test:e2e:flow` |
 | Metrics | Seed queue appears in per-queue metrics and telemetry connects | Monitoring browser tests |
@@ -159,20 +159,29 @@ skips the initial load. Dropping `initialLoad` previously caused direct clean UR
 to hydrate into the 404 page, even though the server returned the right HTML.
 This regression is covered by the URL checks above.
 
-## Results recorded on 2026-09-05
+## Results recorded on 2026-10-08
 
-The verification uses Dashboard **0.0.43**, Bun **1.4.0**, Bunqueue **2.9.4**, and PostgreSQL
-**18.6** (schema **20**) for Fleet. These are dated results, not a guarantee for later commits.
+The last recorded verification ran against Qelay Control Panel **1.0.1** on macOS (arm64), with Bun
+**1.4.2**, Bunqueue **2.9.4**, and PostgreSQL **18.6** (schema **20**) for Fleet. These are dated
+results, not a guarantee for later commits.
 
-- The canonical quality gate passed: **1,050 Bun tests**, **0 failures**, with aggregate logic
-  coverage **89.82% lines / 90.75% functions** (the configured floor excludes TSX).
-- Real TLS, SQLite schema 35 → 37 migration, Flow, Workflow, Queue SDK, PostgreSQL Fleet and
-  packed-package runtime checks passed.
-- **42 browser tests passed in 43.6 seconds** across Chromium, Firefox and WebKit: navigation,
-  accessibility and eight additional operational scenarios per browser. The benchmark reconciled
-  **120 completed jobs** across the three engines (40 each).
-- The PostgreSQL UI scenario passed after removing an obsolete hard-coded 2.9.3 version
-  expectation. It now compares the connection result with the version probed on the real broker.
+- The Bun suite passed: **1,448 tests**, **0 failures**, with aggregate logic coverage
+  **90.38% lines / 91.19% functions** (the configured floor excludes TSX).
+- Real TLS, SQLite schema 35 → 37 migration, Flow, Workflow, Queue SDK and PostgreSQL Fleet
+  runtime checks passed, as did the packed-package check (Flow, Workflow, Queue and Backup routes
+  through the bridge).
+- The standalone runtime check passed **28 checks** against the source and again against the
+  compiled `qelay-control-panel` binary.
+- **30 browser tests passed in 1.0 minute** across Chromium and WebKit (15 per browser):
+  navigation, accessibility and operational scenarios. The benchmark scenario reconciled a
+  **40-job** run in each browser. **3 docs browser tests passed** (direct clean URLs at 1440 px and
+  390 px, search and Back).
+- Not run in this pass: the Firefox browser suite (it does not start in the local sandbox, so CI is
+  its first run) and the PostgreSQL Fleet browser scenario. `bun run audit:high` reported six
+  advisories in dependencies that were already present before the rebrand.
+- A scripted pass over every screen at 360, 768 and 1280 px in both themes found no horizontal page
+  scroll, a visible focus ring on first Tab, and no uncaught page errors. The only automated WCAG
+  findings left are the ones listed under [Known issues](./known-issues.md).
 
 ## Evidence and troubleshooting
 

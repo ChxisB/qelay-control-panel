@@ -163,7 +163,7 @@ export function Webhooks() {
       {actErr && (
         <div
           role="status"
-          className="mb-4 rounded-lg border border-red-500/20 bg-red-500/5 px-4 py-2 text-sm text-danger"
+          className="mb-4 rounded-lg border border-danger/20 bg-danger/5 px-4 py-2 text-sm text-danger"
         >
           {actErr}
         </div>
@@ -191,17 +191,17 @@ export function Webhooks() {
         />
       ) : (
         <>
-          <div className="overflow-x-auto rounded-xl border border-line bg-surface">
+          <div className="overflow-x-auto rounded-card border border-line bg-surface">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-line text-left text-[11px] uppercase tracking-wider text-faint">
-                  <th className="px-5 py-3 font-medium">URL</th>
-                  <th className="px-5 py-3 font-medium">Events</th>
-                  <th className="px-5 py-3 font-medium">Queue</th>
-                  <th className="px-5 py-3 text-right font-medium">Success / Fail</th>
-                  <th className="px-5 py-3 text-right font-medium">Last</th>
-                  <th className="px-5 py-3 font-medium">Enabled</th>
-                  <th className="w-12 px-5 py-3" />
+                <tr className="border-b border-line text-left eyebrow text-muted light:bg-surface-2">
+                  <th className="px-4 py-2.5 font-semibold">URL</th>
+                  <th className="px-4 py-2.5 font-semibold">Events</th>
+                  <th className="px-4 py-2.5 font-semibold">Queue</th>
+                  <th className="px-4 py-2.5 text-right font-semibold">Success / Fail</th>
+                  <th className="px-4 py-2.5 text-right font-semibold">Last</th>
+                  <th className="px-4 py-2.5 font-semibold">Enabled</th>
+                  <th className="w-12 px-4 py-2.5" />
                 </tr>
               </thead>
               <tbody>
@@ -210,29 +210,29 @@ export function Webhooks() {
                     key={w.id}
                     className="border-b border-line last:border-0 align-top hover:bg-surface-2/40"
                   >
-                    <td className="max-w-xs truncate px-5 py-3 font-mono text-xs text-fg">
+                    <td className="max-w-xs truncate px-4 py-2.5 font-mono text-xs text-fg">
                       {displayWebhookUrl(w.url)}
                     </td>
-                    <td className="px-5 py-3 text-xs text-muted">{w.events.join(', ')}</td>
-                    <td className="px-5 py-3 font-mono text-xs text-muted">{w.queue ?? 'all'}</td>
-                    <td className="px-5 py-3 text-right tnum text-muted">
+                    <td className="px-4 py-2.5 text-xs text-muted">{w.events.join(', ')}</td>
+                    <td className="px-4 py-2.5 font-mono text-xs text-muted">{w.queue ?? 'all'}</td>
+                    <td className="px-4 py-2.5 text-right tnum text-muted">
                       <span className="text-success">{formatNumber(w.successCount)}</span>
                       {' / '}
                       <span className={w.failureCount ? 'text-danger' : ''}>
                         {formatNumber(w.failureCount)}
                       </span>
                     </td>
-                    <td className="px-5 py-3 text-right text-faint">
+                    <td className="px-4 py-2.5 text-right text-faint">
                       {formatRelativeTime(w.lastTriggered)}
                     </td>
-                    <td className="px-5 py-3">
+                    <td className="px-4 py-2.5">
                       <Toggle
                         checked={optimistic[w.id]?.value ?? w.enabled}
                         label={`${(optimistic[w.id]?.value ?? w.enabled) ? 'Disable' : 'Enable'} webhook`}
                         onChange={(v) => toggleEnabled(w.id, v)}
                       />
                     </td>
-                    <td className="px-5 py-3 text-right">
+                    <td className="px-4 py-2.5 text-right">
                       <IconButton
                         aria-label="Remove webhook"
                         disabled={removing.has(w.id)}

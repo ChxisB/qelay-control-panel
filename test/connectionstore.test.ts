@@ -48,7 +48,7 @@ describe('connectionStore security boundary', () => {
       profiles: [
         {
           id: 'default',
-          name: 'Local Bunqueue',
+          name: 'Local server',
           baseUrl: '/api',
           agentBaseUrl: 'http://localhost:6800',
         },

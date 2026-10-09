@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist, type StateStorage } from 'zustand/middleware';
+import { LEGACY_STORAGE_KEYS, readWithLegacy } from '@/lib/legacyStorage';
 
 export type Theme = 'dark' | 'light';
 
@@ -9,7 +10,7 @@ interface ThemeState {
   setTheme: (theme: Theme) => void;
 }
 
-const THEME_STORAGE_KEY = 'bq-dash-theme';
+export const THEME_STORAGE_KEY = 'qelay-theme';
 const THEME_STORAGE_VERSION = 1;
 
 function safeTheme(value: unknown): Theme {
@@ -30,7 +31,10 @@ const resilientThemeStorage: StateStorage = {
     const storage = localThemeStorage();
     if (!storage) return null;
     try {
-      const raw = storage.getItem(name);
+      const raw =
+        name === THEME_STORAGE_KEY
+          ? readWithLegacy(storage, name, LEGACY_STORAGE_KEYS.theme)
+          : storage.getItem(name);
       if (raw === null || name !== THEME_STORAGE_KEY) return raw;
       const parsed = JSON.parse(raw) as unknown;
       const envelope =

@@ -1,23 +1,36 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { cn } from '@/lib/cn';
 
-type Variant = 'default' | 'ghost' | 'accent' | 'danger' | 'warning' | 'success';
-type Size = 'sm' | 'md';
+export type ButtonVariant = 'default' | 'ghost' | 'primary' | 'danger';
+export type ButtonSize = 'sm' | 'md';
+type Variant = ButtonVariant;
+type Size = ButtonSize;
 
+// Measurements follow the design's components board: 36px tall, 10px radius, 13px / 600.
+// Danger is an outline, never a fill. Disabled keeps the variant's colours and drops to .4.
 const variants: Record<Variant, string> = {
-  default: 'border border-line bg-surface-2 text-fg hover:bg-surface-2/70 hover:border-line-strong',
-  ghost: 'text-muted hover:text-fg hover:bg-surface-2',
-  accent: 'bg-accent text-accent-fg hover:opacity-90 border border-transparent',
-  danger: 'border border-red-500/30 text-danger hover:bg-red-500/10 hover:border-red-500/50',
-  warning:
-    'border border-amber-500/30 text-warning hover:bg-amber-500/10 hover:border-amber-500/50',
-  success: 'bg-emerald-500 text-white hover:bg-emerald-500/90 border border-transparent',
+  default: 'border border-line-strong bg-transparent text-fg hover:bg-surface-2 light:bg-surface',
+  ghost: 'border border-transparent text-muted hover:bg-surface-2 hover:text-fg',
+  primary: 'border border-transparent bg-primary text-primary-fg hover:opacity-90',
+  danger: 'border border-danger/45 text-danger hover:bg-danger/10 light:border-danger/40',
 };
 
 const sizes: Record<Size, string> = {
   sm: 'h-8 px-3 text-xs gap-1.5',
-  md: 'h-9 px-4 text-sm gap-2',
+  md: 'h-9 px-4 text-[13px] gap-2',
 };
+
+/** Class list shared by `Button` and `LinkButton`, so a link can look exactly like a button. */
+export function buttonClass(variant: Variant = 'default', size: Size = 'md', className?: string) {
+  return cn(
+    'inline-flex items-center justify-center rounded-control font-semibold transition-colors',
+    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
+    'disabled:cursor-not-allowed disabled:opacity-40',
+    variants[variant],
+    sizes[size],
+    className
+  );
+}
 
 export function Button({
   children,
@@ -31,18 +44,7 @@ export function Button({
   children: ReactNode;
 }) {
   return (
-    <button
-      type="button"
-      className={cn(
-        'inline-flex items-center justify-center rounded-lg font-medium transition-colors',
-        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
-        'disabled:cursor-not-allowed disabled:opacity-50',
-        variants[variant],
-        sizes[size],
-        className
-      )}
-      {...props}
-    >
+    <button type="button" className={buttonClass(variant, size, className)} {...props}>
       {children}
     </button>
   );
@@ -59,9 +61,9 @@ export function IconButton({
     <button
       type="button"
       className={cn(
-        'inline-flex size-8 items-center justify-center rounded-lg transition-colors',
-        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
-        'disabled:cursor-not-allowed disabled:opacity-50',
+        'inline-flex size-8 items-center justify-center rounded-control transition-colors',
+        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
+        'disabled:cursor-not-allowed disabled:opacity-40',
         variants[variant],
         className
       )}

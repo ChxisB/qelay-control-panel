@@ -1,7 +1,10 @@
 import type { StateStorage } from 'zustand/middleware';
+import { readWithLegacy } from '@/lib/legacyStorage';
 
 interface ResilientStorageOptions {
   key: string;
+  /** Pre-rebrand key to adopt once when `key` is absent (see `readWithLegacy`). */
+  legacyKey?: string;
   version: number;
   /**
    * Receives the envelope's stored version so version-gated migrations can run
@@ -63,6 +66,9 @@ export function createResilientStateStorage(options: ResilientStorageOptions): S
       } catch (error) {
         report(error);
         return null;
+      }
+      if (raw === null && options.legacyKey && name === options.key) {
+        raw = readWithLegacy(storage, name, options.legacyKey);
       }
       if (raw === null || name !== options.key) return raw;
       const sanitized = sanitizedEnvelope(raw, options);

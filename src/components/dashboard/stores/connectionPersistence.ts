@@ -1,4 +1,5 @@
 import { createJSONStorage } from 'zustand/middleware';
+import { LEGACY_STORAGE_KEYS } from '@/lib/legacyStorage';
 import { runtimeConfigValue } from '@/lib/runtimeConfig';
 import {
   type ConnectionDefaults,
@@ -10,7 +11,7 @@ import {
 import { resolveAgentBase, resolveDefaultBaseUrl } from './connectionTarget';
 import { createResilientStateStorage } from './resilientStateStorage';
 
-export const CONNECTION_STORAGE_KEY = 'bq-dash-connection';
+export const CONNECTION_STORAGE_KEY = 'qelay-connection';
 export const CONNECTION_STORAGE_VERSION = 4;
 const DEFAULT_REFRESH_MS = 3000;
 const MIN_REFRESH_MS = 500;
@@ -111,6 +112,7 @@ export function connectionPersistenceResult(): { persisted: boolean; error?: str
 export const connectionStorage = createJSONStorage<PersistedConnectionState>(() =>
   createResilientStateStorage({
     key: CONNECTION_STORAGE_KEY,
+    legacyKey: LEGACY_STORAGE_KEYS.connection,
     version: CONNECTION_STORAGE_VERSION,
     sanitizeState: sanitizedPersistedConnectionState,
     onError: recordPersistenceError,

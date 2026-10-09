@@ -1,5 +1,5 @@
 name: ✨ Feature request
-description: Suggest a capability or improvement for the dashboard.
+description: Suggest a capability or improvement for the control panel.
 labels: [enhancement]
 body:
   - type: textarea
@@ -28,7 +28,7 @@ body:
     attributes:
       label: Area
       options:
-        - Dashboard (UI)
+        - Control panel (UI)
         - Control agent
         - Deployment
         - Docs

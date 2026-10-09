@@ -1,5 +1,5 @@
 /**
- * bunqueue dashboard control agent.
+ * Qelay Control Panel control agent.
  *
  * A tiny local Bun server that lets the dashboard start / stop / restart a
  * bunqueue server process. It can spawn processes, so it binds 127.0.0.1 only
@@ -56,5 +56,5 @@ logger.info(
     tokenAuth: Boolean(token),
     serverManagement: controlTarget.mode,
   },
-  'bunqueue dashboard control agent ready'
+  'Qelay Control Panel agent ready'
 );

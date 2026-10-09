@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist, type StateStorage } from 'zustand/middleware';
+import { LEGACY_STORAGE_KEYS, readWithLegacy } from '@/lib/legacyStorage';
 
 export type BackupSchedule = 'disabled' | '6h' | '12h' | '24h';
 export type S3AddressingStyle = 'auto' | 'virtual-hosted' | 'path-style';
@@ -23,7 +24,7 @@ interface S3State {
   set: (patch: Partial<Omit<S3State, 'set'>>) => void;
 }
 
-export const S3_STORAGE_KEY = 'bq-dash-s3';
+export const S3_STORAGE_KEY = 'qelay-s3';
 const S3_STORAGE_VERSION = 2;
 const SCHEDULES: readonly BackupSchedule[] = ['disabled', '6h', '12h', '24h'];
 
@@ -125,6 +126,9 @@ const resilientS3Storage: StateStorage = {
       raw = storage.getItem(name);
     } catch {
       return null;
+    }
+    if (raw === null && name === S3_STORAGE_KEY) {
+      raw = readWithLegacy(storage, name, LEGACY_STORAGE_KEYS.s3);
     }
     if (raw === null || name !== S3_STORAGE_KEY) return raw;
     const sanitized = sanitizeStoredEnvelope(raw);

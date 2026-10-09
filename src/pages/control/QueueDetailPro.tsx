@@ -149,7 +149,7 @@ export function QueueDetailPro() {
           <Link
             to="/queues"
             aria-label="Back to queues"
-            className="inline-flex size-8 items-center justify-center rounded-lg text-muted transition-colors hover:bg-surface-2 hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+            className="inline-flex size-8 items-center justify-center rounded-lg text-muted transition-colors hover:bg-surface-2 hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <IconChevronLeft className="size-4" />
           </Link>

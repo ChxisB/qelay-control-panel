@@ -1,5 +1,6 @@
 import { E2E_APP_URL, E2E_BASE_PATH, E2E_SEED_QUEUE, E2E_SERVER_TOKEN } from './config';
 import { control, expect, expectNoBrowserErrors, test, unlockDashboard } from './fixtures';
+import { clickNavLink } from './navigation';
 
 test.beforeEach(async ({ page, request }) => {
   await control(request, '/upstream/start');
@@ -10,14 +11,17 @@ test('shows live queue metrics, storage health and the real worker registry', as
   page,
   browserErrors,
 }) => {
-  await page.locator(`#app-nav a[href="${E2E_BASE_PATH}/metrics"]`).click();
+  await clickNavLink(page, page.locator(`#app-nav a[href="${E2E_BASE_PATH}/metrics"]`));
+  // The Overview also lists the seed queue and shows a "Live" pill, and it stays on screen while
+  // the lazy Metrics chunk loads — so wait for the page's own heading, not just the URL.
+  await expect(page.getByRole('heading', { level: 1, name: 'Metrics' })).toBeVisible();
   await expect(page.getByRole('row').filter({ hasText: E2E_SEED_QUEUE })).toBeVisible();
   await expect(page.locator('#main').getByText('Live', { exact: true })).toBeVisible();
-  await page.locator(`#app-nav a[href="${E2E_BASE_PATH}/usage"]`).click();
+  await clickNavLink(page, page.locator(`#app-nav a[href="${E2E_BASE_PATH}/usage"]`));
   await expect(page.getByText('Disk writes are being accepted.')).toBeVisible();
   await expect(page.getByText('Jobs pushed (since restart)')).toBeVisible();
   const workers = page.waitForResponse((r) => r.url().endsWith('/api/workers') && r.ok());
-  await page.locator(`#app-nav a[href="${E2E_BASE_PATH}/workers"]`).click();
+  await clickNavLink(page, page.locator(`#app-nav a[href="${E2E_BASE_PATH}/workers"]`));
   expect((await (await workers).json()).data.workers).toEqual([]);
   await expect(page.getByText('No workers registered', { exact: true })).toBeVisible();
   expectNoBrowserErrors(browserErrors);
@@ -29,7 +33,7 @@ test('receives a real job event in Logs and filters it', async ({
   browserErrors,
 }, testInfo) => {
   const queue = `logs-${testInfo.project.name}`;
-  await page.locator(`#app-nav a[href="${E2E_BASE_PATH}/logs"]`).click();
+  await clickNavLink(page, page.locator(`#app-nav a[href="${E2E_BASE_PATH}/logs"]`));
   await expect(page.getByRole('heading', { name: 'Activity Logs', exact: true })).toBeVisible();
   await expect(page.locator('#main').getByText('Live', { exact: true })).toBeVisible();
   await control(request, '/jobs', { queue });
@@ -49,7 +53,7 @@ test('evaluates an alert against a real waiting job and removes the rule', async
   const queue = `alerts-${testInfo.project.name}`;
   const name = `Waiting evidence ${testInfo.project.name}`;
   await control(request, '/jobs', { queue });
-  await page.locator(`#app-nav a[href="${E2E_BASE_PATH}/alerts"]`).click();
+  await clickNavLink(page, page.locator(`#app-nav a[href="${E2E_BASE_PATH}/alerts"]`));
   await page.getByRole('button', { name: '+ Create Alert Rule' }).click();
   await page.getByLabel('Name', { exact: true }).fill(name);
   await page.getByLabel('Metric', { exact: true }).selectOption('waiting');
@@ -90,7 +94,7 @@ test('shows a real failed job in both DLQ views and preserves disabled destructi
   });
   expect(failed.ok()).toBe(true);
   for (const route of ['/dlq', '/dlq-control']) {
-    await page.locator(`#app-nav a[href="${E2E_BASE_PATH}${route}"]`).click();
+    await clickNavLink(page, page.locator(`#app-nav a[href="${E2E_BASE_PATH}${route}"]`));
     await expect(page).toHaveURL(`${E2E_APP_URL}${route}`);
     await expect(
       page.getByRole('heading', {

@@ -1,6 +1,6 @@
 ---
 title: Deployment
-description: Deploy the bunqueue dashboard as a static site or a single all-in-one server, with Docker, Kubernetes, PM2, or a hosting platform. Two modes, one decision.
+description: Deploy Qelay Control Panel as a static site or a single all-in-one server, with Docker, Kubernetes, PM2, or a hosting platform. Two modes, one decision.
 ---
 
 # Deployment
@@ -28,11 +28,11 @@ you can start / stop / restart the bunqueue process from the UI. Three ways to
 get it:
 
 ```bash
-bunx bunqueue-dashboard   # from npm, installs dependencies, needs Bun 1.4.2
+bunx qelay-control-panel   # from npm, installs dependencies, needs Bun 1.4.2
 ```
 
 or download a **standalone binary** from the
-[GitHub Releases](https://github.com/egeominotti/bunqueue-dashboard/releases)
+[GitHub Releases](https://github.com/ChxisB/qelay-control-panel/releases)
 (no runtime needed at all), or run it from a source checkout.
 
 Good for: a VM or box where you run bunqueue itself and want full process
@@ -81,7 +81,7 @@ Docker or Kubernetes already owns that process, make the relationship explicit:
 BUNQUEUE_MANAGED=0 \
 BUNQUEUE_URL=http://127.0.0.1:6790 \
 BUNQUEUE_TOKEN="$SERVER_TOKEN" \
-bunx bunqueue-dashboard
+bunx qelay-control-panel
 ```
 
 In this attach-only mode, **Control ▸ Server** probes `BUNQUEUE_URL/health`,
@@ -96,7 +96,7 @@ same fail-closed response because external process state cannot be proven.
 the SPA router, embedded assets, same-origin API proxy and agent bridge together:
 
 ```bash
-BASE_PATH=/internal/queue bunx bunqueue-dashboard
+BASE_PATH=/internal/queue bunx qelay-control-panel
 ```
 
 Preserve the prefix when forwarding to the all-in-one listener:

@@ -64,6 +64,6 @@ export function titleFor(pathname: string): string {
 
 export function useDocumentTitle(pageTitle: string): void {
   useEffect(() => {
-    document.title = `${pageTitle} · bunqueue`;
+    document.title = `${pageTitle} · Qelay Control Panel`;
   }, [pageTitle]);
 }

@@ -26,7 +26,7 @@ import {
   target,
   waitForServer,
 } from './flowRuntimeSupport';
-const root = await mkdtemp(join(tmpdir(), 'bunqueue-dashboard-flow-'));
+const root = await mkdtemp(join(tmpdir(), 'qelay-control-panel-flow-'));
 const httpPort = await freePort();
 const tcpPort = await freePort();
 const config: ServerConfig = {

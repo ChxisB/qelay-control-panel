@@ -8,10 +8,7 @@ export { fetchHealthWithTimeout, SETTINGS_TEST_TIMEOUT_MS } from './settings/hea
 export function Settings() {
   return (
     <div>
-      <PageHeader
-        title="Settings"
-        description="Bunqueue fleet connections, credentials and appearance."
-      />
+      <PageHeader title="Settings" description="Fleet connections, credentials and appearance." />
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <ConnectionProfilesCard />
         <AppearanceCard />

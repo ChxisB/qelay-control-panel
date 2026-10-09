@@ -11,10 +11,12 @@ function Code({ children }: { children: string }) {
  */
 export function AgentInfoCard({ agentBase }: { agentBase: string }) {
   return (
-    <Card>
+    <Card className="px-6 py-4">
       <details className="group">
         <summary className="flex cursor-pointer list-none items-center justify-between gap-2">
-          <span className="text-base font-semibold text-fg">How server control works</span>
+          <span className="text-[15px] font-semibold tracking-tight text-fg">
+            How server control works
+          </span>
           <span className="text-xs text-muted transition-transform group-open:rotate-90">▶</span>
         </summary>
 

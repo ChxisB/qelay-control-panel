@@ -112,7 +112,7 @@ export function WebhookForm({
             onClick={() => toggle(event)}
             className={
               events.includes(event)
-                ? 'rounded-full bg-accent/15 px-3 py-1 text-xs font-medium text-accent'
+                ? 'rounded-full bg-selected px-3 py-1 text-xs font-medium text-link'
                 : 'rounded-full border border-line px-3 py-1 text-xs font-medium text-muted hover:text-fg'
             }
           >
@@ -121,7 +121,7 @@ export function WebhookForm({
         ))}
       </div>
       <div className="flex items-center gap-3">
-        <Button type="submit" variant="accent" size="sm" disabled={busy}>
+        <Button type="submit" variant="primary" size="sm" disabled={busy}>
           {busy ? 'Adding…' : 'Add webhook'}
         </Button>
         {err && <span className="text-xs text-danger">{err}</span>}

@@ -1,6 +1,6 @@
 ---
 title: Architecture
-description: "How the bunqueue dashboard fits together: the React SPA, its polling and SSE data flow, the two API clients, and the local control agent."
+description: "How Qelay Control Panel fits together: the React SPA, its polling and SSE data flow, the two API clients, and the local control agent."
 ---
 
 # Architecture
@@ -29,7 +29,7 @@ description: "How the bunqueue dashboard fits together: the React SPA, its polli
 ```
 
 The single-pair diagram is one connection profile. A production fleet repeats
-that server/agent pair per broker. The Dashboard stores up to 32 named profiles,
+that server/agent pair per broker. The control panel stores up to 32 named profiles,
 and `/fleet` probes all pairs concurrently while the rest of the UI follows one
 atomic active identity. Brokers reporting the same credential-free PostgreSQL
 target and namespace are grouped as one shared queue topology; their control
@@ -92,7 +92,7 @@ runtime resources after the managed server has transitioned.
 
 ```mermaid
 flowchart LR
-  subgraph Dashboard["Dashboard (React SPA)"]
+  subgraph Dashboard["Control panel (React SPA)"]
     P["usePolledData<br/>(interval poll)"]
     S["useActivityStream<br/>(SSE reader)"]
     T["useThroughputSeries<br/>(1s tick)"]
@@ -185,14 +185,14 @@ API has no process-lifecycle endpoint. See [agent.md](agent.md) for the full
 reference (endpoints, `ServerConfig`/`runningConfig` split, `dbStats()`).
 Because it can spawn processes it binds `127.0.0.1` only and is guarded by a
 **locked-CORS Origin allowlist** (never `*`) plus an optional `AGENT_TOKEN`
-bearer gate, see [agent.md](agent.md#security) and [Security policy](https://github.com/egeominotti/bunqueue-dashboard/blob/main/SECURITY.md).
+bearer gate, see [agent.md](agent.md#security) and [Security policy](https://github.com/ChxisB/qelay-control-panel/blob/main/SECURITY.md).
 Keep its port on loopback (or an equally trusted network) regardless.
 The all-in-one server independently gates every remote/proxied administrative
 `/api/*` request with `BUNQUEUE_TOKEN`; this is not the agent credential.
 
 ## Theming
 
-Tailwind CSS v4 with CSS-variable tokens (`--bg`, `--surface`, `--line`, `--fg`, `--muted`, `--accent`, …) mapped into Tailwind via `@theme inline`, so utilities
+Tailwind CSS v4 with CSS-variable tokens (`--bg`, `--surface`, `--line`, `--fg`, `--muted`, `--primary`, `--link`, `--ring`, …) mapped into Tailwind via `@theme inline`, so utilities
 like `bg-surface` / `text-muted` / `border-line` flip instantly when
 `data-theme` changes. Dark is the default; `light:` is a custom variant. Inter +
 JetBrains Mono (variable) via Fontsource; numbers use tabular figures (`.tnum`).

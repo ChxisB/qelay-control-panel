@@ -139,14 +139,14 @@ export const useConnectionStore = create<ConnectionState>()(
         if (state.profiles.length >= MAX_CONNECTION_PROFILES) {
           return {
             persisted: false,
-            error: `At most ${MAX_CONNECTION_PROFILES} Bunqueue nodes are supported.`,
+            error: `At most ${MAX_CONNECTION_PROFILES} nodes are supported.`,
           };
         }
         beginConnectionPersistence();
         const id = uniqueProfileId(state.profiles);
         const profile: ConnectionProfile = {
           id,
-          name: safeProfileName(draft.name, `Bunqueue ${state.profiles.length + 1}`),
+          name: safeProfileName(draft.name, `Server ${state.profiles.length + 1}`),
           baseUrl: safeTarget(draft.baseUrl, CONNECTION_DEFAULTS.baseUrl),
           agentBaseUrl: safeTarget(draft.agentBaseUrl, CONNECTION_DEFAULTS.agentBaseUrl),
         };

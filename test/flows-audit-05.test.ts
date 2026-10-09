@@ -24,7 +24,8 @@ installTestHooks();
 describe('Flows — connection/UI integrity', () => {
   test('recent ids and waiting-children styling are target/state specific', () => {
     expect(recentFlowsStorageKey('http://one')).not.toBe(recentFlowsStorageKey('http://two'));
-    expect(flowStateStyle('waiting-children')).toContain('cyan');
+    expect(flowStateStyle('waiting-children')).toContain('border-dashed');
+    expect(flowStateStyle('waiting-children')).not.toBe(flowStateStyle('waiting'));
     expect(flowJobIdError('safe-job_1.2~x:@+')).toBeNull();
     expect(flowJobIdError('space id')).toContain('path-safe IDs');
     expect(flowJobIdError('slash/id')).toContain('path-safe IDs');

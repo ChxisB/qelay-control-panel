@@ -87,16 +87,16 @@ export function Cron() {
         />
       ) : (
         <>
-          <div className="overflow-x-auto rounded-xl border border-line bg-surface">
+          <div className="overflow-x-auto rounded-card border border-line bg-surface">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-line text-left text-[11px] uppercase tracking-wider text-faint">
-                  <th className="px-5 py-3 font-medium">Name</th>
-                  <th className="px-5 py-3 font-medium">Queue</th>
-                  <th className="px-5 py-3 font-medium">Schedule</th>
-                  <th className="px-5 py-3 font-medium">Next Run</th>
-                  <th className="px-5 py-3 text-right font-medium">Runs</th>
-                  <th className="w-12 px-5 py-3" />
+                <tr className="border-b border-line text-left eyebrow text-muted light:bg-surface-2">
+                  <th className="px-4 py-2.5 font-semibold">Name</th>
+                  <th className="px-4 py-2.5 font-semibold">Queue</th>
+                  <th className="px-4 py-2.5 font-semibold">Schedule</th>
+                  <th className="px-4 py-2.5 font-semibold">Next Run</th>
+                  <th className="px-4 py-2.5 text-right font-semibold">Runs</th>
+                  <th className="w-12 px-4 py-2.5" />
                 </tr>
               </thead>
               <tbody>
@@ -105,16 +105,16 @@ export function Cron() {
                     key={c.name}
                     className="border-b border-line last:border-0 hover:bg-surface-2/40"
                   >
-                    <td className="px-5 py-3 font-medium text-fg">{c.name}</td>
-                    <td className="px-5 py-3 font-mono text-xs text-muted">{c.queue ?? '—'}</td>
-                    <td className="px-5 py-3 font-mono text-xs text-muted">
+                    <td className="px-4 py-2.5 font-medium text-fg">{c.name}</td>
+                    <td className="px-4 py-2.5 font-mono text-xs text-muted">{c.queue ?? '—'}</td>
+                    <td className="px-4 py-2.5 font-mono text-xs text-muted">
                       {c.schedule ?? (c.repeatEvery ? `every ${c.repeatEvery}ms` : '—')}
                     </td>
-                    <td className="px-5 py-3 text-faint">{formatDateTime(c.nextRun)}</td>
-                    <td className="px-5 py-3 text-right tnum text-muted">
+                    <td className="px-4 py-2.5 text-faint">{formatDateTime(c.nextRun)}</td>
+                    <td className="px-4 py-2.5 text-right tnum text-muted">
                       {formatNumber(c.executions ?? 0)}
                     </td>
-                    <td className="px-5 py-3 text-right">
+                    <td className="px-4 py-2.5 text-right">
                       <IconButton
                         aria-label="Delete cron"
                         disabled={removing !== null}

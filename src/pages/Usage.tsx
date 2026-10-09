@@ -67,7 +67,7 @@ export function Usage() {
           value={formatNumber(stats.totalFailed)}
           tone={stats.totalFailed ? 'red' : 'default'}
         />
-        <StatCard label="Jobs Pulled" value={formatNumber(stats.totalPulled)} tone="blue" />
+        <StatCard label="Jobs Pulled" value={formatNumber(stats.totalPulled)} tone="waiting" />
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">

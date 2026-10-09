@@ -3,10 +3,17 @@ import { F, type Json } from './shared';
 
 const fixtureJobs = (key: string): Json[] => (F[key] as { jobs?: Json[] })?.jobs ?? [];
 const fallbackJob = (F.oneJob as { job?: Json }).job;
+// Every dead-letter entry is also a failed job, so the Failed tab lists as many rows as the
+// counts claim. The fallback job is the first entry; the rest are added by id.
+const dlqFailedJobs = (): Json[] =>
+  ((F.dlq_emails as { entries?: { job: Json; error?: unknown }[] })?.entries ?? [])
+    .filter(({ job }) => job.id !== fallbackJob?.id)
+    .map(({ job, error }) => ({ ...job, state: 'failed', failedReason: error ?? null }));
 export const DEMO_JOB_POOL: Json[] = [
   ...fixtureJobs('emailsWaiting'),
   ...fixtureJobs('emailsCompleted'),
   ...(fallbackJob ? [fallbackJob] : []),
+  ...dlqFailedJobs(),
 ];
 const QUEUES = ['emails', 'image-processing', 'reports', 'notifications'];
 

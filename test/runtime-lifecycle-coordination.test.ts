@@ -203,7 +203,7 @@ describe('agent status lifecycle coordination', () => {
 });
 
 function markerDatabase(label: string, value: string): string {
-  const path = `/tmp/bunqueue-dashboard-${label}-${crypto.randomUUID()}.db`;
+  const path = `/tmp/qelay-control-panel-${label}-${crypto.randomUUID()}.db`;
   paths.push(path);
   const db = new Database(path, { create: true });
   db.run('CREATE TABLE lifecycle_marker (value TEXT NOT NULL)');

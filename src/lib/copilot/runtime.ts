@@ -4,7 +4,7 @@ import { captureServerRequestTarget } from '@/lib/bq';
 import { createModel, providerById } from './providers';
 import { buildTools } from './tools';
 
-const SYSTEM = `You are the bunqueue Copilot, an AI assistant embedded in a dashboard that operates a bunqueue job-queue server.
+const SYSTEM = `You are the Qelay assistant, an AI assistant embedded in Qelay Control Panel, a dashboard that operates a bunqueue job-queue server.
 
 You help the operator understand and control their queues, jobs, dead-letter queue (DLQ), workers, and crons. Use the provided tools to read LIVE state instead of guessing — never invent queue names, job ids, counts, or states; look them up. Prefer the smallest set of tool calls that answers the question.
 

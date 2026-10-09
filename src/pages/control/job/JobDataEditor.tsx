@@ -72,7 +72,7 @@ export function JobDataEditor({
         readOnly={!editable}
         spellCheck={false}
         rows={8}
-        className="w-full resize-y rounded-lg border border-line bg-surface-2 p-3 font-mono text-xs text-fg placeholder:text-faint focus:border-accent/60 focus:outline-none focus:ring-2 focus:ring-accent/30"
+        className="w-full resize-y rounded-lg border border-line bg-surface-2 p-3 font-mono text-xs text-fg placeholder:text-faint focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30"
       />
       {!editable && (
         <p className="mt-2 text-xs text-faint">

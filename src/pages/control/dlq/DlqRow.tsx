@@ -21,7 +21,7 @@ export function DlqRow({
   return (
     <>
       <tr className="border-b border-line align-top last:border-0 hover:bg-surface-2/40">
-        <td className="py-3 pl-4">
+        <td className="py-2.5 pl-4">
           <IconButton
             aria-label={isOpen ? 'Collapse details' : 'Expand details'}
             aria-expanded={isOpen}
@@ -32,12 +32,12 @@ export function DlqRow({
             />
           </IconButton>
         </td>
-        <td className="px-3 py-3 font-mono text-xs text-muted">{entry.job.name ?? 'default'}</td>
-        <td className="px-3 py-3">
+        <td className="px-3 py-2.5 font-mono text-xs text-muted">{entry.job.name ?? 'default'}</td>
+        <td className="px-3 py-2.5">
           <div className="flex items-center gap-1">
             <Link
               to={`/job?id=${encodeURIComponent(entry.job.id)}`}
-              className="max-w-[14rem] truncate font-mono text-xs text-accent hover:underline"
+              className="max-w-[14rem] truncate font-mono text-xs text-link hover:underline"
               title={entry.job.id}
             >
               {entry.job.id}
@@ -45,31 +45,28 @@ export function DlqRow({
             <CopyButton value={entry.job.id} />
           </div>
         </td>
-        <td className="px-3 py-3">
-          <span className="inline-block rounded-md bg-red-500/10 px-2 py-0.5 text-xs text-danger">
+        <td className="px-3 py-2.5">
+          <span className="inline-block rounded-md bg-danger/10 px-2 py-0.5 text-xs text-danger">
             {entry.reason}
           </span>
         </td>
-        <td className="px-3 py-3">
-          <span
-            className="block max-w-md truncate text-xs text-danger/80"
-            title={entry.error ?? ''}
-          >
+        <td className="px-3 py-2.5">
+          <span className="block max-w-md truncate text-xs text-danger" title={entry.error ?? ''}>
             {entry.error || '—'}
           </span>
         </td>
-        <td className="px-3 py-3 text-right tnum text-muted">
+        <td className="px-3 py-2.5 text-right tnum text-muted">
           {entry.job.attempts ?? attempts.length}
         </td>
-        <td className="px-3 py-3 text-right text-faint" title={formatDateTime(entry.enteredAt)}>
+        <td className="px-3 py-2.5 text-right text-faint" title={formatDateTime(entry.enteredAt)}>
           {formatRelativeTime(entry.enteredAt)}
         </td>
-        <td className="px-4 py-3">
+        <td className="px-4 py-2.5">
           <div className="flex items-center justify-end gap-1">
             <Link
               to={`/job?id=${encodeURIComponent(entry.job.id)}`}
               aria-label={`Inspect job ${entry.job.id}`}
-              className="inline-flex size-8 items-center justify-center rounded-lg text-muted transition-colors hover:bg-surface-2 hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+              className="inline-flex size-8 items-center justify-center rounded-lg text-muted transition-colors hover:bg-surface-2 hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <IconEye className="size-3.5" />
             </Link>
@@ -92,7 +89,7 @@ export function DlqRow({
                 <div className="mb-1 text-[11px] font-medium uppercase tracking-wider text-faint">
                   Error
                 </div>
-                <pre className="max-h-40 overflow-auto whitespace-pre-wrap rounded-lg bg-surface p-3 font-mono text-xs text-danger/90">
+                <pre className="max-h-40 overflow-auto whitespace-pre-wrap rounded-lg bg-surface p-3 font-mono text-xs text-danger">
                   {entry.error}
                 </pre>
               </div>
@@ -122,12 +119,12 @@ export function DlqRow({
                       <span className="tnum text-muted">{formatDuration(attempt.duration)}</span>
                     )}
                     {attempt.reason && (
-                      <span className="rounded bg-red-500/10 px-1.5 text-danger">
+                      <span className="rounded bg-danger/10 px-1.5 text-danger">
                         {attempt.reason}
                       </span>
                     )}
                     {attempt.error && (
-                      <span className="w-full truncate text-danger/70">{attempt.error}</span>
+                      <span className="w-full truncate text-danger">{attempt.error}</span>
                     )}
                   </li>
                 ))}

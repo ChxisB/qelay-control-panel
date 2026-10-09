@@ -2,9 +2,10 @@ import type { APIRequestContext, Page } from '@playwright/test';
 import packageJson from '../package.json' with { type: 'json' };
 import { E2E_APP_URL, E2E_SERVER_TOKEN } from './config';
 import { control, expect, expectNoBrowserErrors, test, unlockDashboard } from './fixtures';
+import { clickNavLink } from './navigation';
 
 async function visit(page: Page, route: string): Promise<void> {
-  await page.locator(`#app-nav nav a[href="/e2e/dashboard${route}"]`).click();
+  await clickNavLink(page, page.locator(`#app-nav nav a[href="/e2e/dashboard${route}"]`));
   await expect(page).toHaveURL(`${E2E_APP_URL}${route}`);
 }
 
@@ -108,8 +109,15 @@ test('reads live diagnostics and executes a real SQLite query', async ({ page, b
   await expect(page.getByRole('button', { name: /Ping ·/u })).toBeVisible();
   await visit(page, '/database');
   await page.getByLabel('SQL query').fill("SELECT 'browser-sql-verified' AS evidence");
-  await page.getByRole('button', { name: 'Run', exact: true }).click();
-  await expect(page.getByRole('cell', { name: 'browser-sql-verified', exact: true })).toBeVisible();
+  // The page's own table, schema and row reads can hold both of the agent's query slots, and a
+  // user query is never queued behind them: the page answers "Too many queries" and asks for a
+  // retry. Retry the way a user would; a query that never succeeds still fails at the timeout.
+  await expect(async () => {
+    await page.getByRole('button', { name: 'Run', exact: true }).click();
+    await expect(page.getByRole('cell', { name: 'browser-sql-verified', exact: true })).toBeVisible(
+      { timeout: 3000 }
+    );
+  }).toPass({ timeout: 20_000 });
   expectNoBrowserErrors(browserErrors);
 });
 

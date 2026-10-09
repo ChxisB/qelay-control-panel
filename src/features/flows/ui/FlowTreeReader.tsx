@@ -70,7 +70,7 @@ export function FlowTreeReader({
           type="button"
           disabled={!valid || loading}
           onClick={() => void load()}
-          className="rounded-md bg-accent px-3 py-2 text-xs font-medium text-accent-fg disabled:opacity-40"
+          className="rounded-md bg-primary px-3 py-2 text-xs font-medium text-primary-fg disabled:opacity-40"
         >
           {loading ? 'Loading tree...' : 'Load getFlow tree'}
         </button>

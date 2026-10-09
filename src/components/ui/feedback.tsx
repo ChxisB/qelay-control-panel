@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { cn } from '@/lib/cn';
+import { Button } from './Button';
 
 export function Spinner({
   className,
@@ -44,7 +45,7 @@ export function EmptyState({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-line py-14 text-center">
+    <div className="flex flex-col items-center justify-center gap-2 rounded-card border border-dashed border-line py-14 text-center">
       {icon && <div className="text-faint [&>svg]:size-8">{icon}</div>}
       <div className="text-sm font-medium text-fg">{title}</div>
       {hint && <div className="max-w-sm text-xs text-faint">{hint}</div>}
@@ -61,7 +62,7 @@ export function EmptyState({
  */
 export function OfflineBanner({
   onRetry,
-  message = 'Could not refresh bunqueue data — the view may be unavailable or stale.',
+  message = 'Could not refresh server data — the view may be unavailable or stale.',
 }: {
   onRetry?: () => void;
   /** Override when the unreachable thing isn't the bunqueue server (e.g. the control agent). */
@@ -72,15 +73,15 @@ export function OfflineBanner({
       role="status"
       aria-live="polite"
       aria-atomic="true"
-      className="mb-4 flex flex-wrap items-center gap-3 rounded-lg border border-amber-500/25 bg-amber-500/[0.06] px-4 py-2.5 text-sm"
+      className="mb-4 flex flex-wrap items-center gap-3 rounded-control border border-warning/25 bg-warning/[0.06] px-4 py-2.5 text-sm"
     >
-      <span className="size-2 shrink-0 rounded-full bg-amber-400" aria-hidden="true" />
-      <span className="text-amber-300/90 light:text-amber-700">{message}</span>
+      <span className="size-2 shrink-0 rounded-full bg-warning" aria-hidden="true" />
+      <span className="text-warning">{message}</span>
       {onRetry && (
         <button
           type="button"
           onClick={onRetry}
-          className="ml-auto shrink-0 rounded-md border border-amber-500/30 px-2.5 py-1 text-xs font-medium text-amber-200 light:text-amber-700 hover:border-amber-400/50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          className="ml-auto shrink-0 rounded-md border border-warning/30 px-2.5 py-1 text-xs font-medium text-warning hover:border-warning/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         >
           Retry
         </button>
@@ -94,18 +95,14 @@ export function ErrorState({ error, onRetry }: { error: Error; onRetry?: () => v
     <div
       role="alert"
       aria-atomic="true"
-      className="flex flex-col items-center justify-center gap-3 rounded-xl border border-red-500/20 bg-red-500/5 py-14 text-center"
+      className="flex flex-col items-center justify-center gap-3 rounded-card border border-danger/20 bg-danger/5 py-14 text-center"
     >
       <div className="text-sm font-medium text-danger">Something went wrong</div>
       <div className="max-w-md text-xs text-faint">{error.message}</div>
       {onRetry && (
-        <button
-          type="button"
-          onClick={onRetry}
-          className="mt-1 rounded-lg border border-line bg-surface-2 px-3 py-1.5 text-xs font-medium text-fg hover:border-line-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-        >
+        <Button size="sm" onClick={onRetry} className="mt-1">
           Retry
-        </button>
+        </Button>
       )}
     </div>
   );

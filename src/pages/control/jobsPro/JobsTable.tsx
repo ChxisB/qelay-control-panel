@@ -1,24 +1,40 @@
 import { Link } from 'react-router-dom';
 import { IconButton } from '@/components/ui/Button';
-import { IconEye, IconPlay } from '@/components/ui/icons';
-import { Pagination } from '@/components/ui/Pagination';
+import { IconEye, IconJobs, IconPlay } from '@/components/ui/icons';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { bq } from '@/lib/bq';
 import type { JobFull } from '@/lib/bqTypes';
 import { cn } from '@/lib/cn';
 import { formatDateTime, formatDuration } from '@/lib/format';
 import { actionGates } from '@/lib/jobActions';
-import { JOBS_PAGE_SIZE, priorityLabel } from './model';
+import { JobsFooter } from './JobsFooter';
+import { attemptsLabel, createdLabel, previewOf, splitId } from './model';
+
+function EmptyRows({ title, hint }: { title: string; hint: string }) {
+  return (
+    <tr>
+      <td colSpan={8}>
+        <div className="flex flex-col items-center gap-1.5 px-4 py-14 text-center">
+          <div className="flex size-10 items-center justify-center rounded-control bg-surface-2 text-muted">
+            <IconJobs className="size-5" />
+          </div>
+          <div className="mt-1.5 text-[15px] font-semibold text-fg">{title}</div>
+          <div className="text-[13px] text-muted">{hint}</div>
+        </div>
+      </td>
+    </tr>
+  );
+}
 
 export function JobsTable({
-  queue,
   rows,
-  search,
-  discoveryError,
+  now,
+  empty,
   selected,
   allSelected,
   bulkBusy,
   busyIds,
+  footer,
   page,
   hasNext,
   onToggleAll,
@@ -26,14 +42,15 @@ export function JobsTable({
   onRun,
   onPage,
 }: {
-  queue: string;
   rows: JobFull[];
-  search: string;
-  discoveryError: boolean;
+  now: number;
+  /** What to say when there are no rows to show. */
+  empty: { title: string; hint: string };
   selected: Set<string>;
   allSelected: boolean;
   bulkBusy: boolean;
   busyIds: Set<string>;
+  footer: string;
   page: number;
   hasNext: boolean;
   onToggleAll: () => void;
@@ -42,20 +59,15 @@ export function JobsTable({
   onPage: (page: number) => void;
 }) {
   return (
-    <>
-      {queue && (
-        <div className="mb-2 flex items-center gap-2 text-sm">
-          <span className="text-faint">Jobs in queue</span>
-          <span className="rounded-md bg-surface-2 px-2 py-0.5 font-mono text-xs text-fg">
-            {queue}
-          </span>
-        </div>
-      )}
-      <div className="overflow-x-auto rounded-xl border border-line bg-surface">
-        <table className="w-full text-sm">
+    <section
+      aria-label="Jobs table"
+      className="overflow-hidden rounded-card border border-line bg-surface"
+    >
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[700px] text-sm">
           <thead>
-            <tr className="border-b border-line text-left text-[11px] uppercase tracking-wider text-faint">
-              <th className="w-10 px-5 py-3">
+            <tr className="border-b border-line text-left eyebrow text-muted light:bg-surface-2">
+              <th className="w-10 px-4 py-2.5">
                 <input
                   type="checkbox"
                   checked={allSelected}
@@ -65,90 +77,89 @@ export function JobsTable({
                   aria-checked={selected.size > 0 && !allSelected ? 'mixed' : allSelected}
                   onChange={onToggleAll}
                   aria-label="Select all jobs on page"
-                  className="accent-accent"
+                  className="size-4 accent-ring"
                 />
               </th>
-              <th className="px-5 py-3 font-medium">Job ID</th>
-              <th className="px-5 py-3 font-medium">Name</th>
-              <th className="px-5 py-3 font-medium">Status</th>
-              <th className="px-5 py-3 font-medium">Priority</th>
-              <th className="px-5 py-3 text-right font-medium">Created</th>
-              <th className="px-5 py-3 text-right font-medium">Duration</th>
-              <th className="w-28 px-5 py-3 text-right font-medium">Actions</th>
+              <th className="px-4 py-2.5 font-semibold">Job</th>
+              <th className="px-4 py-2.5 font-semibold">State</th>
+              <th className="px-4 py-2.5 text-right font-semibold">Pri</th>
+              <th className="px-4 py-2.5 text-right font-semibold">Attempts</th>
+              <th className="px-4 py-2.5 font-semibold">Created</th>
+              <th className="px-4 py-2.5 text-right font-semibold">Duration</th>
+              {/* relative: keeps the sr-only label inside the scroller instead of the page's overflow */}
+              <th className="relative w-24 px-4 py-2.5">
+                <span className="sr-only">Actions</span>
+              </th>
             </tr>
           </thead>
           <tbody>
             {rows.length === 0 ? (
-              <tr>
-                <td colSpan={8} className="px-5 py-12 text-center text-sm text-faint">
-                  {search.trim()
-                    ? 'No jobs on this page match your ID or name filter.'
-                    : queue
-                      ? 'No jobs found.'
-                      : discoveryError
-                        ? 'Queue discovery failed. Retry above.'
-                        : 'Select a queue.'}
-                </td>
-              </tr>
+              <EmptyRows {...empty} />
             ) : (
               rows.map((job) => {
-                const priority = priorityLabel(job.priority);
-                const gates = actionGates(job.state);
+                const { head, tail } = splitId(job.id);
+                const preview = previewOf(job);
                 const rowBusy = bulkBusy || busyIds.has(job.id);
                 return (
                   <tr
                     key={job.id}
-                    className="border-b border-line last:border-0 hover:bg-surface-2/40"
+                    className={cn(
+                      'border-b border-line last:border-0 hover:bg-hover',
+                      selected.has(job.id) && 'bg-selected hover:bg-selected'
+                    )}
                   >
-                    <td className="px-5 py-3">
+                    <td className="px-4 py-2.5">
                       <input
                         type="checkbox"
                         checked={selected.has(job.id)}
                         onChange={() => onToggle(job.id)}
                         aria-label={`Select job ${job.id}`}
-                        className="accent-accent"
+                        className="size-4 accent-ring"
                       />
                     </td>
-                    <td className="px-5 py-3 font-mono text-xs text-accent/90">
-                      <span className="block max-w-[16rem] truncate" title={job.id}>
-                        {job.id}
-                      </span>
+                    <td className="px-4 py-2.5">
+                      <div className="flex max-w-[14rem] min-w-0 flex-col gap-0.5">
+                        <span className="flex min-w-0 font-mono text-[13px] text-fg" title={job.id}>
+                          <span className="truncate">{head}</span>
+                          <span className="shrink-0">{tail}</span>
+                        </span>
+                        {preview && <span className="truncate text-xs text-muted">{preview}</span>}
+                      </div>
                     </td>
-                    <td className="px-5 py-3 font-mono text-xs text-muted">
-                      {job.name ?? 'default'}
-                    </td>
-                    <td className="px-5 py-3">
+                    <td className="px-4 py-2.5">
                       <StatusBadge status={String(job.state ?? 'waiting')} />
                     </td>
-                    <td className={cn('px-5 py-3 text-xs font-semibold', priority.className)}>
-                      {priority.text}
+                    <td className="px-4 py-2.5 text-right tnum text-muted">{job.priority ?? 0}</td>
+                    <td className="px-4 py-2.5 text-right tnum text-muted">{attemptsLabel(job)}</td>
+                    <td
+                      className="whitespace-nowrap px-4 py-2.5 tnum text-muted"
+                      title={formatDateTime(job.createdAt)}
+                    >
+                      {createdLabel(job.createdAt, now)}
                     </td>
-                    <td className="px-5 py-3 text-right text-faint">
-                      {formatDateTime(job.createdAt)}
-                    </td>
-                    <td className="px-5 py-3 text-right tnum text-muted">
+                    <td className="px-4 py-2.5 text-right tnum text-muted">
                       {formatDuration(
                         job.startedAt && job.completedAt
                           ? job.completedAt - job.startedAt
                           : undefined
                       )}
                     </td>
-                    <td className="px-5 py-3">
+                    <td className="px-4 py-2.5">
                       <div className="flex justify-end gap-1">
                         <Link
                           to={`/job?id=${encodeURIComponent(job.id)}`}
                           aria-label={`Inspect job ${job.id}`}
-                          className="inline-flex size-8 items-center justify-center rounded-lg text-muted transition-colors hover:bg-surface-2 hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+                          className="inline-flex size-8 items-center justify-center rounded-control text-muted transition-colors hover:bg-surface-2 hover:text-fg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
                         >
-                          <IconEye className="size-3.5" />
+                          <IconEye className="size-4" />
                         </Link>
-                        {gates.promote && (
+                        {actionGates(job.state).promote && (
                           <IconButton
                             aria-label="Promote job"
                             disabled={rowBusy}
                             onClick={() => onRun(job, 'Promote', () => bq.promoteJob(job.id))}
                           >
-                            <IconPlay className="size-3.5" />
+                            <IconPlay className="size-4" />
                           </IconButton>
                         )}
                       </div>
@@ -160,13 +171,7 @@ export function JobsTable({
           </tbody>
         </table>
       </div>
-      <Pagination
-        page={page}
-        pageSize={JOBS_PAGE_SIZE}
-        hasNext={hasNext}
-        onPageChange={onPage}
-        label="jobs"
-      />
-    </>
+      <JobsFooter label={footer} page={page} hasNext={hasNext} onPage={onPage} />
+    </section>
   );
 }

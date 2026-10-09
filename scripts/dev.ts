@@ -44,7 +44,7 @@ const children: Subprocess[] = [];
 async function shutdown(reason: string): Promise<void> {
   if (closing) return;
   closing = true;
-  logger.info({ reason }, 'stopping bunqueue dashboard');
+  logger.info({ reason }, 'stopping Qelay Control Panel');
 
   // Ask every child to exit (SIGTERM), then wait for them to actually go.
   for (const child of children) child.kill();
@@ -97,6 +97,6 @@ if (import.meta.main) {
 
   logger.info(
     { agent: 'http://127.0.0.1:6800', dashboard: 'http://localhost:5273' },
-    'bunqueue dashboard up (Ctrl-C to stop)'
+    'Qelay Control Panel up (Ctrl-C to stop)'
   );
 }

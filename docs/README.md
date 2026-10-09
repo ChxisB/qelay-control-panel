@@ -1,6 +1,6 @@
 # How the dashboard works
 
-Internal reference for the bunqueue dashboard. Everything here was verified
+Internal reference for Qelay Control Panel. Everything here was verified
 against the current source (not written from memory or assumption), where
 the code has a rough edge, it's documented rather than glossed over.
 

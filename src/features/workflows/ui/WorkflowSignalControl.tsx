@@ -61,7 +61,7 @@ export function WorkflowSignalControl({
         type="button"
         disabled={!event.trim() || Boolean(command.busy)}
         onClick={send}
-        className="mt-3 rounded-md bg-accent px-3 py-2 text-xs font-medium text-accent-fg disabled:opacity-40"
+        className="mt-3 rounded-md bg-primary px-3 py-2 text-xs font-medium text-primary-fg disabled:opacity-40"
       >
         {command.busy ? 'Sending…' : 'Send durable signal'}
       </button>

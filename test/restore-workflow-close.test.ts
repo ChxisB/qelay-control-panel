@@ -15,7 +15,7 @@ afterEach(() => {
 });
 
 function walDatabase(): { path: string; connection: Database } {
-  const path = `/tmp/bunqueue-dashboard-restore-close-${crypto.randomUUID()}.db`;
+  const path = `/tmp/qelay-control-panel-restore-close-${crypto.randomUUID()}.db`;
   paths.push(path);
   const connection = new Database(path, { create: true });
   connection.run('PRAGMA journal_mode = WAL');

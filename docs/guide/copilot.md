@@ -1,6 +1,6 @@
 ---
 title: Copilot (disabled)
-description: The in-dashboard AI copilot is switched off in every official bunqueue dashboard build. How to enable it in a custom build.
+description: The in-dashboard AI copilot is switched off in every official Qelay Control Panel build. How to enable it in a custom build.
 ---
 
 # Copilot (disabled)
@@ -80,6 +80,6 @@ sent.
 
 ## Try it
 
-In the [live demo](https://egeominotti.github.io/bunqueue-dashboard/) the Copilot
+In the [live demo](https://chxisb.github.io/qelay-control-panel/) the Copilot
 answers against the demo fixtures, so with your own key you can watch it hold a
 real conversation and drive tools with no backend.

@@ -1,6 +1,6 @@
 ---
 title: Development
-description: "Set up, run, build, and test the bunqueue dashboard locally: the one-command dev launcher, the quality gate, and the project layout."
+description: "Set up, run, build, and test Qelay Control Panel locally: the one-command dev launcher, the quality gate, and the project layout."
 ---
 
 # Development
@@ -41,7 +41,7 @@ bun run quality
 ```
 
 This is the exact blocking gate run by the
-[CI workflow](https://github.com/egeominotti/bunqueue-dashboard/actions/workflows/ci.yml)
+[CI workflow](https://github.com/ChxisB/qelay-control-panel/actions/workflows/ci.yml)
 on every push and pull request. Release, Pages, and Docker run the same command
 before publishing. It executes, in order:
 
@@ -130,7 +130,7 @@ it there if not, rather than silently patching something out of scope.
   `window.confirm`; surface failures inline.
 - Formatting: use `lib/format` (`formatNumber` uses `.` thousands; times are
   relative; durations from `startedAt`/`completedAt`).
-- Styling: Tailwind tokens (`bg-surface`, `text-muted`, `border-line`, `text-accent`), `.tnum` for numbers, mono for IDs.
+- Styling: Tailwind tokens (`bg-surface`, `text-muted`, `border-line`, `text-link`), `.tnum` for numbers, mono for IDs.
 - Keep files focused; prefer new small components over growing a page past ~300 lines.
 
 ## Tests

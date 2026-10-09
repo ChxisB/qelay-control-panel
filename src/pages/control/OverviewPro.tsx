@@ -1,71 +1,48 @@
-import { useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { useRef, useState } from 'react';
 import { useConnectionStore } from '@/components/dashboard/stores/connectionStore';
-import { Card } from '@/components/ui/Card';
 import { ErrorState, LoadingState, OfflineBanner } from '@/components/ui/feedback';
 import { PageHeader } from '@/components/ui/PageHeader';
-import { StatCard } from '@/components/ui/StatCard';
-import { bq } from '@/lib/bq';
-import { cn } from '@/lib/cn';
-import {
-  errorRate,
-  formatBytes,
-  formatCompact,
-  formatNumber,
-  formatPercent,
-  formatRelativeTime,
-  formatUptime,
-} from '@/lib/format';
+import { formatBytes, formatUptime } from '@/lib/format';
 import { usePolledData } from '@/lib/usePolledData';
-import {
-  assertRenderableOverview,
-  EMPTY_OVERVIEW,
-  type QueueHealth,
-  WAITING_AMBER_THRESHOLD,
-} from './overview/model';
-import { QueueMetric, RecentActivity, SectionHeading } from './overview/OverviewSections';
+import { attentionFor } from './overview/attention';
+import { loadOverview } from './overview/loadOverview';
+import { EMPTY_OVERVIEW } from './overview/model';
+import { NeedsAttention } from './overview/NeedsAttention';
+import { OverviewHeader } from './overview/OverviewHeader';
+import { OverviewTiles } from './overview/OverviewTiles';
+import { QueueHealthTable } from './overview/QueueHealthTable';
+import { RecentActivity } from './overview/RecentActivity';
+import { ThroughputCard } from './overview/ThroughputCard';
+import { appendSample, gapLimitMs, type ThroughputPoint } from './overview/throughputHistory';
 
 export { assertRenderableOverview } from './overview/model';
 
 export function OverviewPro() {
   const baseUrl = useConnectionStore((s) => s.baseUrl);
-  // Wall-clock time of the last poll that succeeded, so the degraded banner can
-  // say how stale the displayed data actually is.
-  const lastOkAt = useRef<number | null>(null);
+  const refreshMs = useConnectionStore((s) => s.refreshMs);
+  const connection = useConnectionStore((s) =>
+    JSON.stringify([s.activeProfileId, s.baseUrl, s.token])
+  );
+  const [paused, setPaused] = useState(false);
+  // Throughput history is built from this page's own polls (no extra requests) and is
+  // tied to one connection: retargeting the server starts a fresh chart.
+  const history = useRef<{ key: string; points: ThroughputPoint[] }>({ key: '', points: [] });
 
-  const { data, error, loading, refetch } = usePolledData(async () => {
-    // One /dashboard + one /queues/summary — not an N-queue fan-out. Summary
-    // carries every queue's waiting/active/completed/failed counts, so the
-    // Queue Health cards need no per-queue queueDetail calls.
-    const [overview, summary] = await Promise.all([bq.overview(), bq.queuesSummary()]);
-    // The HTTP client verifies status and JSON syntax, but TypeScript types do
-    // not validate a 2xx body at runtime. Reject an incomplete snapshot before
-    // render-time destructuring so usePolledData can expose an error (or retain
-    // the previous good snapshot in degraded mode).
-    assertRenderableOverview(overview);
-    // Show the WORST queues, not the first six the server happens to list:
-    // failed desc, then all ready work (regular + priority). Summary carries no per-queue DLQ count,
-    // so dlq can't participate in the ranking without an N-queue fan-out.)
-    const details: QueueHealth[] = [...summary]
-      .sort(
-        (a, b) =>
-          (b.counts?.failed ?? 0) - (a.counts?.failed ?? 0) ||
-          (b.counts?.waiting ?? 0) +
-            (b.counts?.prioritized ?? 0) -
-            ((a.counts?.waiting ?? 0) + (a.counts?.prioritized ?? 0))
-      )
-      .slice(0, 6)
-      .map((q) => ({ name: q.name, paused: q.paused, counts: q.counts }));
-    // Failed jobs summed across queues — unlike stats.totalFailed (a session
-    // counter that resets on every server restart), these are recorded jobs.
-    const failedTotal = summary.reduce((a, q) => a + (q.counts?.failed ?? 0), 0);
-    const readyTotal = summary.reduce(
-      (total, q) => total + q.counts.waiting + q.counts.prioritized,
-      0
-    );
-    lastOkAt.current = Date.now();
-    return { overview, queuesTotal: summary.length, details, failedTotal, readyTotal };
-  }, []);
+  const { data, error, loading, refetch } = usePolledData(
+    async () => {
+      const snapshot = await loadOverview();
+      const { pushPerSec, pullPerSec } = snapshot.overview.throughput;
+      if (history.current.key !== connection) history.current = { key: connection, points: [] };
+      history.current.points = appendSample(
+        history.current.points,
+        { at: snapshot.sampledAt, push: pushPerSec, pull: pullPerSec },
+        gapLimitMs(refreshMs)
+      );
+      return snapshot;
+    },
+    [],
+    { paused }
+  );
 
   if (loading && !data && !error) return <LoadingState label="Loading overview…" />;
   if (error && !data) {
@@ -77,26 +54,33 @@ export function OverviewPro() {
     );
   }
 
-  const d = data ?? EMPTY_OVERVIEW;
-  const { overview, queuesTotal, details, failedTotal, readyTotal } = d;
-  const { stats, throughput, memory, crons } = overview;
-  // Recorded counts (stats.completed + per-queue failed sums), not the
-  // totalCompleted/totalFailed session counters that zero on server restart.
-  const rate = errorRate(stats.completed, failedTotal);
-  const host = baseUrl === '/api' ? 'localhost:6790' : baseUrl.replace(/^https?:\/\//, '');
-  // stats.uptime from /dashboard is milliseconds; formatUptime expects seconds.
-  const uptime = stats.uptime ? formatUptime(stats.uptime / 1000) : '—';
-  const ram = formatBytes(memory.rss * 1024 * 1024);
-  // A truthy `error` means the latest poll failed; we keep rendering the last
-  // known (or empty) data instead of a blocking error screen.
+  const snapshot = data ?? EMPTY_OVERVIEW;
+  const { stats, memory } = snapshot.overview;
+  const attention = attentionFor(snapshot);
+  // A truthy `error` means the latest poll failed; keep rendering the last known data.
   const degraded = !!error;
 
+  const togglePause = () => {
+    setPaused((was) => !was);
+    // Resuming fetches right away instead of waiting out the interval.
+    if (paused) void refetch();
+  };
+
   return (
-    <div>
-      <PageHeader
-        title="Overview"
-        description="Real-time system health at a glance."
+    <div className="flex flex-col gap-6">
+      <OverviewHeader
         live={!!data && !error}
+        paused={paused}
+        degraded={degraded}
+        updatedAt={snapshot.sampledAt}
+        onTogglePause={togglePause}
+        strip={{
+          host: baseUrl === '/api' ? 'localhost:6790' : baseUrl.replace(/^https?:\/\//, ''),
+          version: snapshot.serverVersion,
+          // stats.uptime from /dashboard is milliseconds; formatUptime expects seconds.
+          uptime: stats.uptime ? formatUptime(stats.uptime / 1000) : '—',
+          ram: formatBytes(memory.rss * 1024 * 1024),
+        }}
       />
       {error && (
         <OfflineBanner
@@ -104,155 +88,13 @@ export function OverviewPro() {
           onRetry={refetch}
         />
       )}
-
-      {/* Connection banner */}
-      <div
-        className={cn(
-          'mb-6 flex flex-wrap items-center justify-between gap-y-2 rounded-xl border px-5 py-4',
-          degraded
-            ? 'border-amber-500/25 bg-amber-500/[0.06]'
-            : 'border-emerald-500/25 bg-emerald-500/[0.06]'
-        )}
-      >
-        <div className="flex min-w-0 items-center gap-3">
-          <span className="relative flex size-2.5">
-            {!degraded && (
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-            )}
-            <span
-              className={cn(
-                'relative inline-flex size-2.5 rounded-full',
-                degraded ? 'bg-amber-400' : 'bg-emerald-400'
-              )}
-            />
-          </span>
-          <div className="min-w-0">
-            <div className={cn('font-semibold', degraded ? 'text-warning' : 'text-success')}>
-              {degraded ? 'Connection lost — showing last known data' : 'bunqueue server connected'}
-            </div>
-            <div className="truncate font-mono text-xs text-muted">
-              {host} · uptime {uptime} · {ram} RAM
-              {degraded && (
-                <>
-                  {' '}
-                  · last updated {lastOkAt.current ? formatRelativeTime(lastOkAt.current) : 'never'}
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-        <span
-          className={cn(
-            'rounded-full px-3 py-1 text-xs font-medium',
-            degraded ? 'bg-amber-500/15 text-warning' : 'bg-emerald-500/15 text-success'
-          )}
-        >
-          {degraded ? 'Stale' : 'Online'}
-        </span>
+      {attention && <NeedsAttention attention={attention} />}
+      <OverviewTiles snapshot={snapshot} />
+      <div className="flex flex-wrap items-stretch gap-6">
+        <ThroughputCard points={history.current.points} />
+        <RecentActivity />
       </div>
-
-      {/* Primary health row — the "is something wrong" signals, full-size cards. */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <StatCard
-          label="Error Rate"
-          value={rate == null ? '—' : formatPercent(rate)}
-          tone={rate == null ? 'default' : rate > 0.05 ? 'red' : 'green'}
-          hint="failed / processed"
-        />
-        <StatCard
-          label="Failed"
-          value={formatNumber(failedTotal)}
-          tone={failedTotal ? 'red' : 'default'}
-          hint="recorded across queues"
-        />
-        <StatCard
-          label="DLQ"
-          value={formatNumber(stats.dlq)}
-          tone={stats.dlq ? 'red' : 'default'}
-          hint="dead-lettered jobs"
-        />
-      </div>
-
-      {/* Secondary row — throughput & inventory, compact. Uptime/RAM live in the
-          banner above; the old API Keys card carried no operational signal. */}
-      <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6">
-        <StatCard label="Completed" value={formatNumber(stats.completed)} tone="green" compact />
-        <StatCard label="Active" value={formatNumber(stats.active)} tone="blue" compact />
-        <StatCard
-          label="Ready backlog"
-          value={formatNumber(readyTotal)}
-          tone={readyTotal > WAITING_AMBER_THRESHOLD ? 'amber' : 'default'}
-          hint="waiting + prioritized"
-          compact
-        />
-        <StatCard
-          label="Push/sec"
-          value={throughput.pushPerSec.toFixed(1)}
-          tone="accent"
-          hint={`${formatCompact(stats.totalPushed)} since restart`}
-          compact
-        />
-        <StatCard
-          label="Pull/sec"
-          value={throughput.pullPerSec.toFixed(1)}
-          tone="accent"
-          hint={`${formatCompact(stats.totalPulled)} since restart`}
-          compact
-        />
-        <StatCard
-          label="Queues"
-          value={formatNumber(queuesTotal)}
-          hint={`${crons.total} cron active`}
-          compact
-        />
-      </div>
-
-      {/* Queue Health — ranked worst-first (see the sort in the fetcher). */}
-      <div className="mt-8">
-        <SectionHeading title="Queue Health — most loaded" to="/queues" />
-        {details.length === 0 ? (
-          <Card>
-            <p className="py-4 text-center text-sm text-faint">No queues yet.</p>
-          </Card>
-        ) : (
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {details.map((qd) => (
-              <Link
-                key={qd.name}
-                to={`/queues/${encodeURIComponent(qd.name)}`}
-                className="rounded-xl border border-line bg-surface p-4 transition-colors hover:border-line-strong"
-              >
-                <div className="mb-2 flex items-center justify-between gap-2">
-                  <span className="truncate font-mono text-sm font-medium text-accent">
-                    {qd.name}
-                  </span>
-                  <span
-                    className={cn(
-                      'shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium',
-                      qd.paused
-                        ? 'bg-orange-500/10 text-orange-400'
-                        : 'bg-emerald-500/10 text-success'
-                    )}
-                  >
-                    {qd.paused ? 'paused' : 'active'}
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-x-4 gap-y-1 font-mono text-xs text-faint">
-                  <QueueMetric label="W" value={qd.counts?.waiting} tone="text-warning" />
-                  <QueueMetric label="P" value={qd.counts?.prioritized} tone="text-orange-400" />
-                  <QueueMetric label="A" value={qd.counts?.active} tone="text-blue-400" />
-                  <QueueMetric label="C" value={qd.counts?.completed} tone="text-success" />
-                  <QueueMetric label="F" value={qd.counts?.failed} tone="text-danger" />
-                </div>
-              </Link>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Recent Activity — its own SSE-subscribing leaf so live events re-render
-          only this list, not the stat cards / queue-health grid above. */}
-      <RecentActivity />
+      <QueueHealthTable rows={snapshot.details} total={snapshot.queuesTotal} />
     </div>
   );
 }

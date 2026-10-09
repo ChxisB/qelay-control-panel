@@ -2,12 +2,22 @@ import { useId } from 'react';
 
 export interface ChartSeries {
   label: string;
-  /** CSS color (hex or var). */
+  /**
+   * CSS color. Pass a theme token such as `var(--state-active-fg)`: SVG paint resolves it
+   * through the cascade, so a theme switch repaints the chart with no JS.
+   */
   color: string;
   points: number[];
   /** Fill an area gradient under the line. */
   area?: boolean;
+  /**
+   * Stroke the line with the brand gradient across the plot width (area fill becomes violet).
+   * The design allows one gradient per screen: set this on a single series, or on none.
+   */
+  gradient?: boolean;
 }
+
+const AREA_OPACITY = 0.22;
 
 /**
  * Lightweight multi-series line/area chart (pure SVG, no dependency).
@@ -19,6 +29,7 @@ export function AreaChart({
   xLabels,
   ariaLabel = 'throughput chart',
   formatValue,
+  floor = 1,
 }: {
   series: ChartSeries[];
   height?: number;
@@ -26,6 +37,8 @@ export function AreaChart({
   ariaLabel?: string;
   /** Format y-scale labels and the accessible summary (defaults to plain numbers). */
   formatValue?: (v: number) => string;
+  /** Smallest value the y-scale tops out at. 1 suits counts; use a fraction for per-second rates. */
+  floor?: number;
 }) {
   const gid = useId().replace(/:/g, '');
   const descId = `${gid}-desc`;
@@ -34,7 +47,7 @@ export function AreaChart({
   const padY = 10;
   const finite = (v: number) => (Number.isFinite(v) ? v : 0);
   const maxLen = Math.max(1, ...series.map((s) => s.points.length));
-  const max = Math.max(1, ...series.flatMap((s) => s.points.map(finite)));
+  const max = Math.max(floor, ...series.flatMap((s) => s.points.map(finite)));
 
   const x = (i: number) => (maxLen <= 1 ? 0 : (i / (maxLen - 1)) * W);
   const y = (v: number) => H - padY - (finite(v) / max) * (H - padY * 2);
@@ -64,10 +77,36 @@ export function AreaChart({
           <defs>
             {series.map((s, si) => (
               <linearGradient key={s.label} id={`${gid}-g${si}`} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor={s.color} stopOpacity="0.28" />
-                <stop offset="100%" stopColor={s.color} stopOpacity="0" />
+                <stop
+                  offset="0%"
+                  stopColor={s.gradient ? 'var(--brand-3)' : s.color}
+                  stopOpacity={AREA_OPACITY}
+                />
+                <stop
+                  offset="100%"
+                  stopColor={s.gradient ? 'var(--brand-3)' : s.color}
+                  stopOpacity="0"
+                />
               </linearGradient>
             ))}
+            {series.map(
+              (s, si) =>
+                s.gradient && (
+                  <linearGradient
+                    key={`${s.label}-stroke`}
+                    id={`${gid}-s${si}`}
+                    gradientUnits="userSpaceOnUse"
+                    x1="0"
+                    y1="0"
+                    x2={W}
+                    y2="0"
+                  >
+                    <stop offset="0" stopColor="var(--brand-1)" />
+                    <stop offset="0.5" stopColor="var(--brand-2)" />
+                    <stop offset="1" stopColor="var(--brand-3)" />
+                  </linearGradient>
+                )
+            )}
           </defs>
 
           {gridYs.map((gy) => (
@@ -92,8 +131,8 @@ export function AreaChart({
                 <path
                   d={line}
                   fill="none"
-                  stroke={s.color}
-                  strokeWidth="2"
+                  stroke={s.gradient ? `url(#${gid}-s${si})` : s.color}
+                  strokeWidth={s.gradient ? '2.5' : '2'}
                   strokeLinejoin="round"
                   vectorEffect="non-scaling-stroke"
                 />

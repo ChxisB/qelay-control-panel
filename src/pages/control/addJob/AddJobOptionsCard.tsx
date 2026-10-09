@@ -201,7 +201,7 @@ function AdvancedOptions({
               rows={2}
               spellCheck={false}
               placeholder='{"every": 60000}'
-              className="w-full rounded-lg border border-line bg-surface-2 px-3 py-2 font-mono text-xs text-fg placeholder:text-faint focus:border-accent/60 focus:outline-none focus:ring-2 focus:ring-accent/30"
+              className="w-full rounded-lg border border-line bg-surface-2 px-3 py-2 font-mono text-xs text-fg placeholder:text-faint focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30"
             />
           </Field>
         </div>

@@ -25,12 +25,12 @@ export function FlowSearch({
           placeholder="Flow job ID"
           aria-label="Root job ID"
           aria-describedby="flow-input-help"
-          className="min-w-0 flex-1 rounded-lg border border-line bg-surface-2 px-3 py-2 font-mono text-sm text-fg outline-none placeholder:text-faint focus-visible:ring-2 focus-visible:ring-accent/50"
+          className="min-w-0 flex-1 rounded-lg border border-line bg-surface-2 px-3 py-2 font-mono text-sm text-fg outline-none placeholder:text-faint focus-visible:ring-2 focus-visible:ring-ring"
         />
         <button
           type="submit"
           disabled={loading || !input.trim()}
-          className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-accent-fg disabled:opacity-50"
+          className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-fg disabled:opacity-50"
         >
           {loading ? 'Loading…' : 'Load Flow'}
         </button>

@@ -1,12 +1,13 @@
-import { Link } from 'react-router-dom';
 import { useConnectionStore } from '@/components/dashboard/stores/connectionStore';
+import { useThemeStore } from '@/components/dashboard/stores/themeStore';
 import { CopyButton } from '@/components/ui/CopyButton';
-import { IconSettings } from '@/components/ui/icons';
+import { IconMoon, IconSun } from '@/components/ui/icons';
 import { isDemo } from '@/lib/demo/isDemo';
+import { NAV_ROW } from './NavItem';
 
-const REPO_URL = 'https://github.com/egeominotti/bunqueue-dashboard';
-const DOCS_URL = 'https://egeominotti.github.io/bunqueue-dashboard/docs/';
-const INSTALL_CMD = 'bunx bunqueue-dashboard';
+const REPO_URL = 'https://github.com/ChxisB/qelay-control-panel';
+const DOCS_URL = 'https://chxisb.github.io/qelay-control-panel/docs/';
+const INSTALL_CMD = 'bunx qelay-control-panel';
 
 /**
  * Demo-only conversion prompt: the hosted demo is the project's most-shared
@@ -15,9 +16,9 @@ const INSTALL_CMD = 'bunx bunqueue-dashboard';
  */
 function DemoCta() {
   return (
-    <div className="mx-3 mb-2 rounded-lg border border-accent/30 bg-accent/5 p-3">
+    <div className="mx-3.5 mb-3 rounded-lg border border-primary/30 bg-primary/5 p-3">
       <p className="mb-2 text-[11px] font-medium leading-snug text-fg">
-        Like it? Run it on your own bunqueue server.
+        Like it? Run it on your own server.
       </p>
       <div className="mb-2 flex items-center gap-1.5 rounded-md border border-line bg-surface-2 px-2 py-1">
         <code className="min-w-0 flex-1 truncate font-mono text-[11px] text-fg">{INSTALL_CMD}</code>
@@ -28,7 +29,7 @@ function DemoCta() {
           href={REPO_URL}
           target="_blank"
           rel="noreferrer"
-          className="flex flex-1 items-center justify-center gap-1 rounded-md bg-accent px-2 py-1.5 text-[11px] font-semibold text-accent-fg transition-opacity hover:opacity-90"
+          className="flex flex-1 items-center justify-center gap-1 rounded-md bg-primary px-2 py-1.5 text-[11px] font-semibold text-primary-fg transition-opacity hover:opacity-90"
         >
           <span aria-hidden>★</span> Star
         </a>
@@ -45,36 +46,45 @@ function DemoCta() {
   );
 }
 
-/** Bottom-of-sidebar identity/connection card (mirrors the reference layout). */
+/** Labelled with the mode you switch *to*, in sentence case. */
+function ThemeToggle() {
+  const theme = useThemeStore((s) => s.theme);
+  const toggle = useThemeStore((s) => s.toggle);
+  const dark = theme === 'dark';
+  return (
+    <button type="button" onClick={toggle} className={NAV_ROW}>
+      {dark ? <IconSun className="size-[18px]" /> : <IconMoon className="size-[18px]" />}
+      {dark ? 'Light mode' : 'Dark mode'}
+    </button>
+  );
+}
+
+/**
+ * Where the control agent lives, from the active connection profile. This reports the target,
+ * not liveness: the agent has no cheap health route (`/control/status` probes the server and
+ * takes a lifecycle lease), so the shell does not poll it. The dot is therefore neutral.
+ */
+function AgentLine() {
+  const agentBaseUrl = useConnectionStore((s) => s.agentBaseUrl);
+  const host = agentBaseUrl.replace(/^https?:\/\//, '').replace(/\/+$/, '');
+  return (
+    <div className="flex items-center gap-2 px-3 py-2 text-[11px] text-muted" title={agentBaseUrl}>
+      <span aria-hidden="true" className="size-2 shrink-0 rounded-full bg-faint" />
+      <span className="min-w-0">
+        Control agent · <span className="whitespace-nowrap">{host}</span>
+      </span>
+    </div>
+  );
+}
+
+/** Bottom of the sidebar: theme toggle and agent target, under a hairline. */
 export function SidebarFooter() {
-  const baseUrl = useConnectionStore((s) => s.baseUrl);
-  const profiles = useConnectionStore((s) => s.profiles);
-  const activeProfileId = useConnectionStore((s) => s.activeProfileId);
-  const profile = profiles.find((candidate) => candidate.id === activeProfileId);
-  const host = baseUrl === '/api' ? 'localhost:6790' : baseUrl.replace(/^https?:\/\//, '');
   return (
     <>
       {isDemo() && <DemoCta />}
-      <div className="mx-3 mb-3 flex items-center gap-2.5 rounded-lg border border-line bg-surface px-3 py-2">
-        <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-accent to-fuchsia-600 text-[11px] font-bold text-white">
-          bq
-        </span>
-        <div className="min-w-0 flex-1">
-          <div className="truncate text-xs font-medium text-fg">{profile?.name ?? 'bunqueue'}</div>
-          <div className="truncate font-mono text-[10px] text-faint" title={baseUrl}>
-            {host}
-          </div>
-          <div className="text-[9px] text-faint">
-            {profiles.length} configured node{profiles.length === 1 ? '' : 's'}
-          </div>
-        </div>
-        <Link
-          to="/settings"
-          aria-label="Settings"
-          className="text-faint transition-colors hover:text-fg"
-        >
-          <IconSettings className="size-4" />
-        </Link>
+      <div className="mx-3.5 mb-4 flex flex-col gap-1 border-t border-line pt-4">
+        <ThemeToggle />
+        <AgentLine />
       </div>
     </>
   );

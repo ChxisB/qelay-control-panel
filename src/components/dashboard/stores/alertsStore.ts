@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
+import { LEGACY_STORAGE_KEYS } from '@/lib/legacyStorage';
 import { createResilientStateStorage } from './resilientStateStorage';
 
 export type ChannelType = 'email' | 'webhook' | 'slack';
@@ -35,7 +36,7 @@ interface AlertsState {
   toggleRule: (id: string) => void;
 }
 
-export const ALERTS_STORAGE_KEY = 'bq-dash-alerts';
+export const ALERTS_STORAGE_KEY = 'qelay-alerts';
 const ALERTS_STORAGE_VERSION = 1;
 const CHANNEL_TYPES: readonly ChannelType[] = ['email', 'webhook', 'slack'];
 const METRICS: readonly Metric[] = ['error_rate', 'p99_latency', 'waiting', 'failed', 'dlq'];
@@ -193,6 +194,7 @@ export function persistedAlertsState(s: AlertsState): { channels: Channel[]; rul
 
 const resilientAlertsStorage = createResilientStateStorage({
   key: ALERTS_STORAGE_KEY,
+  legacyKey: LEGACY_STORAGE_KEYS.alerts,
   version: ALERTS_STORAGE_VERSION,
   sanitizeState: sanitizedPersistedAlertsState,
 });

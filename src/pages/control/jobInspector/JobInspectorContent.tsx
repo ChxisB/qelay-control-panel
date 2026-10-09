@@ -81,7 +81,7 @@ export function JobInspectorContent({
         )}
         {stackPreview && (
           <>
-            <pre className="max-h-80 overflow-auto whitespace-pre-wrap rounded-lg bg-surface-2 p-3 font-mono text-xs text-danger/90">
+            <pre className="max-h-80 overflow-auto whitespace-pre-wrap rounded-lg bg-surface-2 p-3 font-mono text-xs text-danger">
               {stackPreview.text}
             </pre>
             {stackPreview.truncated && (

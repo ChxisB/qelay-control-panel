@@ -7,7 +7,7 @@ export function NotFound() {
       <p className="text-sm text-muted">This page does not exist.</p>
       <Link
         to="/"
-        className="rounded-lg border border-line bg-surface-2 px-4 py-2 text-sm font-medium text-fg hover:border-line-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+        className="rounded-lg border border-line bg-surface-2 px-4 py-2 text-sm font-medium text-fg hover:border-line-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         Back to Overview
       </Link>

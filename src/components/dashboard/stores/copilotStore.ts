@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
+import { LEGACY_STORAGE_KEYS } from '@/lib/legacyStorage';
 import { createResilientStateStorage } from './resilientStateStorage';
 
 /**
@@ -48,7 +49,7 @@ export interface CopilotConfig {
   apiKey: string;
 }
 
-export const COPILOT_STORAGE_KEY = 'bq-dash-copilot';
+export const COPILOT_STORAGE_KEY = 'qelay-copilot';
 const COPILOT_STORAGE_VERSION = 1;
 // Keep in sync with lib/copilot/providers.ts. Persisted provider ids are a
 // trust boundary because the selected provider determines where an API key and
@@ -158,6 +159,7 @@ export function persistedCopilotState(s: Pick<CopilotState, 'config'>) {
 
 const resilientCopilotStorage = createResilientStateStorage({
   key: COPILOT_STORAGE_KEY,
+  legacyKey: LEGACY_STORAGE_KEYS.copilot,
   version: COPILOT_STORAGE_VERSION,
   sanitizeState: sanitizedPersistedCopilotState,
 });

@@ -1,6 +1,6 @@
 ---
 title: PM2
-description: Run the all-in-one bunqueue dashboard server under PM2, with SPA, same-origin API proxy, and the control agent. Ecosystem file, env vars, and startup on boot.
+description: Run the all-in-one Qelay Control Panel server under PM2, with SPA, same-origin API proxy, and the control agent. Ecosystem file, env vars, and startup on boot.
 ---
 
 # PM2
@@ -21,18 +21,18 @@ Pick one:
 
 ```bash
 # A) Install from npm (needs Bun 1.4.2; dependencies are installed normally).
-bun add -g bunqueue-dashboard        # then: bunqueue-dashboard
-# one-off, no install:  bunx bunqueue-dashboard
+bun add -g qelay-control-panel        # then: qelay-control-panel
+# one-off, no install:  bunx qelay-control-panel
 
 # B) Download a standalone binary from the GitHub Releases (no runtime needed).
-#    Assets: bunqueue-dashboard-<tag>-<os>-<arch>  (linux/macos x64+arm64, windows x64)
-#    Replace <tag> with the latest release tag, e.g. v0.0.15:
-curl -L -o bunqueue-dashboard \
-  https://github.com/egeominotti/bunqueue-dashboard/releases/latest/download/bunqueue-dashboard-<tag>-linux-x64
-chmod +x bunqueue-dashboard
+#    Assets: qelay-control-panel-<tag>-<os>-<arch>  (linux/macos x64+arm64, windows x64)
+#    Replace <tag> with the latest release tag:
+curl -L -o qelay-control-panel \
+  https://github.com/ChxisB/qelay-control-panel/releases/latest/download/qelay-control-panel-<tag>-linux-x64
+chmod +x qelay-control-panel
 
 # C) Build the binary yourself (needs Bun 1.4.2).
-bun run build:bin      # → ./bunqueue-dashboard
+bun run build:bin      # → ./qelay-control-panel
 
 # D) Run from source (needs Bun 1.4.2).
 bun run scripts/serve.ts
@@ -74,8 +74,8 @@ Save as `ecosystem.config.cjs` next to the binary:
 module.exports = {
   apps: [
     {
-      name: 'bunqueue-dashboard',
-      script: './bunqueue-dashboard', // the compiled binary
+      name: 'qelay-control-panel',
+      script: './qelay-control-panel', // the compiled binary
       env: {
         PORT: 8080,
         BUNQUEUE_URL: 'http://localhost:6790',
@@ -97,7 +97,7 @@ Bun as the interpreter:
 
 ```js
 // from source:      script: 'scripts/serve.ts', interpreter: 'bun',
-// from npm global:  script: 'bunqueue-dashboard', interpreter: 'bun',
+// from npm global:  script: 'qelay-control-panel', interpreter: 'bun',
 ```
 
 ## Reverse proxy
@@ -176,8 +176,8 @@ pm2 startup       # print the command to start PM2 on boot, then run it
 Useful day-to-day:
 
 ```bash
-pm2 logs bunqueue-dashboard     # tail logs
-pm2 restart bunqueue-dashboard  # after a config change
+pm2 logs qelay-control-panel     # tail logs
+pm2 restart qelay-control-panel  # after a config change
 pm2 status                      # health at a glance
 ```
 
@@ -194,11 +194,11 @@ The binary is a plain executable, so a unit works just as well:
 
 ```ini
 [Unit]
-Description=bunqueue dashboard
+Description=Qelay Control Panel
 After=network.target
 
 [Service]
-ExecStart=/opt/bunqueue-dashboard/bunqueue-dashboard
+ExecStart=/opt/qelay-control-panel/qelay-control-panel
 Environment=PORT=8080
 Environment=BUNQUEUE_URL=http://localhost:6790
 Environment=AGENT_TOKEN=change-me

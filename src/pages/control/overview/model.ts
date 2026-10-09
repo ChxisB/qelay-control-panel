@@ -1,12 +1,15 @@
 export interface QueueHealth {
   name: string;
   paused: boolean;
+  /** Jobs in this queue's dead letter queue; null when the queue list could not be read. */
+  dlq: number | null;
   counts: {
     waiting: number;
     prioritized: number;
     active: number;
     completed: number;
     failed: number;
+    delayed: number;
   } | null;
 }
 
@@ -30,9 +33,19 @@ export const EMPTY_OVERVIEW = {
   },
   queuesTotal: 0,
   details: [] as QueueHealth[],
+  /** Every queue holding dead-lettered jobs; null when the queue list could not be read. */
+  dlqQueues: null as { name: string; dlq: number }[] | null,
   failedTotal: 0,
   readyTotal: 0,
+  waitingTotal: 0,
+  prioritizedTotal: 0,
+  delayedTotal: 0,
+  serverVersion: null as string | null,
+  /** Wall-clock time of the poll, so every poll counts as new data and the chart advances. */
+  sampledAt: 0,
 };
+
+export type OverviewSnapshot = typeof EMPTY_OVERVIEW;
 
 export const WAITING_AMBER_THRESHOLD = 100;
 type JsonObject = Record<string, unknown>;

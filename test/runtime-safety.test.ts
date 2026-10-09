@@ -232,7 +232,7 @@ describe('agent runtime safety contracts', () => {
 });
 
 function temporaryPath(label: string): string {
-  const path = `/tmp/bunqueue-dashboard-${label}-${crypto.randomUUID()}.db`;
+  const path = `/tmp/qelay-control-panel-${label}-${crypto.randomUUID()}.db`;
   paths.push(path);
   return path;
 }

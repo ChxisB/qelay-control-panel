@@ -22,9 +22,9 @@ RUN bun run build
 
 # ---- Serve stage: Caddy serving the static SPA -------------------------------
 FROM caddy:2.8-alpine AS runtime
-LABEL org.opencontainers.image.title="bunqueue-dashboard" \
-      org.opencontainers.image.description="Web dashboard for a bunqueue server" \
-      org.opencontainers.image.source="https://github.com/egeominotti/bunqueue-dashboard"
+LABEL org.opencontainers.image.title="qelay-control-panel" \
+      org.opencontainers.image.description="Qelay Control Panel: web dashboard for a bunqueue server" \
+      org.opencontainers.image.source="https://github.com/ChxisB/qelay-control-panel"
 
 COPY docker/Caddyfile /etc/caddy/Caddyfile
 COPY --from=build /app/dist /usr/share/caddy

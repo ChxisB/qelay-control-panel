@@ -71,7 +71,7 @@ export function Alerts() {
               </Button>
             )}
             <Button
-              variant="accent"
+              variant="primary"
               size="sm"
               aria-expanded={showRuleForm}
               aria-controls="alert-rule-form"
@@ -96,7 +96,7 @@ export function Alerts() {
         />
       )}
 
-      <div className="mb-6 rounded-lg border border-amber-500/20 bg-amber-500/5 px-4 py-3 text-sm text-amber-400/90">
+      <div className="mb-6 rounded-lg border border-warning/20 bg-warning/5 px-4 py-3 text-sm text-warning">
         Rules are evaluated in this browser while a tab is open (even backgrounded), raising an
         in-app toast and — if enabled — a desktop notification. bunqueue OSS has no alerting
         backend, so email/webhook/slack delivery still needs your own monitoring or hosted bunqueue
@@ -120,30 +120,32 @@ export function Alerts() {
             }
           />
         ) : (
-          <div className="overflow-x-auto rounded-xl border border-danger/30 bg-red-500/5">
+          <div className="overflow-x-auto rounded-card border border-danger/30 bg-danger/5">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-line text-left text-[11px] uppercase tracking-wider text-faint">
-                  <th className="px-5 py-3 font-medium">Rule</th>
-                  <th className="px-5 py-3 font-medium">Condition</th>
-                  <th className="px-5 py-3 font-medium">Queue</th>
-                  <th className="px-5 py-3 text-right font-medium">Current</th>
-                  <th className="px-5 py-3 text-right font-medium">Since</th>
+                <tr className="border-b border-line text-left eyebrow text-muted light:bg-surface-2">
+                  <th className="px-4 py-2.5 font-semibold">Rule</th>
+                  <th className="px-4 py-2.5 font-semibold">Condition</th>
+                  <th className="px-4 py-2.5 font-semibold">Queue</th>
+                  <th className="px-4 py-2.5 text-right font-semibold">Current</th>
+                  <th className="px-4 py-2.5 text-right font-semibold">Since</th>
                 </tr>
               </thead>
               <tbody>
                 {breaching.map((b) => (
                   <tr key={b.ruleId} className="border-b border-line last:border-0">
-                    <td className="px-5 py-3 font-medium text-danger">{b.ruleName}</td>
-                    <td className="px-5 py-3 text-muted">
+                    <td className="px-4 py-2.5 font-medium text-danger">{b.ruleName}</td>
+                    <td className="px-4 py-2.5 text-muted">
                       {b.metricLabel} {b.operator}{' '}
                       <span className="font-semibold text-fg">{b.threshold}</span>
                     </td>
-                    <td className="px-5 py-3 text-muted">{b.queue || 'All queues'}</td>
-                    <td className="px-5 py-3 text-right tnum font-semibold text-danger">
+                    <td className="px-4 py-2.5 text-muted">{b.queue || 'All queues'}</td>
+                    <td className="px-4 py-2.5 text-right tnum font-semibold text-danger">
                       {Math.round(b.value * 100) / 100}
                     </td>
-                    <td className="px-5 py-3 text-right text-faint">{formatRelativeTime(b.at)}</td>
+                    <td className="px-4 py-2.5 text-right text-faint">
+                      {formatRelativeTime(b.at)}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -173,40 +175,40 @@ export function Alerts() {
             hint="Create a rule to be notified when a threshold is crossed."
           />
         ) : (
-          <div className="overflow-x-auto rounded-xl border border-line bg-surface">
+          <div className="overflow-x-auto rounded-card border border-line bg-surface">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-line text-left text-[11px] uppercase tracking-wider text-faint">
-                  <th className="px-5 py-3 font-medium">Rule</th>
-                  <th className="px-5 py-3 font-medium">Condition</th>
-                  <th className="px-5 py-3 font-medium">Queue</th>
-                  <th className="px-5 py-3 font-medium">Delivery</th>
-                  <th className="px-5 py-3 font-medium">Status</th>
-                  <th className="w-12 px-5 py-3" />
+                <tr className="border-b border-line text-left eyebrow text-muted light:bg-surface-2">
+                  <th className="px-4 py-2.5 font-semibold">Rule</th>
+                  <th className="px-4 py-2.5 font-semibold">Condition</th>
+                  <th className="px-4 py-2.5 font-semibold">Queue</th>
+                  <th className="px-4 py-2.5 font-semibold">Delivery</th>
+                  <th className="px-4 py-2.5 font-semibold">Status</th>
+                  <th className="w-12 px-4 py-2.5" />
                 </tr>
               </thead>
               <tbody>
                 {rules.map((r) => (
                   <tr key={r.id} className="border-b border-line last:border-0">
-                    <td className="px-5 py-3 font-medium text-fg">{r.name}</td>
-                    <td className="px-5 py-3 text-muted">
+                    <td className="px-4 py-2.5 font-medium text-fg">{r.name}</td>
+                    <td className="px-4 py-2.5 text-muted">
                       {METRIC_LABELS[r.metric]} {r.operator}{' '}
-                      <span className="font-semibold text-accent">{r.threshold}</span>
+                      <span className="font-semibold text-fg">{r.threshold}</span>
                     </td>
-                    <td className="px-5 py-3 text-muted">{r.queue || 'All queues'}</td>
-                    <td className="px-5 py-3">
+                    <td className="px-4 py-2.5 text-muted">{r.queue || 'All queues'}</td>
+                    <td className="px-4 py-2.5">
                       <span className="rounded-md bg-surface-2 px-2 py-0.5 text-xs text-muted">
                         Browser
                       </span>
                     </td>
-                    <td className="px-5 py-3">
+                    <td className="px-4 py-2.5">
                       <Toggle
                         checked={r.enabled}
                         onChange={() => toggleRule(r.id)}
                         label="Enabled"
                       />
                     </td>
-                    <td className="px-5 py-3 text-right">
+                    <td className="px-4 py-2.5 text-right">
                       <IconButton
                         aria-label={`Delete rule ${r.name}`}
                         onClick={() =>

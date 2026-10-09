@@ -85,13 +85,12 @@ export function MetricsPro() {
         <StatCard
           label="Push/sec"
           value={throughput ? throughput.pushPerSec.toFixed(1) : '—'}
-          tone="accent"
           hint="jobs/sec"
         />
         <StatCard
           label="Pull/sec"
           value={throughput ? throughput.pullPerSec.toFixed(1) : '—'}
-          tone="accent"
+          tone="waiting"
           hint="jobs/sec"
         />
       </div>

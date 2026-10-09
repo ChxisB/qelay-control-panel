@@ -45,7 +45,7 @@ function StepItem({
   return (
     <li className="relative grid grid-cols-[18px_1fr] gap-3">
       <div className="flex flex-col items-center" aria-hidden="true">
-        <span className="mt-1 size-2.5 rounded-full bg-current text-accent" />
+        <span className="mt-1 size-2.5 rounded-full bg-current text-link" />
         {!last && <span className="mt-1 w-px flex-1 bg-line" />}
       </div>
       <div className="min-w-0 rounded-lg border border-line bg-surface-2 p-3">
@@ -75,7 +75,7 @@ function StepItem({
           <button
             type="button"
             onClick={() => onSelect(step.childExecutionId as string)}
-            className="mt-2 break-all font-mono text-xs text-accent hover:underline"
+            className="mt-2 break-all font-mono text-xs text-link hover:underline"
           >
             Child execution: {step.childExecutionId}
           </button>

@@ -101,8 +101,8 @@ export function UsagePro() {
           value={formatNumber(failedTotal)}
           tone={failedTotal ? 'red' : 'default'}
         />
-        <StatCard label="Waiting" value={formatNumber(stats.waiting)} tone="amber" />
-        <StatCard label="Active" value={formatNumber(stats.active)} tone="blue" />
+        <StatCard label="Waiting" value={formatNumber(stats.waiting)} tone="waiting" />
+        <StatCard label="Active" value={formatNumber(stats.active)} tone="active" />
         <StatCard
           label="Error Rate"
           value={rate == null ? '—' : formatPercent(rate)}
@@ -125,7 +125,7 @@ export function UsagePro() {
         <Card>
           <CardHeader title="Storage" />
           {storage.diskFull ? (
-            <div className="rounded-lg border border-red-500/25 bg-red-500/[0.06] px-4 py-3">
+            <div className="rounded-lg border border-danger/25 bg-danger/[0.06] px-4 py-3">
               <div className="font-semibold text-danger">Disk full — writes suspended</div>
               {storage.error && <div className="mt-1 text-xs text-muted">{storage.error}</div>}
               {storage.since != null && (
@@ -135,7 +135,7 @@ export function UsagePro() {
               )}
             </div>
           ) : (
-            <div className="rounded-lg border border-emerald-500/25 bg-emerald-500/[0.06] px-4 py-3">
+            <div className="rounded-lg border border-success/25 bg-success/[0.06] px-4 py-3">
               <div className="font-semibold text-success">Healthy</div>
               <div className="mt-1 text-xs text-faint">Disk writes are being accepted.</div>
             </div>

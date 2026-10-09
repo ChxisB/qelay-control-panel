@@ -35,6 +35,11 @@ export interface PollOptions {
    * the fast activity cadence.
    */
   intervalMs?: number;
+  /**
+   * Skip the interval ticks while true. Explicit `refetch()` calls still run, so a
+   * Pause control can offer "refresh now" and refetch once on resume.
+   */
+  paused?: boolean;
 }
 
 /**
@@ -94,6 +99,8 @@ export function usePolledData<T>(
 
   const fetcherRef = useRef(fetcher);
   fetcherRef.current = fetcher;
+  const pausedRef = useRef(false);
+  pausedRef.current = options.paused === true;
   const mounted = useRef(true);
   const gen = useRef(0);
   // Change-detection + state mirrors so a steady poll issues zero setState calls.
@@ -219,6 +226,12 @@ export function usePolledData<T>(
         return new Promise((resolve) => pendingRefreshResolvers.push(resolve));
       }
       clearTimer();
+      // Paused ticks keep the timer alive so resuming needs no re-subscription.
+      // Checked before the gate so a paused tick cannot consume its first-run pass.
+      if (!force && pausedRef.current && !loadingRef.current) {
+        armNextTick();
+        return Promise.resolve();
+      }
       // The gate lets the FIRST interval fetch run even while hidden; explicit
       // refetches are always honored because callers requested fresh data now.
       if (!force && !gate()) {

@@ -158,7 +158,7 @@ export function AppLayout() {
           }}
           inert={activeModal !== null ? true : undefined}
           tabIndex={activeModal !== null ? -1 : undefined}
-          className="sr-only rounded-md bg-accent px-3 py-2 text-sm font-medium text-accent-fg shadow-lg focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50"
+          className="sr-only rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-fg shadow-lg focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50"
         >
           Skip to content
         </a>
@@ -189,7 +189,7 @@ export function AppLayout() {
             className={cn(
               // pb-24 clears the fixed Copilot FAB (bottom-right) so it never
               // covers the last row / pagination controls on a scrolled page.
-              'flex-1 px-4 pt-5 pb-24 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-accent sm:px-6 lg:px-8 lg:pt-6',
+              'flex-1 px-4 pt-5 pb-24 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ring sm:px-6 lg:px-8 lg:pt-6',
               // Lock content scroll while the drawer overlays it below lg.
               navVisible ? 'overflow-hidden' : 'overflow-y-auto'
             )}

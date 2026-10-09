@@ -74,7 +74,12 @@ export function Metrics() {
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         <StatCard label="Pushed /s" value={throughput.pushPerSec.toFixed(1)} compact />
-        <StatCard label="Pulled /s" value={throughput.pullPerSec.toFixed(1)} tone="blue" compact />
+        <StatCard
+          label="Pulled /s"
+          value={throughput.pullPerSec.toFixed(1)}
+          tone="waiting"
+          compact
+        />
         <StatCard
           label="Completed /s"
           value={throughput.completePerSec.toFixed(1)}

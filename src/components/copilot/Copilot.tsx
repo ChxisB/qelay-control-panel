@@ -103,8 +103,8 @@ export class CopilotBoundary extends Component<
       >
         <p className="text-sm text-fg">Copilot failed to load.</p>
         <p className="text-xs text-muted">
-          The panel is loaded on demand; the request failed. If the dashboard was just redeployed,
-          reload the page. The rest of the dashboard is unaffected.
+          The panel is loaded on demand; the request failed. If the control panel was just
+          redeployed, reload the page. The rest of the control panel is unaffected.
         </p>
         <button
           type="button"
@@ -208,10 +208,10 @@ export function Copilot() {
             openerRef.current = event.currentTarget;
             if (useGlobalModalStore.getState().request('copilot')) setOpen(true);
           }}
-          className="fixed bottom-5 right-5 z-40 flex items-center gap-2 rounded-full border border-line bg-surface px-4 py-2.5 text-sm font-medium text-fg shadow-lg transition-colors hover:border-accent/50 hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+          className="fixed bottom-5 right-5 z-40 flex items-center gap-2 rounded-full border border-line bg-surface px-4 py-2.5 text-sm font-medium text-fg shadow-lg transition-colors hover:border-link/50 hover:text-link focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           aria-label="Open Copilot"
         >
-          <SparkleIcon className="size-4 text-accent" />
+          <SparkleIcon className="size-4 text-link" />
           Copilot
         </button>
       )}

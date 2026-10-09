@@ -1,21 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
 import { Card, CardHeader } from '@/components/ui/Card';
-import { OfflineBanner } from '@/components/ui/feedback';
+import { LoadingState, OfflineBanner } from '@/components/ui/feedback';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { bq } from '@/lib/bq';
 import { useControlActionGuard } from '@/lib/useControlActionGuard';
 import { usePolledData } from '@/lib/usePolledData';
 import { AgentInfoCard } from './server/AgentInfoCard';
 import { ConfigCard } from './server/ConfigCard';
+import { diskHealthOf } from './server/diskHealth';
 import { ProcessLogs } from './server/ProcessLogs';
 import { StatusConsole } from './server/StatusConsole';
+import type { ServerVitals } from './server/StatusFacts';
 import { StoragePanel } from './server/StoragePanel';
-
-/** Process vitals from GET /health (RAM in MB, live connection counts). */
-interface HealthVitals {
-  memory?: { rss?: number; heapUsed?: number; heapTotal?: number };
-  connections?: { tcp?: number; ws?: number; sse?: number };
-}
 
 export function ServerControl() {
   const statusRequestSequence = useRef(0);
@@ -43,7 +39,14 @@ export function ServerControl() {
     () => (serverUp ? bq.health() : Promise.resolve(null)),
     [serverUp]
   );
-  const vitals = serverUp ? ((health ?? null) as HealthVitals | null) : null;
+  const vitals = serverUp ? ((health ?? null) as ServerVitals | null) : null;
+  // Disk health is the server's own word (GET /storage). Unknown — stopped, or the call
+  // failing — stays unknown: the Storage panel then says nothing instead of "healthy".
+  const { data: storage } = usePolledData(
+    () => (serverUp ? bq.storage().catch(() => null) : Promise.resolve(null)),
+    [serverUp]
+  );
+  const disk = serverUp ? diskHealthOf(storage) : null;
 
   // Spell out the blast radius in stop/restart confirms: live connection counts
   // when /health has them, so the operator knows what a kill actually severs.
@@ -79,7 +82,7 @@ export function ServerControl() {
   if (error && !data) {
     return (
       <div>
-        <PageHeader title="Server" description="Start, stop and restart the bunqueue server." />
+        <PageHeader title="Server" description="Start, stop and restart the server." />
         <OfflineBanner
           message="Control agent unreachable — server lifecycle controls are unavailable."
           onRetry={refetch}
@@ -89,9 +92,9 @@ export function ServerControl() {
           <p className="text-sm text-muted">
             The local control agent is unreachable at{' '}
             <code className="rounded bg-surface-2 px-1.5 py-0.5 text-xs">{bq.agentBase}</code>. It
-            manages the bunqueue server process (start / stop / restart). Start it with:
+            manages the server process (start / stop / restart). Start it with:
           </p>
-          <pre className="mt-3 overflow-x-auto rounded-lg border border-line bg-surface-2 px-3 py-2 text-xs">
+          <pre className="mt-3 overflow-x-auto rounded-control border border-line bg-surface-2 px-3 py-2 text-xs">
             bun start{'      '}# agent + dashboard together (recommended){'\n'}bun run agent
             {'   '}# agent only, if the dashboard is already running
           </pre>
@@ -103,13 +106,22 @@ export function ServerControl() {
     );
   }
 
-  const status = data?.status ?? 'stopped';
+  if (!data) {
+    return (
+      <div>
+        <PageHeader title="Server" description="Supervise the server process." />
+        <LoadingState label="Reaching the control agent…" />
+      </div>
+    );
+  }
+
+  const status = data.status;
   const running = status === 'running';
   const transitioning = status === 'starting' || status === 'stopping' || busy != null;
   // Agent was reachable once (data cached) but the poll now fails — without
   // this the console keeps asserting "Running / healthy" with a live-ticking
   // uptime for an agent (and possibly server) that is dead.
-  const stale = error != null && data != null;
+  const stale = error != null;
 
   return (
     <div>
@@ -117,78 +129,72 @@ export function ServerControl() {
         title="Server"
         description={
           external
-            ? 'Observe the Bunqueue server managed by an external supervisor.'
-            : 'Supervise the bunqueue server process — lifecycle, configuration, storage and logs.'
+            ? 'Observe the server managed by an external supervisor.'
+            : 'Supervise the server process — lifecycle, configuration, storage and logs.'
         }
       />
 
-      {actionError && (
-        <div
-          role="status"
-          className="mb-4 rounded-lg border border-red-500/20 bg-red-500/5 px-4 py-2 text-sm text-danger"
-        >
-          {actionError}
-        </div>
-      )}
-
-      {stale && (
-        <div className="mb-4 rounded-lg border border-amber-500/20 bg-amber-500/5 px-4 py-2 text-sm text-warning">
-          Control agent unreachable — showing last known state. Lifecycle actions are disabled until
-          it responds again.
-        </div>
-      )}
-
-      <StatusConsole
-        status={data}
-        agentBase={bq.agentBase}
-        stale={stale}
-        vitals={vitals}
-        transitioning={transitioning}
-        busy={busy}
-        onStart={() => run('starting', () => bq.control.start())}
-        onStop={() =>
-          run('stopping', () => bq.control.stop(), `Stop the bunqueue server?${blastRadius}`)
-        }
-        onRestart={() =>
-          run(
-            'restarting',
-            () => bq.control.restart(),
-            `Restart the bunqueue server?${blastRadius}`
-          )
-        }
-      />
-
-      {external ? (
-        <Card>
-          <CardHeader title="Managed externally" />
-          <p className="text-sm text-muted">
-            This dashboard is attached to{' '}
-            <code className="rounded bg-surface-2 px-1.5 py-0.5 text-xs">
-              {data?.externalUrl ?? 'BUNQUEUE_URL'}
-            </code>
-            . Start, stop, restart and launch configuration are intentionally unavailable while{' '}
-            <code className="rounded bg-surface-2 px-1.5 py-0.5 text-xs">BUNQUEUE_MANAGED=0</code>.
-            Use systemd, Docker, Kubernetes or the broker's external supervisor instead.
-          </p>
-        </Card>
-      ) : (
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <ConfigCard
-            status={data}
-            onSaved={refetch}
-            running={running}
-            statusRequestId={data ? statusRequestIds.current.get(data) : undefined}
-            getStatusRequestSequence={() => statusRequestSequence.current}
-            transitioning={transitioning}
-          />
-          <div className="flex flex-col gap-6">
-            {data?.db && <StoragePanel db={data.db} />}
-            <ProcessLogs />
+      <div className="flex flex-col gap-6">
+        {actionError && (
+          <div
+            role="status"
+            className="rounded-control border border-danger/25 bg-danger/5 px-4 py-2.5 text-sm text-danger"
+          >
+            {actionError}
           </div>
-        </div>
-      )}
+        )}
 
-      <div className="mt-6">
+        {stale && (
+          <div className="rounded-control border border-warning/25 bg-warning/5 px-4 py-2.5 text-sm text-warning">
+            Control agent unreachable — showing last known state. Lifecycle actions are disabled
+            until it responds again.
+          </div>
+        )}
+
+        <StatusConsole
+          status={data}
+          agentBase={bq.agentBase}
+          stale={stale}
+          vitals={vitals}
+          transitioning={transitioning}
+          busy={busy}
+          onStart={() => run('starting', () => bq.control.start())}
+          onStop={() => run('stopping', () => bq.control.stop(), `Stop the server?${blastRadius}`)}
+          onRestart={() =>
+            run('restarting', () => bq.control.restart(), `Restart the server?${blastRadius}`)
+          }
+        />
+
+        {external ? (
+          <Card className="p-6">
+            <CardHeader title="Managed externally" />
+            <p className="text-sm text-muted">
+              This control panel is attached to{' '}
+              <code className="rounded bg-surface-2 px-1.5 py-0.5 text-xs">
+                {data.externalUrl ?? 'BUNQUEUE_URL'}
+              </code>
+              . Start, stop, restart and launch configuration are intentionally unavailable while{' '}
+              <code className="rounded bg-surface-2 px-1.5 py-0.5 text-xs">BUNQUEUE_MANAGED=0</code>
+              . Use systemd, Docker, Kubernetes or the broker's external supervisor instead.
+            </p>
+          </Card>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
+              <ConfigCard
+                status={data}
+                onSaved={refetch}
+                running={running}
+                statusRequestId={statusRequestIds.current.get(data)}
+                getStatusRequestSequence={() => statusRequestSequence.current}
+                transitioning={transitioning}
+              />
+              {data.db && <StoragePanel db={data.db} disk={disk} />}
+            </div>
+            <ProcessLogs />
+          </>
+        )}
+
         <AgentInfoCard agentBase={bq.agentBase} />
       </div>
     </div>

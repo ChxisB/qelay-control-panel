@@ -147,7 +147,7 @@ export function BackupOperationsPanel({
             type="button"
             disabled={Boolean(busy)}
             onClick={backup}
-            className="rounded-md bg-accent px-3 py-2 text-xs font-medium text-accent-fg disabled:opacity-40"
+            className="rounded-md bg-primary px-3 py-2 text-xs font-medium text-primary-fg disabled:opacity-40"
           >
             {busy === 'Backup' ? 'Backing up…' : 'Backup now'}
           </button>
@@ -229,23 +229,23 @@ function BackupList({
   return (
     <div className="overflow-x-auto">
       <table className="w-full min-w-[680px] text-left text-xs">
-        <thead className="border-b border-line text-[10px] uppercase tracking-wider text-faint">
+        <thead className="border-b border-line eyebrow text-muted">
           <tr>
-            <th className="px-4 py-2 font-medium">Object key</th>
-            <th className="px-4 py-2 font-medium">Size</th>
-            <th className="px-4 py-2 font-medium">Created</th>
-            <th className="px-4 py-2 text-right font-medium">Restore</th>
+            <th className="px-4 py-2 font-semibold">Object key</th>
+            <th className="px-4 py-2 font-semibold">Size</th>
+            <th className="px-4 py-2 font-semibold">Created</th>
+            <th className="px-4 py-2 text-right font-semibold">Restore</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-line">
           {rows.map((row) => (
             <tr key={row.key}>
-              <td className="max-w-md truncate px-4 py-3 font-mono text-fg" title={row.key}>
+              <td className="max-w-md truncate px-4 py-2.5 font-mono text-fg" title={row.key}>
                 {row.key}
               </td>
-              <td className="px-4 py-3 text-muted">{row.size}</td>
-              <td className="px-4 py-3 text-muted">{row.date}</td>
-              <td className="px-4 py-3 text-right">
+              <td className="px-4 py-2.5 text-muted">{row.size}</td>
+              <td className="px-4 py-2.5 text-muted">{row.date}</td>
+              <td className="px-4 py-2.5 text-right">
                 <button
                   type="button"
                   disabled={!canRestore || busy}

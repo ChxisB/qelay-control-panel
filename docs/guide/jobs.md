@@ -1,68 +1,72 @@
 ---
-title: Jobs Explorer
-description: "Browse, inspect and export jobs in a queue, with Promote as the only enabled job-lifecycle mutation."
+title: Jobs
+description: "Browse, filter, inspect and export the jobs in a queue, with Promote as the only enabled job-lifecycle mutation."
 ---
 
-# Jobs Explorer
+# Jobs
 
-Browse, inspect and export the jobs in a queue. Delayed jobs can be promoted,
+Browse, filter, inspect and export the jobs in a queue. Delayed jobs can be promoted,
 while DLQ retry and completed-job requeue fail closed.
 
-**Where:** open `/jobs` from the sidebar.
+**Where:** open **Jobs** under Queues in the sidebar (`/jobs`).
 
-![Jobs Explorer](../screenshots/jobs.png)
+![Jobs](../screenshots/jobs.png)
 
 ## What you'll see
 
-A **live** indicator in the header tells you the page is refreshing on its own. At the top, six stat cards summarize the **whole server**. Below them are the filters, then the job table.
+A header with the selected queue and how fresh the list is, a toolbar, a row of state tabs, and the job table. Everything updates on its own, you don't need to refresh.
 
-| Element | What it tells you |
+**Header**
+
+The subtitle reads "N jobs in `<queue>` · updated Ns ago". On the right are two buttons: **Bulk add** (opens [Bulk Add Jobs](/guide/bulk-add)) and the orange **Add job** (opens [Add Job](/guide/add-job)). Neither one pre-fills the queue you are looking at.
+
+**Toolbar**
+
+| Element | What it does |
 | --- | --- |
-| **Total** | Every job across all states, server-wide. |
-| **Waiting** | Jobs enqueued but not started yet. |
-| **Active** | Jobs being processed right now. |
-| **Completed** | How many jobs have finished successfully (lifetime). |
-| **Failed** | How many jobs have failed (lifetime). Turns red when it's above zero. |
-| **Error Rate** | Failures as a share of finished jobs. Green when healthy, red above 5%. |
+| Queue select | Chooses whose jobs to list. |
+| Filter input | "Filter by ID, name or data". Narrows the rows on screen. |
+| **Export CSV** | Downloads the rows currently on screen. |
 
-Each row in the table shows one job:
+**State tabs**
+
+**All**, **Waiting**, **Prioritized**, **Active**, **Delayed**, **Completed**, **Failed**, **Flow-blocked** and **Paused**. Most tabs carry the queue's count for that state. The counts come from the queue summary, which is refreshed less often than the table, so they can run a few seconds behind. **Flow-blocked** and **Paused** show no number, and the footer shows no total on **All**.
+
+**Job table**
 
 | Column | What it tells you |
 | --- | --- |
-| **Job ID** | The job's identifier. Hover to see the full ID if it's cut off. |
-| **Status** | The job's current state as a colored badge. |
-| **Priority** | **HIGH**, **MEDIUM**, or **LOW**, based on the job's priority value. |
-| **Created** | When the job was added. |
-| **Duration** | How long the job took to run. Shows `, ` until the job has both started and finished. |
-| **Actions** | Inspect, plus any actions the job's state allows. |
+| Checkbox | Selects the row. The header checkbox selects the whole page. |
+| **Job** | The job's ID, shortened in the middle when it is long, with its name and the first two values of its payload underneath. |
+| **State** | The job's current state as a colored badge. |
+| **Pri** | The priority, as a plain integer. |
+| **Attempts** | Attempts made out of the maximum allowed. |
+| **Created** | A time for jobs created today, day/month and time earlier this year, and the full date before that. |
+| **Duration** | How long the job took to run. Shows a dash until the job has both started and finished. |
+| Eye icon | Opens the job in the [Job Inspector](/guide/job-inspector). Delayed rows also show **Promote**. |
 
-::: info
-The stat cards describe the entire server, so they **won't** match the counts of the queue you have selected below.
-:::
+On narrow screens the table scrolls sideways inside its card instead of squeezing the columns.
+
+The footer reads "Showing 1–25" (or "Showing 1–9" on a short page) with **Previous** and **Next**. While a filter is active it adds "N of M on this page match".
 
 ## What you can do
 
-**Pick a queue.** Use the queue dropdown to choose whose jobs to list. If you arrived from a link with a queue already set, it's pre-selected; otherwise the first queue is chosen for you.
+**Pick a queue.** Use the queue select. A link that arrives with `?queue=<name>` pre-selects it; otherwise the first queue is chosen for you.
 
-**Filter by status.** Switch between `all`, `waiting`, `active`, `completed`, and `failed`.
+**Filter by state.** Click a tab. A link that arrives with `?status=failed` (or any state name) opens on that tab, which is how **Review failed jobs** on the [Overview](/guide/overview) lands here.
 
-**Search this page by ID.** Type in the ID filter to narrow the rows down to a matching ID. This searches only the rows currently on screen (see Good to know).
+**Filter the page.** Type in the filter input to match a job's ID, name or payload. It searches only the rows currently loaded (see Good to know).
 
-**Inspect a job.** Click the eye button on any row to open it in the Job Inspector.
+**Inspect a job.** Click the eye icon on any row to open the [Job Inspector](/guide/job-inspector).
 
-**Act on a single job.** A delayed row also offers:
+**Promote delayed jobs.** A delayed row has a **Promote** button that moves the job to run now. To promote several at once, tick the checkboxes and use **Promote** in the selection bar. It appears only when at least one selected job is delayed; otherwise the bar says "No actions apply to the selected job states." If the filter hides the selected jobs, it says "The selected jobs are hidden by the filter — clear it to act on them." **Clear** empties the selection.
 
-- **Promote**, move a delayed job to run now.
+**Export CSV.** Download the rows on the current page. If there are none, a toast says "No jobs to export on this page".
 
-**Act on many jobs at once.** Tick the checkboxes (or the header checkbox to
-select the whole page) to reveal a bulk toolbar. **Promote selected** appears
-only when at least one visible selected job is delayed; no Retry or Requeue
-bulk action is exposed.
-
-**Export CSV**, download the rows on the current page.
+**Empty and error states.** "No jobs in `<queue>`" means the queue has none in that state, "No matching jobs" means the filter excludes everything on the page, "Select a queue" appears before one is chosen, and "Queues unavailable" appears if the queue list could not be loaded.
 
 ::: warning Unsafe lifecycle transitions fail closed
-The dashboard never exposes `DELETE /jobs/:id`. Bunqueue v2.9.3 cannot reveal
+The control panel never exposes `DELETE /jobs/:id`. Bunqueue v2.9.3 cannot reveal
 every reverse flow dependency, so deleting an apparently standalone job can
 permanently strand another queue's parent. DLQ retry is also unavailable because
 its GET + POST sequence has no atomic generation/state/topology precondition and
@@ -70,25 +74,24 @@ can hit a recreated job. Completed-job requeue is unavailable because
 `retryCompleted` does not rebuild dependency registration or flow order.
 :::
 
-After any action, the row (or selection) reports success or failure in a short status line above the table, and the list refreshes. Buttons on a busy row are disabled until it finishes.
+After a promote, the list refreshes and a toast reports success or failure. Buttons on a busy row are disabled until it finishes.
 
 ## Good to know
 
-- **The ID filter only searches the current page.** It matches the 25 rows on screen, not the whole queue. To find one specific job in a large queue, use the Job Inspector's direct lookup instead.
+- **The filter only searches the current page.** It matches the 25 rows on screen, not the whole queue. To find one specific job in a large queue, use the Job Inspector's direct lookup instead.
 - **There's no "page X of Y."** You page through 25 jobs at a time. **Next** stays available as long as a full page arrives; a shorter page means you've reached the end.
-- **Which actions appear depends on the job's state.** A delayed job can be
-  promoted. Active, completed and failed jobs have no state-changing row action;
-  if none of the selected jobs is delayed, the toolbar says so.
-- **Changing queue, status, or page clears your selection.** This is on purpose, so a bulk action can never hit rows you picked under a different view.
+- **Tab counts are partial.** They describe the queue's states, not the filtered rows, and a few tabs show no number at all.
+- **Which actions appear depends on the job's state.** A delayed job can be promoted. Active, completed and failed jobs have no state-changing row action.
+- **Changing queue, state, or page clears your selection.** This is on purpose, so a bulk action can never hit rows you picked under a different view.
 - **If the server is unreachable,** a banner with a **Retry** button appears and your already-loaded rows stay visible.
-- This `/jobs` page is the corrected, server-paginated explorer. A separate legacy jobs page exists but isn't what this screen uses, see [Known issues](/known-issues).
+- This `/jobs` page is the corrected, server-paginated one. A separate legacy jobs page exists at `/jobs-classic` but isn't what this screen uses, see [Known issues](/known-issues).
 
 ::: details Under the hood (for developers)
 Everything here uses the shape-verified `bq` client (not the legacy `api` client).
 
-- Queue dropdown: `GET /queues/summary`, polled every 30 s.
-- Stat cards: `GET /dashboard`, polled every 10 s.
-- Job table: `GET /queues/:q/jobs/list?states=…&limit=25&offset=…`, polled at the global refresh interval (default 3 s, configurable in Settings). The response is flat `{ ok, jobs }` with no `total`, so "next page" is inferred from a full 25-row page.
-- The only job-lifecycle mutation maps to `POST /jobs/:id/promote`. This page
-  never calls DLQ retry or retry-completed endpoints.
+- Queue select and state-tab counts: `GET /queues/summary`, polled every 30 s. There is no stats-card row and no `/dashboard` poll on this page any more.
+- Job table: `GET /queues/:q/jobs/list?states=…&limit=25&offset=…`, polled at the global refresh interval (default 3 s, configurable in Settings). The response is flat `{ ok, jobs }` with no `total`, so "next page" is inferred from a full 25-row page (`JOBS_PAGE_SIZE`).
+- The "updated Ns ago" text ticks once a second from its own small component, so the table doesn't re-render on every tick.
+- The only job-lifecycle mutation maps to `POST /jobs/:id/promote`. Which actions apply to which state lives in `actionGates` in `src/lib/jobActions.ts`; this page never calls DLQ retry or retry-completed endpoints.
+- Source: `src/pages/control/JobsPro.tsx`, composed from `src/pages/control/jobsPro/`.
 :::

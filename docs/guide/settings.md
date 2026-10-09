@@ -5,18 +5,18 @@ description: "Configure named Bunqueue broker and control-agent profiles, creden
 
 # Settings
 
-Settings owns the Dashboard's complete connection fleet. Each named profile
+Settings owns the control panel's complete connection fleet. Each named profile
 pairs one Bunqueue HTTP API with the control agent responsible for that broker.
 
-**Where:** open `/settings` from the sidebar.
+**Where:** **Management ▸ Settings** in the sidebar (`/settings`).
 
 ![Settings](../screenshots/settings.png)
 
-## Connection profiles
+## Fleet connections
 
 | Element | Purpose |
 | --- | --- |
-| **Active node** | Select the broker every ordinary Dashboard page currently drives. The same selector is always available under the sidebar. |
+| **Active node** | Select the broker every ordinary page currently drives. The same selector is always available under the sidebar. |
 | **Add node / Remove** | Create a profile (up to 32) or remove the selected one. The final profile cannot be removed. |
 | **Node name** | Human-readable fleet identity, for example `broker-eu-1`. |
 | **Server URL** | Bunqueue HTTP API, such as `/api` or `https://broker-1.example/api`. |
@@ -69,8 +69,14 @@ The Fleet guide lists every shared and node-local boundary.
   rewritten without legacy token fields or unsafe authorities.
 - A blocked/full browser store does not lose the live edit: Settings reports
   that it was saved for this session only.
+- Browser keys now use the `qelay-` prefix (`qelay-theme`, `qelay-connection`,
+  `qelay-alerts`, `qelay-s3`, `qelay-copilot`, `qelay-recent-flows`,
+  `qelay-db-history`). Settings saved under the earlier names are copied across
+  the first time each one is read, so a profile that already has a theme, alert
+  rules or connection profiles keeps them. Browser storage belongs to one origin:
+  settings do not follow you if the control panel is served from a different address.
 - Fleet probing applies each inactive profile's own credentials directly and
-  never temporarily retargets the active Dashboard.
+  never temporarily retargets the active node.
 
 ::: tip Test before saving
 Both connection tests use the fields currently typed in the form. This lets

@@ -1,18 +1,18 @@
 # Contributing
 
-Thanks for your interest in **bunqueue dashboard**. This guide gets you from
+Thanks for your interest in **Qelay Control Panel**. This guide gets you from
 clone to a green pull request.
 
 ## Getting started
 
 ```bash
 bun install
-bun start          # control agent + dashboard together (Ctrl-C stops both)
+bun start          # control agent + control panel together (Ctrl-C stops both)
 ```
 
-`bun start` runs the control agent (`http://127.0.0.1:6800`) and the dashboard
+`bun start` runs the control agent (`http://127.0.0.1:6800`) and the control panel
 (`http://localhost:5273`, `/api` proxied to `:6790`). Full docs live at
-<https://egeominotti.github.io/bunqueue-dashboard/docs/>.
+<https://chxisb.github.io/qelay-control-panel/docs/>.
 
 ## The quality gate (must be green)
 
@@ -33,11 +33,18 @@ before opening a PR.
   client for all new work). See `CLAUDE.md` for the full architecture notes.
 - **Keep `src/` passing the strict type-aware Oxlint ruleset, its implicit-`any` parity guard,
   and the Oxfmt check.** Don't silence a rule to dodge a real fix.
-- **Update `CHANGELOG.md`** under `## [Unreleased]` and **bump the
-  `package.json` `version`** for anything that ships. The release workflow tags
-  and publishes `v<version>` from `package.json`.
-- Conventional-style commit subjects are appreciated (`feat:`, `fix:`, `docs:`,
-  `chore:`).
+- **Write [Conventional Commits](https://www.conventionalcommits.org).** Every commit
+  subject is `type(scope): description`, because the type decides the release: `feat` is
+  a minor release, `fix`, `perf` and `revert` are patch releases, and `!` after the type
+  or a `BREAKING CHANGE:` footer is a major one. `docs`, `style`, `refactor`, `test`,
+  `build`, `ci` and `chore` release nothing on their own, so a pull request made only of
+  those leaves the version alone.
+- **Update `CHANGELOG.md`** under `## [Unreleased]`, then run `bun run release:version`
+  once your last commit is in. It works out the next [SemVer](https://semver.org) version
+  from your commits, bumps `package.json` and rolls the changelog; commit both files.
+  `bun run release:plan` shows the result without writing anything. CI fails the pull
+  request if the version does not match its commits. The release workflow tags and
+  publishes `v<version>` from `package.json`.
 
 ## Pull requests
 

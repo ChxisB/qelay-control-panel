@@ -1,10 +1,10 @@
 <div align="center">
 
-<img src="docs/logo.svg" alt="bunqueue dashboard" width="340" />
+<img src="docs/logo.svg" alt="Qelay Control Panel" width="340" />
 
-# bunqueue dashboard
+# Qelay Control Panel
 
-**Monitor jobs and operate your Bunqueue server from one dashboard.**
+**Monitor jobs and operate your bunqueue server from one control panel.**
 
 Manage queues, jobs, DLQ,
 cron, webhooks, workers, and a live activity stream for a [bunqueue](https://bunqueue.dev) server
@@ -13,19 +13,22 @@ process itself**, all from one place.
 
 For Bun developers and AI-agent builders running bunqueue who want to _operate_ their queue, not just watch it.
 
-### [📚 Read the documentation](https://egeominotti.github.io/bunqueue-dashboard/docs/) · [▶ Try the live demo](https://egeominotti.github.io/bunqueue-dashboard/)
+### [📚 Read the documentation](https://chxisb.github.io/qelay-control-panel/docs/) · [▶ Try the live demo](https://chxisb.github.io/qelay-control-panel/)
 
-[Quick start](https://egeominotti.github.io/bunqueue-dashboard/docs/quickstart) · [User guide](https://egeominotti.github.io/bunqueue-dashboard/docs/user-guide) · [Deployment](https://egeominotti.github.io/bunqueue-dashboard/docs/deploy/) · [Verified test coverage](https://egeominotti.github.io/bunqueue-dashboard/docs/testing)
+[Quick start](https://chxisb.github.io/qelay-control-panel/docs/quickstart) · [User guide](https://chxisb.github.io/qelay-control-panel/docs/user-guide) · [Deployment](https://chxisb.github.io/qelay-control-panel/docs/deploy/) · [Verified test coverage](https://chxisb.github.io/qelay-control-panel/docs/testing)
 
-The live demo uses sample data. The docs explain how to connect and operate a real Bunqueue server.
+<!-- CONFIRM before release: the docs and demo URLs above are derived from the repository name
+(https://chxisb.github.io/qelay-control-panel/) and are only live once Pages is enabled. -->
 
-[![npm](https://img.shields.io/npm/v/bunqueue-dashboard?logo=npm&color=cb3837)](https://www.npmjs.com/package/bunqueue-dashboard)
-[![CI](https://github.com/egeominotti/bunqueue-dashboard/actions/workflows/ci.yml/badge.svg)](https://github.com/egeominotti/bunqueue-dashboard/actions/workflows/ci.yml)
-[![Deploy to GitHub Pages](https://github.com/egeominotti/bunqueue-dashboard/actions/workflows/pages.yml/badge.svg)](https://github.com/egeominotti/bunqueue-dashboard/actions/workflows/pages.yml)
-[![Docker](https://github.com/egeominotti/bunqueue-dashboard/actions/workflows/docker.yml/badge.svg)](https://github.com/egeominotti/bunqueue-dashboard/actions/workflows/docker.yml)
+The live demo uses sample data. The docs explain how to connect and operate a real bunqueue server.
+
+[![npm](https://img.shields.io/npm/v/qelay-control-panel?logo=npm&color=cb3837)](https://www.npmjs.com/package/qelay-control-panel)
+[![CI](https://github.com/ChxisB/qelay-control-panel/actions/workflows/ci.yml/badge.svg)](https://github.com/ChxisB/qelay-control-panel/actions/workflows/ci.yml)
+[![Deploy to GitHub Pages](https://github.com/ChxisB/qelay-control-panel/actions/workflows/pages.yml/badge.svg)](https://github.com/ChxisB/qelay-control-panel/actions/workflows/pages.yml)
+[![Docker](https://github.com/ChxisB/qelay-control-panel/actions/workflows/docker.yml/badge.svg)](https://github.com/ChxisB/qelay-control-panel/actions/workflows/docker.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Documentation](https://img.shields.io/badge/docs-online-db2777)](https://egeominotti.github.io/bunqueue-dashboard/docs/)
-[![Live demo](https://img.shields.io/badge/live%20demo-online-22c55e)](https://egeominotti.github.io/bunqueue-dashboard/)
+[![Documentation](https://img.shields.io/badge/docs-online-db2777)](https://chxisb.github.io/qelay-control-panel/docs/)
+[![Live demo](https://img.shields.io/badge/live%20demo-online-22c55e)](https://chxisb.github.io/qelay-control-panel/)
 ![Status: Stable](https://img.shields.io/badge/status-stable-22c55e)
 
 ![React 19](https://img.shields.io/badge/React-19-149ECA?logo=react&logoColor=white)
@@ -36,23 +39,15 @@ The live demo uses sample data. The docs explain how to connect and operate a re
 
 <br />
 
-<a href="https://www.youtube.com/watch?v=1bQRFXGClcc" title="Watch the full bunqueue dashboard tour on YouTube"><img src="docs/public/video-tour.png" alt="Watch the narrated 4K tour of bunqueue dashboard on YouTube" width="900" /></a>
+<img src="docs/screenshots/overview.png" alt="Qelay Control Panel overview: server health, throughput, per-queue status, and a live activity feed" width="900" />
 
-### [▶ Watch the full tour on YouTube](https://www.youtube.com/watch?v=1bQRFXGClcc)
-
-<sub>A narrated 4K walkthrough (7:45, English with subtitles) recorded against a real bunqueue server under live traffic. <a href="https://egeominotti.github.io/bunqueue-dashboard/">Or try the live demo →</a></sub>
-
-<br /><br />
-
-<img src="docs/screenshots/overview.png" alt="bunqueue dashboard, real-time overview: health, throughput, per-queue status, and a live activity feed" width="900" />
-
-<sub>The Overview page. <a href="https://egeominotti.github.io/bunqueue-dashboard/docs/user-guide">See every screen in the illustrated guide →</a></sub>
+<sub>The Overview page. <a href="https://chxisb.github.io/qelay-control-panel/docs/user-guide">See every screen in the illustrated guide →</a></sub>
 
 <details>
 <summary><b>More screenshots</b></summary>
 <br />
 <img src="docs/screenshots/server.png" alt="Server Control, start/stop/restart the bunqueue process with live logs" width="900" />
-<img src="docs/screenshots/jobs.png" alt="Jobs Explorer, filter, inspect, and bulk-action jobs" width="900" />
+<img src="docs/screenshots/jobs.png" alt="Jobs, filter by state, inspect, and promote delayed jobs" width="900" />
 <img src="docs/screenshots/database.png" alt="Read-only SQLite inspector, browse tables and run queries" width="900" />
 </details>
 
@@ -60,20 +55,24 @@ The live demo uses sample data. The docs explain how to connect and operate a re
 
 ---
 
-> ✅ **Stable (1.x).** The dashboard follows [Semantic Versioning](https://semver.org/):
+> ✅ **Stable (1.x).** Qelay Control Panel follows [Semantic Versioning](https://semver.org/):
 > breaking changes to its configuration, routes or agent API only ship in a new
 > major version.
+
+Qelay Control Panel is a fork of [egeominotti/bunqueue-dashboard](https://github.com/egeominotti/bunqueue-dashboard)
+by Egeo Minotti (MIT). The server it controls is still [bunqueue](https://github.com/egeominotti/bunqueue),
+and nothing in bunqueue is modified. See [Origin](#origin) for what changed.
 
 ## 📚 Documentation
 
 **Full, illustrated docs live at
-[egeominotti.github.io/bunqueue-dashboard/docs](https://egeominotti.github.io/bunqueue-dashboard/docs/).**
+[chxisb.github.io/qelay-control-panel/docs](https://chxisb.github.io/qelay-control-panel/docs/).**
 
-- **[Illustrated user guide](https://egeominotti.github.io/bunqueue-dashboard/docs/user-guide)**, section guides with screenshots, operations and limitations.
-- **[Deployment](https://egeominotti.github.io/bunqueue-dashboard/docs/deploy/)**, Docker (Caddy), Kubernetes, PM2, and hosting platforms (Vercel, Netlify, Cloudflare, Fly.io, Render, Cloud Run).
-- **[Architecture](https://egeominotti.github.io/bunqueue-dashboard/docs/architecture)** and **[API mapping](https://egeominotti.github.io/bunqueue-dashboard/docs/api-mapping)**, how it fits together and every endpoint it drives.
+- **[Illustrated user guide](https://chxisb.github.io/qelay-control-panel/docs/user-guide)**, section guides with screenshots, operations and limitations.
+- **[Deployment](https://chxisb.github.io/qelay-control-panel/docs/deploy/)**, Docker (Caddy), Kubernetes, PM2, and hosting platforms (Vercel, Netlify, Cloudflare, Fly.io, Render, Cloud Run).
+- **[Architecture](https://chxisb.github.io/qelay-control-panel/docs/architecture)** and **[API mapping](https://chxisb.github.io/qelay-control-panel/docs/api-mapping)**, how it fits together and every endpoint it drives.
 - **[Testing matrix](docs/testing.md)**, real-server coverage, reproduction steps and verification limits.
-- **[llms.txt](https://egeominotti.github.io/bunqueue-dashboard/docs/llms.txt)**, the documentation index for LLMs; **[llms-full.txt](https://egeominotti.github.io/bunqueue-dashboard/docs/llms-full.txt)** contains the full text.
+- **[llms.txt](https://chxisb.github.io/qelay-control-panel/docs/llms.txt)**, the documentation index for LLMs; **[llms-full.txt](https://chxisb.github.io/qelay-control-panel/docs/llms-full.txt)** contains the full text.
 
 ## Table of contents
 
@@ -90,28 +89,29 @@ The live demo uses sample data. The docs explain how to connect and operate a re
 - [Project structure](#project-structure)
 - [Security](#security)
 - [Contributing](#contributing)
+- [Origin](#origin)
 - [License](#license)
 
 ## Why
 
 bunqueue exposes a rich HTTP API, but operating it by hand (curl, ad-hoc scripts) is slow and
-error-prone. This dashboard is a production-oriented operator console: it exposes the verified,
+error-prone. Qelay Control Panel is a production-oriented operator console: it exposes the verified,
 safe subset of the API, fails closed where
-[Bunqueue 2.9.x](https://github.com/egeominotti/bunqueue/releases/tag/v2.9.3) lacks atomic
+[bunqueue 2.9.x](https://github.com/egeominotti/bunqueue/releases/tag/v2.9.3) lacks atomic
 flow-safety guarantees, and also manages the
 server *process* through a separate guarded agent.
 
-It uses Bunqueue's public HTTP API (`:6790`) for ordinary remote observability and a small local
+It uses bunqueue's public HTTP API (`:6790`) for ordinary remote observability and a small local
 **control agent** for process, FlowProducer, Workflow Engine, database, and backup operations. The
-agent is pinned to the server it manages and uses the exact installable Bunqueue 2.9.4 npm client
-contracts; it never patches Bunqueue internals.
+agent is pinned to the server it manages and uses the exact installable bunqueue 2.9.4 npm client
+contracts; it never patches bunqueue internals.
 
 ## Features
 
 | Area | Where | What you can do |
 | --- | --- | --- |
 | **Home** | Overview | Live health banner, throughput, queue health, recent activity |
-| **Fleet** | Fleet | Probe and operate multiple Bunqueue APIs + paired agents; verify shared PostgreSQL target/namespace topology |
+| **Fleet** | Fleet | Probe and operate multiple bunqueue APIs + paired agents; verify shared PostgreSQL target/namespace topology |
 | **Server** | Control ▸ Server | **Start / stop / restart** the server process, edit its config, tail process logs |
 | **Enqueue** | Control ▸ Add Job | Add jobs (single or bulk) with every option |
 | **Inspect** | Control ▸ Job Inspector | Look up any job; promote / re-prioritize / delay; view data & result |
@@ -129,8 +129,8 @@ contracts; it never patches Bunqueue internals.
 > unavailable: the DLQ GET + POST sequence has no atomic generation/state/topology precondition and
 > can target a job recreated under the same ID, while `retryCompleted` does not rebuild dependency
 > registration or flow order. Cancel, Discard, Drain, Clean, Obliterate and DLQ Purge also fail
-> closed. Bunqueue 2.9's `Queue.removeDlqJob()` also accepts only queue + job ID, so custom-ID reuse
-> prevents the dashboard from proving that a later deletion still targets the observed generation.
+> closed. bunqueue 2.9's `Queue.removeDlqJob()` also accepts only queue + job ID, so custom-ID reuse
+> prevents the control panel from proving that a later deletion still targets the observed generation.
 > DLQ `maxAge`/`maxEntries` are read-only, and auto-retry can only be disabled. The in-app Copilot
 > is switched off in official builds (`VITE_ENABLE_COPILOT=1` opts a custom build back in).
 
@@ -141,11 +141,14 @@ agent start one for you from the **Server** page).
 
 ### Run from npm (no clone)
 
+<!-- CONFIRM before release: the npm package, the ghcr.io image and the release binaries below
+exist only after the first publish from main (or a v* tag). Until then, run from source. -->
+
 ```bash
-bunx bunqueue-dashboard
+bunx qelay-control-panel
 ```
 
-One command serves the prebuilt dashboard on
+One command serves the prebuilt control panel on
 http://127.0.0.1:8080, proxies `/api/*` to your bunqueue server (`BUNQUEUE_URL`, default
 `http://localhost:6790`), and runs the control agent on `127.0.0.1:6800`. Same env knobs as the
 standalone binaries: `PORT` · `BIND_ADDR` · `BUNQUEUE_URL` · `AGENT_PORT` ·
@@ -155,25 +158,25 @@ standalone binaries: `PORT` · `BIND_ADDR` · `BUNQUEUE_URL` · `AGENT_PORT` ·
 Install it permanently instead of running via `bunx`:
 
 ```bash
-bun add -g bunqueue-dashboard
-bunqueue-dashboard
+bun add -g qelay-control-panel
+qelay-control-panel
 ```
 
 ### Run from source
 
 ```bash
-git clone https://github.com/egeominotti/bunqueue-dashboard.git
-cd bunqueue-dashboard
+git clone https://github.com/ChxisB/qelay-control-panel.git
+cd qelay-control-panel
 bun install
 bun start
 ```
 
-`bun start` boots **both** the control agent and the dashboard in one terminal and shuts both down
+`bun start` boots **both** the control agent and the control panel in one terminal and shuts both down
 on `Ctrl-C`:
 
 | Service | URL | Role |
 | --- | --- | --- |
-| Dashboard | http://localhost:5273 | The UI (`/api/*` is proxied to `:6790` in dev) |
+| Control panel | http://localhost:5273 | The UI (`/api/*` is proxied to `:6790` in dev) |
 | Control agent | http://127.0.0.1:6800 | Starts / stops / restarts the server process |
 | bunqueue server | http://localhost:6790 | Your queue server, started from the **Server** page or run separately |
 
@@ -184,7 +187,7 @@ Prefer separate terminals? The individual commands still exist, see [Scripts](#s
 ```mermaid
 flowchart LR
     subgraph Browser
-        UI["Dashboard (React 19 SPA)"]
+        UI["Control panel (React 19 SPA)"]
     end
     subgraph Local
         Agent["Control agent (Bun)<br/>127.0.0.1:6800"]
@@ -201,13 +204,13 @@ flowchart LR
 - **Managed operations** use the local control agent for process lifecycle, Queue SDK controls,
   FlowProducer, Workflow Engine, SQLite inspection, and backups.
 
-For multiple brokers, create one named Dashboard profile and one paired control
+For multiple brokers, create one named connection profile and one paired control
 agent per broker. The Fleet page probes all profiles without retargeting the
 active UI, groups brokers that share an exact PostgreSQL target + namespace,
 and drives each node's Start/Stop/Restart controls. Queue state is shared by
 PostgreSQL; lifecycle, process logs/config, in-memory webhooks, and each agent's
 Workflow Engine store remain node-local. See the
-[Fleet guide](https://egeominotti.github.io/bunqueue-dashboard/docs/guide/fleet).
+[Fleet guide](https://chxisb.github.io/qelay-control-panel/docs/guide/fleet).
 
 Two HTTP clients coexist on purpose: `src/lib/api.ts` (first-generation view pages) and
 `src/lib/bq.ts` (the complete, shape-verified client used by every `Control ▸ *` page). See
@@ -215,7 +218,7 @@ Two HTTP clients coexist on purpose: `src/lib/api.ts` (first-generation view pag
 
 ## Configuration
 
-The `VITE_*` dashboard defaults are build-time values and can **also** seed the first named profile
+The `VITE_*` control panel defaults are build-time values and can **also** seed the first named profile
 in **Settings**. Add up to 32 broker/agent profiles at runtime. The all-in-one server reads the non-`VITE_*` runtime variables below.
 Copy [`.env.example`](.env.example) to `.env` to set defaults.
 
@@ -223,7 +226,7 @@ Copy [`.env.example`](.env.example) to `.env` to set defaults.
 | --- | --- | --- |
 | `VITE_BUNQUEUE_URL` | bunqueue server origin | `/api` (dev proxy → `:6790`) |
 | `VITE_BUNQUEUE_AGENT_URL` | Control-agent origin | `http://localhost:6800` |
-| `BIND_ADDR` | All-in-one dashboard bind address | `127.0.0.1` |
+| `BIND_ADDR` | All-in-one server bind address | `127.0.0.1` |
 | `BASE_PATH` | Runtime mount for the all-in-one server (for example `/internal/queue`) | `/` |
 | `BUNQUEUE_MANAGED` | `0` attaches to the externally supervised `BUNQUEUE_URL`; `1` enables local lifecycle controls | `1` |
 | `AGENT_PORT` | Control-agent port | `6800` |
@@ -240,16 +243,16 @@ authentication prompt for the current browser session. Do not put secrets in a
 For `BIND_ADDR=0.0.0.0`, list every LAN hostname/IP in
 `AGENT_ALLOWED_HOSTS` (or its full origin in `AGENT_ALLOWED_ORIGINS`) and set
 both `AGENT_TOKEN` and `BUNQUEUE_TOKEN`. Enter `BUNQUEUE_TOKEN` as the Server
-token in Settings; when Bunqueue itself uses `AUTH_TOKENS`, use the same token
+token in Settings; when bunqueue itself uses `AUTH_TOKENS`, use the same token
 there so the forwarded Authorization header is valid upstream. Behind a reverse
 proxy, allowlist the public origin; if it rewrites `Host`, also allowlist the
 rewritten Host and use `TRUST_PROXY=1` only when the proxy overwrites
 `X-Forwarded-Host`.
 
 For a broker already owned by systemd, Docker or Kubernetes, run the all-in-one
-dashboard with `BUNQUEUE_MANAGED=0`. **Control ▸ Server** then reports health
+control panel with `BUNQUEUE_MANAGED=0`. **Control ▸ Server** then reports health
 from `BUNQUEUE_URL` and cannot spawn, stop, restart or reconfigure a child.
-Stopped-only backup restore is also rejected because the dashboard cannot prove
+Stopped-only backup restore is also rejected because the control panel cannot prove
 that an externally supervised broker is inactive.
 To mount the same process below a reverse-proxy prefix, set for example
 `BASE_PATH=/internal/queue` and preserve that prefix when proxying; the SPA,
@@ -260,8 +263,8 @@ target-pinned Flow, Workflow, Queue and Backup agent operations.
 
 | Command | Does |
 | --- | --- |
-| `bun start` | **Agent + dashboard together** (one-command dev) |
-| `bun dev` | Dashboard only (Vite dev server) |
+| `bun start` | **Agent + control panel together** (one-command dev) |
+| `bun dev` | Control panel only (Vite dev server) |
 | `bun run agent` | Control agent only |
 | `bun run build` | Typecheck (`tsc --noEmit`) + production build → `dist/` |
 | `bun run preview` | Preview the production build |
@@ -271,12 +274,12 @@ target-pinned Flow, Workflow, Queue and Backup agent operations.
 | `bun run check:fix` | Apply safe Oxlint fixes, then format with Oxfmt |
 | `bun test` | Unit + agent-lifecycle tests |
 | `bun run test:e2e:tls` | Queue, Flow and Workflow over verified native TLS, including untrusted-certificate rejection |
-| `bun run test:e2e:upgrade` | Real npm Bunqueue 2.9.2 SQLite schema-35 → 2.9.4 schema-37 migration and retention semantics |
+| `bun run test:e2e:upgrade` | Real npm bunqueue 2.9.2 SQLite schema-35 → 2.9.4 schema-37 migration and retention semantics |
 | `bun run test:e2e` | Real TLS, SQLite upgrade, Flow, Workflow, Queue SDK, and three-broker PostgreSQL runtime tests |
 | `bun run test:e2e:browser` | Production UI tests on Chromium, Firefox and WebKit |
 | `bun run test:e2e:browser:postgres-fleet` | Real UI operations across three PostgreSQL brokers (requires Docker and Chromium) |
 | `bun run quality` | Complete static, build, docs, coverage, runtime, package and dependency gate |
-| `bun run test:e2e:postgres-fleet` | Three authenticated Bunqueue 2.9.4 brokers + three agents sharing disposable PostgreSQL 18.6 |
+| `bun run test:e2e:postgres-fleet` | Three authenticated bunqueue 2.9.4 brokers + three agents sharing disposable PostgreSQL 18.6 |
 
 ## Docker
 
@@ -284,25 +287,25 @@ A multi-stage image builds the SPA with Bun and serves it with Caddy (gzip/zstd,
 
 ```bash
 # Pull & run the published image (`edge` tracks main; use `vX.Y.Z`/`latest` after a release)
-docker run --rm -p 8080:80 ghcr.io/egeominotti/bunqueue-dashboard:edge
+docker run --rm -p 8080:80 ghcr.io/chxisb/qelay-control-panel:edge
 # → http://localhost:8080  (set the server URL from the Settings page)
 
 # …or build locally, optionally baking in a default server origin
-docker build --build-arg VITE_BUNQUEUE_URL=https://queue.example.com -t bunqueue-dashboard .
-docker run --rm -p 8080:80 bunqueue-dashboard
+docker build --build-arg VITE_BUNQUEUE_URL=https://queue.example.com -t qelay-control-panel .
+docker run --rm -p 8080:80 qelay-control-panel
 ```
 
 Tags: `latest` and `vX.Y.Z` on releases, `edge` on `main`.
 
 ## Deployment
 
-- **Standalone executables**, every [release](https://github.com/egeominotti/bunqueue-dashboard/releases)
+- **Standalone executables**, every [release](https://github.com/ChxisB/qelay-control-panel/releases)
   ships self-contained binaries for **Linux (x64/arm64), macOS (x64/arm64) and Windows (x64)**:
-  download one file and run it, it serves the dashboard (assets embedded), proxies `/api` to your
+  download one file and run it, it serves the control panel (assets embedded), proxies `/api` to your
   bunqueue server (`BUNQUEUE_URL`, default `:6790`) and includes the control agent.
   ```bash
-  ./bunqueue-dashboard-vX.Y.Z-darwin-arm64        # → http://localhost:8080
-  PORT=3000 BUNQUEUE_URL=https://queue.example.com ./bunqueue-dashboard-vX.Y.Z-linux-x64
+  ./qelay-control-panel-vX.Y.Z-darwin-arm64        # → http://localhost:8080
+  PORT=3000 BUNQUEUE_URL=https://queue.example.com ./qelay-control-panel-vX.Y.Z-linux-x64
   ```
 - **GitHub Pages**, every push to `main` builds and publishes the static SPA
   (`.github/workflows/pages.yml`). The workflow **attempts** to auto-provision Pages; if the first
@@ -327,7 +330,7 @@ bun run test:e2e:browser          # production UI on all three browser engines
 bun run test:e2e:browser:postgres-fleet # cross-node UI; separate from both commands above
 ```
 
-The E2E stage starts disposable Bunqueue 2.9.4 processes and exercises the complete FlowProducer,
+The E2E stage starts disposable bunqueue 2.9.4 processes and exercises the complete FlowProducer,
 Workflow Engine, and Queue SDK operator bridges. It also starts PostgreSQL 18.6 in Docker with
 three authenticated brokers and paired agents, proving cross-broker enqueue/inspect/leased
 pull+ack, pause/resume, cron, rate limits, group admission, group priority and group pause/resume
@@ -335,7 +338,7 @@ on PostgreSQL schema 20. Run it alone with `bun run test:e2e` (Docker is require
 PostgreSQL stage).
 
 The blocking browser job builds the production bundle under `/e2e/dashboard`, starts an
-authenticated disposable Bunqueue server, and drives the UI with Playwright on Chromium, Firefox,
+authenticated disposable bunqueue server, and drives the UI with Playwright on Chromium, Firefox,
 and WebKit. It covers the token gate, every sidebar route, SSE recovery across a real server
 restart, confirmed Cron creation/deletion, job submission and bulk import, persisted job inspection,
 DLQ failures, live monitoring and alerts, SQLite queries, webhook registry mutations, a real
@@ -351,7 +354,7 @@ CI enforces the quality gate and browser matrix on every push and pull request. 
 ## Project structure
 
 ```
-bunqueue-dashboard/
+qelay-control-panel/
 ├── .github/workflows/   # CI, Pages deploy, Docker publish, Release
 ├── agent/               # guarded process, Flow, Workflow, Queue, database and backup adapters
 ├── docker/              # Caddyfile for the container image
@@ -376,11 +379,11 @@ The control agent can spawn processes, so it is hardened by design (`agent/serve
 - Requests carrying a **disallowed `Origin` are rejected (403)** before reaching the process manager, blocking drive-by CSRF from a malicious tab.
 - A **Host allowlist** blocks DNS-rebinding requests and fails closed for unknown names.
 - Truly local agent reads stay zero-configuration; any LAN/proxied `/agent` bridge requires **`AGENT_TOKEN` on every route**.
-- The all-in-one server requires **`BUNQUEUE_TOKEN` on every LAN/proxied `/api/*` route**; without it the API proxy returns `403` before contacting Bunqueue.
+- The all-in-one server requires **`BUNQUEUE_TOKEN` on every LAN/proxied `/api/*` route**; without it the API proxy returns `403` before contacting bunqueue.
 - Embedded and Docker responses deny framing, MIME sniffing and referrer leakage.
 
-Keep the direct agent port on loopback. Static/Caddy deployments that expose Bunqueue directly must
-still use Bunqueue `AUTH_TOKENS` or front-proxy authentication; the all-in-one `BUNQUEUE_TOKEN`
+Keep the direct agent port on loopback. Static/Caddy deployments that expose bunqueue directly must
+still use bunqueue `AUTH_TOKENS` or front-proxy authentication; the all-in-one `BUNQUEUE_TOKEN`
 boundary applies only to `scripts/serve.ts`. Host/Origin checks are not user authentication. See
 [`docs/known-issues.md`](docs/known-issues.md) for the honest, verified limitations.
 
@@ -391,6 +394,28 @@ boundary applies only to `scripts/serve.ts`. Host/Origin checks are not user aut
 2. Make the [gate](#testing--quality-gate) green: `bun run quality`.
 3. Open a PR, the template walks you through the checklist. CI must pass.
 
+## Origin
+
+Qelay Control Panel is a fork of
+[egeominotti/bunqueue-dashboard](https://github.com/egeominotti/bunqueue-dashboard) by Egeo Minotti,
+released under the MIT license. The pages, the control agent, the shape-verified API client, the
+tests and most of the documentation were written upstream.
+
+What changed in the fork:
+
+- **Brand.** A new name, logo, color palette and typeface (Inter, with the system monospace for
+  code), in light and dark themes.
+- **Interface.** A collapsible navigation, and redesigned Overview, Jobs and Server pages.
+- **Naming.** The npm package, Docker image, release files and the agent's settings folder use the
+  new name. Browser settings saved under the earlier names are copied across the first time they
+  are read, and an old agent settings file is copied the first time the agent starts without a new
+  one.
+
+What did not change: the server it controls is [bunqueue](https://github.com/egeominotti/bunqueue)
+(its public HTTP API and the pinned client, nothing patched), the `BUNQUEUE_*` and `AGENT_*`
+variables, the API paths, the ports `6790` and `6800`, and the agent's security model.
+
 ## License
 
-[MIT](LICENSE) © Egeo Minotti
+[MIT](LICENSE). The upstream copyright notice (© Egeo Minotti) is kept in the license file, as the
+license requires.

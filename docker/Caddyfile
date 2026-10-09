@@ -1,4 +1,4 @@
-# Caddy config for serving the bunqueue dashboard SPA.
+# Caddy config for serving the Qelay Control Panel SPA.
 #
 # - History-API fallback: unknown *routes* return index.html so React Router
 #   deep links and refreshes work.

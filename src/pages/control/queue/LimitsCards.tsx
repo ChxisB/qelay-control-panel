@@ -95,7 +95,7 @@ export function LimitsCards({
             </Field>
           </div>
           <Button
-            variant="accent"
+            variant="primary"
             size="sm"
             disabled={busy || !rate.valid}
             onClick={() =>
@@ -174,7 +174,7 @@ export function LimitsCards({
             </Field>
           </div>
           <Button
-            variant="accent"
+            variant="primary"
             size="sm"
             disabled={busy || !concurrencyInput.valid}
             onClick={() =>

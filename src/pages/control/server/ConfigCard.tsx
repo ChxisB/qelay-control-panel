@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { Button } from '@/components/ui/Button';
 import { Card, CardHeader } from '@/components/ui/Card';
+import { LoadingState } from '@/components/ui/feedback';
 import { Field, Input } from '@/components/ui/form';
-import { IconRefresh } from '@/components/ui/icons';
 import { bq } from '@/lib/bq';
 import type { ServerConfig, ServerStatus } from '@/lib/bqTypes';
 import { useControlActionGuard } from '@/lib/useControlActionGuard';
+import { ConfigActions } from './ConfigActions';
 import {
   adoptConfig,
   changedConfigFields,
@@ -90,7 +90,13 @@ export function ConfigCard({
 
   const currentEditor = editor?.scope === actionGuard.scopeKey ? editor : null;
   const value = currentEditor?.value ?? status?.config ?? null;
-  if (!value) return <Card>Loading…</Card>;
+  if (!value) {
+    return (
+      <Card>
+        <LoadingState label="Loading configuration…" />
+      </Card>
+    );
+  }
 
   const set = (patch: Partial<ServerConfig>) => {
     const base =
@@ -193,15 +199,15 @@ export function ConfigCard({
   };
 
   return (
-    <Card>
+    <Card className="p-6">
       <CardHeader title="Configuration" />
-      <p className="mb-3 text-xs text-muted">
+      <p className="-mt-2 mb-5 text-[13px] text-muted">
         {running
           ? 'Ports and data path apply on the next restart — edit freely, then restart.'
           : 'Edit and save; the config is used the next time the server starts.'}
       </p>
       <form
-        className="flex flex-col gap-3"
+        className="flex flex-col gap-4"
         onSubmit={(e) => {
           e.preventDefault();
           save();
@@ -221,7 +227,7 @@ export function ConfigCard({
             placeholder="bunx bunqueue@2.9.4 start"
           />
         </Field>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Field label="HTTP port" hint="Dashboard API + SSE.">
             <Input
               name="server-http-port"
@@ -271,26 +277,16 @@ export function ConfigCard({
             disabled={busy}
           />
         </Field>
-        <div className="flex flex-wrap items-center gap-3">
-          <Button type="submit" variant="accent" size="sm" disabled={busy}>
-            Save config
-          </Button>
-          {running && (
-            <Button variant="warning" size="sm" disabled={busy} onClick={saveAndRestart}>
-              <IconRefresh className="size-3.5" /> Save & restart
-            </Button>
-          )}
-          {pending && !saved && (
-            <span className="text-xs text-warning">Restart to apply changes</span>
-          )}
-          {saved && <span className="text-xs text-success">Saved</span>}
-          {conflict && (
-            <Button type="button" variant="ghost" size="sm" disabled={busy} onClick={reloadLatest}>
-              Reload latest
-            </Button>
-          )}
-          {err && <span className="text-xs text-danger">{err}</span>}
-        </div>
+        <ConfigActions
+          busy={busy}
+          running={running}
+          pending={pending}
+          saved={saved}
+          conflict={conflict}
+          error={err}
+          onSaveAndRestart={saveAndRestart}
+          onReload={reloadLatest}
+        />
       </form>
     </Card>
   );

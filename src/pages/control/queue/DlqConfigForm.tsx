@@ -122,7 +122,7 @@ export function DlqConfigForm({
       </div>
       <div className="mt-3 flex items-center gap-3">
         <Button
-          variant="accent"
+          variant="primary"
           size="sm"
           disabled={save.saving || !payload.ok || enablingAutoRetry}
           onClick={submit}

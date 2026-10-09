@@ -1,40 +1,91 @@
-/* Brand + polish for the bunqueue dashboard docs. Mirrors the app's pink accent
-   (#ec4899) and gives screenshots a framed, elevated look. */
+/* Qelay Control Panel docs theme. The values below are the app's tokens from
+   src/index.css (task 02), copied because VitePress cannot import them;
+   test/docs-theme.test.ts fails if they drift or stop meeting contrast.
+   Orange is a fill (dark text on it, 7.3:1), violet carries link text, and
+   the one brand gradient lives in the logo mark. */
 
 :root {
-  --vp-c-brand-1: #db2777;
-  --vp-c-brand-2: #ec4899;
-  --vp-c-brand-3: #f472b6;
-  --vp-c-brand-soft: rgba(236, 72, 153, 0.14);
+  --qelay-primary: #ff7a00;
+  --qelay-primary-fg: #0b0f1a;
+  --qelay-gradient: linear-gradient(120deg, #ff7a00, #ff3d61 50%, #7a3dff);
+
+  /* Light: ground, soft surfaces, lines, text. */
+  --vp-c-bg: #ffffff;
+  --vp-c-bg-alt: #f1f5f9;
+  --vp-c-bg-elv: #ffffff;
+  --vp-c-bg-soft: #f1f5f9;
+  --vp-c-divider: #e2e8f0;
+  --vp-c-gutter: #e2e8f0;
+  --vp-c-border: #cbd5e1;
+  --vp-c-text-1: #0b0f1a;
+  --vp-c-text-2: #475569;
+  /* The palette's faint grey (#64748b) is 4.35:1 on the soft surface, so the
+     third tier shares the muted value in light. */
+  --vp-c-text-3: #475569;
+
+  /* Brand: violet link text (5.33:1 on white), orange primary fill. */
+  --vp-c-brand-1: #7a3dff;
+  --vp-c-brand-2: #7a3dff;
+  --vp-c-brand-3: #ff7a00;
+  --vp-c-brand-soft: rgba(122, 61, 255, 0.12);
+
+  --vp-button-brand-bg: var(--qelay-primary);
+  --vp-button-brand-border: transparent;
+  --vp-button-brand-text: var(--qelay-primary-fg);
+  --vp-button-brand-hover-bg: color-mix(in srgb, var(--qelay-primary) 88%, #ffffff);
+  --vp-button-brand-hover-border: transparent;
+  --vp-button-brand-hover-text: var(--qelay-primary-fg);
+  --vp-button-brand-active-bg: color-mix(in srgb, var(--qelay-primary) 88%, #000000);
+  --vp-button-brand-active-border: transparent;
+  --vp-button-brand-active-text: var(--qelay-primary-fg);
+
+  --vp-code-bg: #f1f5f9;
+  --vp-code-block-bg: #f1f5f9;
+  --vp-code-color: #7a3dff;
 
   --vp-home-hero-name-color: transparent;
-  --vp-home-hero-name-background: linear-gradient(120deg, #f472b6 20%, #ec4899);
+  --vp-home-hero-name-background: var(--qelay-gradient);
   --vp-home-hero-image-background-image: linear-gradient(
     -45deg,
-    rgba(236, 72, 153, 0.35),
-    rgba(244, 114, 182, 0.2)
+    rgba(255, 122, 0, 0.3),
+    rgba(122, 61, 255, 0.25)
   );
   --vp-home-hero-image-filter: blur(48px);
 }
 
 .dark {
-  --vp-c-brand-1: #f472b6;
-  --vp-c-brand-2: #ec4899;
-  --vp-c-brand-3: #db2777;
+  --vp-c-bg: #0b0f1a;
+  --vp-c-bg-alt: #101522;
+  --vp-c-bg-elv: #151c2d;
+  --vp-c-bg-soft: #101522;
+  --vp-c-divider: #1e293b;
+  --vp-c-gutter: #1e293b;
+  --vp-c-border: #334155;
+  --vp-c-text-1: #f1f5f9;
+  --vp-c-text-2: #94a3b8;
+  --vp-c-text-3: #7a8ba3;
+
+  --vp-c-brand-1: #a98bff;
+  --vp-c-brand-2: #a98bff;
+  --vp-c-brand-3: #ff7a00;
+  --vp-c-brand-soft: rgba(169, 139, 255, 0.16);
+
+  --vp-code-bg: #151c2d;
+  --vp-code-block-bg: #101522;
+  --vp-code-color: #a98bff;
 }
 
-/* ── Typography: enterprise-grade, fluid ───────────────────────────────────
-   The docs use the same variable fonts as the app (Inter for text, JetBrains
-   Mono for code, imported in theme/index.ts) and a fluid type scale: the vw
-   term in each clamp() lets headings and body copy breathe on wide screens and
-   stay compact on phones, without touching VitePress's rem baseline (so the
-   layout grid is unaffected). */
+/* ── Typography: Inter, as in the app ──────────────────────────────────────
+   Inter is self-hosted (theme/index.ts) so the docs match the product and
+   render offline. Code uses the system mono stack, like the app's --font-mono.
+   A fluid type scale: the vw term in each clamp() lets headings and body copy
+   breathe on wide screens and stay compact on phones, without touching
+   VitePress's rem baseline (so the layout grid is unaffected). */
 :root {
   --vp-font-family-base:
     'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica,
     Arial, sans-serif;
-  --vp-font-family-mono:
-    'JetBrains Mono Variable', ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --vp-font-family-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 }
 
 html {
@@ -113,7 +164,7 @@ body {
    A databasus-style single-page landing: keyword hero + clickable product
    window, fact strip, numbered feature inventory, tour video, drive tiles,
    4-step process, install tabs, FAQ. Built on VitePress theme tokens so it
-   works in light AND dark, keeping the app's pink brand. */
+   works in light AND dark with the Qelay palette. */
 .lp {
   max-width: 1152px;
   margin: 0 auto;
@@ -194,13 +245,13 @@ body {
 .lp .lp-btn-primary,
 .vp-doc .lp .lp-btn-primary {
   border-color: transparent;
-  background: linear-gradient(120deg, #db2777, #ec4899);
-  color: #fff;
+  background: var(--qelay-primary);
+  color: var(--qelay-primary-fg);
 }
 .lp .lp-btn-primary:hover,
 .vp-doc .lp .lp-btn-primary:hover {
   border-color: transparent;
-  color: #fff;
+  color: var(--qelay-primary-fg);
   filter: brightness(1.08);
 }
 
@@ -215,7 +266,7 @@ body {
   background: var(--vp-c-bg-soft);
   box-shadow:
     0 1px 2px rgba(0, 0, 0, 0.2),
-    0 24px 70px -20px rgba(219, 39, 119, 0.25);
+    0 24px 70px -20px rgba(122, 61, 255, 0.25);
   text-decoration: none;
   transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
@@ -224,7 +275,7 @@ body {
   border-color: var(--vp-c-brand-1);
   box-shadow:
     0 2px 4px rgba(0, 0, 0, 0.22),
-    0 30px 80px -18px rgba(219, 39, 119, 0.4);
+    0 30px 80px -18px rgba(122, 61, 255, 0.4);
 }
 .lp-window:focus-visible {
   outline: 2px solid var(--vp-c-brand-1);
@@ -364,17 +415,6 @@ body {
   font-size: 11px;
   font-style: normal;
   vertical-align: 2px;
-}
-
-/* Tour video */
-.lp-video {
-  display: block;
-  width: 100%;
-  max-width: 980px;
-  margin: 32px auto 0;
-  border: 1px solid var(--vp-c-divider);
-  border-radius: 14px;
-  box-shadow: 0 12px 40px -12px rgba(0, 0, 0, 0.35);
 }
 
 /* Drive tiles */

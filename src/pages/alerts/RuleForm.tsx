@@ -147,7 +147,7 @@ export function RuleForm({
         />
       </Field>
       <div className="col-span-full">
-        <Button variant="accent" disabled={!name.trim() || !threshold.trim()} onClick={save}>
+        <Button variant="primary" disabled={!name.trim() || !threshold.trim()} onClick={save}>
           Save rule
         </Button>
         {error && (

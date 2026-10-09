@@ -7,7 +7,7 @@ import { cn } from '@/lib/cn';
 
 const STATUS_STYLE: Record<ToolEvent['status'], string> = {
   awaiting: 'border-warning/40 text-warning',
-  running: 'border-accent/40 text-accent',
+  running: 'border-link/40 text-link',
   done: 'border-success/40 text-success',
   error: 'border-danger/40 text-danger',
   declined: 'border-line text-faint',
@@ -31,7 +31,7 @@ export function PanelIconButton({
       aria-pressed={active ?? undefined}
       onClick={onClick}
       className={cn(
-        'rounded-md p-1.5 text-muted transition-colors hover:bg-surface-2 hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50',
+        'rounded-md p-1.5 text-muted transition-colors hover:bg-surface-2 hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         active && 'bg-surface-2 text-fg'
       )}
     >
@@ -58,7 +58,7 @@ export function MessageBubble({ message }: { message: ChatMessage }) {
       <div
         className={cn(
           'max-w-[85%] space-y-2',
-          isUser ? 'rounded-2xl rounded-br-sm bg-accent/15 px-3 py-2' : 'w-full'
+          isUser ? 'rounded-2xl rounded-br-sm bg-selected px-3 py-2' : 'w-full'
         )}
       >
         {(message.tools?.length ?? 0) > 0 && (
@@ -123,7 +123,7 @@ export function ConfirmCard({
         <button
           type="button"
           onClick={onConfirm}
-          className="rounded-lg bg-accent px-3 py-1.5 text-xs font-medium text-accent-fg hover:opacity-90"
+          className="rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-fg hover:opacity-90"
         >
           Confirm
         </button>

@@ -74,7 +74,7 @@ describe('route titles and navigation semantics', () => {
     }
     const { unmount } = render(createElement(TitleProbe));
     await settle(1);
-    expect(document.title).toBe('Database · bunqueue');
+    expect(document.title).toBe('Database · Qelay Control Panel');
     unmount();
   });
 
